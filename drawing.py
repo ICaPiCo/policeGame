@@ -13,8 +13,9 @@ CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 #IMAGES
 image = pygame.image.load("napoleon.png")
 background = pygame.image.load("background.jpg")
-table = pygame.image.load("table.png")
 background = pygame.transform.scale(background, (SCREEN_WIDTH,SCREEN_HEIGHT))
+table = pygame.image.load("table.png")
+table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
 # Colors
 WHITE = (255, 255, 255)
@@ -38,11 +39,17 @@ button_size_down = pygame.Rect(650, 280, 100, 40)
 font = pygame.font.Font(None, 30)
 
 def drawBackground():
-    width,heigth=background.get_size()
+    width,height=background.get_size()
     screen.blit(background,(0,0))
+
 
 def drawImage(postionX,postionY):
     screen.blit(image,(postionX,postionY))
+
+def drawForeground():
+    width,height=background.get_size()
+    screen.blit(background,(0,0))
+    screen.blit(table,(0,(60*height/100)))
 
 def drawButtons():
     pygame.draw.rect(screen, BLACK, button_color_black)
@@ -55,15 +62,21 @@ def drawButtons():
 running = True
 drawing = False
 
-while running:
-    borderPatrol = ((10*SCREEN_HEIGHT)/100)
+def drawOrder():
+    mousePosX, mousePosY = pygame.mouse.get_pos()
     drawBackground()
+    drawButtons()
+    drawImage(mousePosX,mousePosY)
+    drawForeground()
+
+while running:
+
+    drawOrder()
+
+    borderPatrol = ((10*SCREEN_HEIGHT)/100)
     screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
     screen.blit(canvas, (screenX,screenY))
-    drawButtons()
-    mousePosX, mousePosY = pygame.mouse.get_pos()
-    drawImage(mousePosX,mousePosY)
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
