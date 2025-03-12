@@ -88,3 +88,9 @@ while running:
     pygame.display.flip()
 
 pygame.quit()
+
+#S Stage: create interaction objects
+#S Stage: create drawing complete
+#S Stage: create story
+#S Stage: create minigames
+#S Stage: create looking around
