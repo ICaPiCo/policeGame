@@ -40,6 +40,7 @@ button_size_down = pygame.Rect(650, 280, 100, 40)
 
 # Font setup
 font = pygame.font.Font(None, 30)
+Menu = False 
 
 def collision(a,b):
     return pygame.collidepoint(a,b)
@@ -61,7 +62,7 @@ def drawBackground():
     mX, mY = pygame.mouse.get_pos()
     backX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
     backY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
-    screen.blit(background, (backX, backY))
+    screen.blit(background, (backX-100, backY))
     text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
     screen.blit(text_back, (10, 50))
 
@@ -74,10 +75,10 @@ def drawForeground():
     mX, mY = pygame.mouse.get_pos()
     #0.1 can change
     TableX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
-    TableY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.03 *height)  #0.1 can change
+    TableY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
     table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
     
-    screen.blit(table,(TableX,TableY+560))
+    screen.blit(table,(TableX,TableY+570))
     screen.blit(table_text, (10, 80))
 
 def drawButtons():
@@ -88,8 +89,6 @@ def drawButtons():
     screen.blit(font.render("+", True, WHITE), (670, 230))
     screen.blit(font.render("-", True, WHITE), (670, 290))
 
-running = True
-drawing = False
 
 def drawOrder():
     mousePosX, mousePosY = pygame.mouse.get_pos()
@@ -102,7 +101,9 @@ def drawOrder():
     screen.blit(text_mouse, (10, 10))   
 
 font = pygame.font.Font(None,37)
-    
+running = True
+drawing = False
+
 
 def animation(image,startX,startY,SpeedX,SpeedY,endX,endY):
     image_rect = image.get_rect(topleft=(PosX, PosY))
@@ -118,48 +119,82 @@ def animation(image,startX,startY,SpeedX,SpeedY,endX,endY):
         drawForeground()
         drawButtons()
         pygame.display.flip()
-animation(image, -500, 200, 20, 20, SCREEN_WIDTH/2, 200)
-while running:
-    screen.fill((0,0,0))
-    drawBackground()
-    drawOrder()
 
-    borderPatrol = ((10*SCREEN_HEIGHT)/100)
-    screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
-    screen.blit(canvas, (screenX,screenY))
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                running = False
-                pygame.quit()   
-                sys.exit()
+#animation(image, -500, 200, 20, 20, SCREEN_WIDTH/2, 200)
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            x, y = event.pos
-            if button_color_black.collidepoint(x, y):
-                brush_color = BLACK
-            elif button_color_white.collidepoint(x, y):
-                brush_color = WHITE
-            elif button_size_up.collidepoint(x, y):
-                brush_size = min(20, brush_size + 2)
-            elif button_size_down.collidepoint(x, y):
-                brush_size = max(2, brush_size - 2)
-            elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                drawing = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            drawing = False
-        elif event.type == pygame.MOUSEMOTION and drawing:
-            x, y = event.pos
-            if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                running = False
 
+def drawMenu():
+    screen.fill((0, 0, 0))
+    drawForeground()
     pygame.display.flip()
+
+while running or Menu:
+    while running:
+
+    #main stuff going on here
+        screen.fill((0,0,0))
+        drawBackground()
+        drawOrder()
+        animation(image, -500, 200, 20, 20, SCREEN_WIDTH/2, 200)
+        borderPatrol = ((10*SCREEN_HEIGHT)/100)
+        screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
+        screen.blit(canvas, (screenX,screenY))
+    #Get key presses here: feel free to add
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    pygame.quit()   
+                    sys.exit()
+                elif event.key == pygame.K_SPACE:
+                    Menu = False if Menu else True
+                    running = False 
+    #the following is Ioanis' draw code
+    #maybe we can use the clicking function here but flemme
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_color_black.collidepoint(x, y):
+                    brush_color = BLACK
+                elif button_color_white.collidepoint(x, y):
+                    brush_color = WHITE
+                elif button_size_up.collidepoint(x, y):
+                    brush_size = min(20, brush_size + 2)
+                elif button_size_down.collidepoint(x, y):
+                    brush_size = max(2, brush_size - 2)
+                elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    drawing = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                drawing = False
+            elif event.type == pygame.MOUSEMOTION and drawing:
+                x, y = event.pos
+                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+
+        pygame.display.flip()
+
+    while Menu:
+        drawMenu()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_SPACE:
+                    Menu = False
+                    running = True
+                    continue
+
+
+
 
 pygame.quit()
 
@@ -167,4 +202,7 @@ pygame.quit()
 #S Stage: create drawing complete
 #S Stage: create story & progression - objects in background
 #S Stage: create minigames
-#S Stage: create looking around
+#S Stage: create looking around (parralax) -...
+# Features: parralax, image generation?, drawing engine, interactivity
+
+
