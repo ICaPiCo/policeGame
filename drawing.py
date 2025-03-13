@@ -42,8 +42,6 @@ button_size_down = pygame.Rect(650, 280, 100, 40)
 font = pygame.font.Font(None, 30)
 Menu = False 
 
-def collision(a,b):
-    return pygame.collidepoint(a,b)
 
 
 def clicking_on(object):
@@ -118,17 +116,17 @@ def animation(image,startX,startY,SpeedX,SpeedY,endX,endY):
         drawImage(currentPosX, currentPosY)
         drawForeground()
         drawButtons()
-        pygame.display.flip()
+        
 
 
 #animation(image, -500, 200, 20, 20, SCREEN_WIDTH/2, 200)
-
-
+x1,y1,z1 = 100,100,100
+o=0
 def drawMenu():
     screen.fill((0, 0, 0))
+    
     drawForeground()
-    pygame.display.flip()
-
+    
 while running or Menu:
     while running:
 
@@ -179,7 +177,13 @@ while running or Menu:
         pygame.display.flip()
 
     while Menu:
+        o+=0.1
         drawMenu()
+        font = pygame.font.Font(None,37)
+        menu_text = font.render("Press space to start", True, (x1,y1,z1))
+        screen.blit(menu_text, (SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2))
+        #if menu_rect.collidepoint(pygame.mouse.get_pos()):
+        #   x1, y1, z1 = 255, 255, 255
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -192,11 +196,17 @@ while running or Menu:
                     Menu = False
                     running = True
                     continue
-
-
-
+        
+        x1 = int((sin(o) + 1) * 100)  # Red
+        y1 = int((sin(o + 2) + 1) * 80)  # Green (offset by 2)
+        z1 = int((sin(o + 4) + 1) * 125)  # Blue (offset by 4)
+        xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
+        screen.blit(xtext, (10,100))
+        pygame.display.flip()
 
 pygame.quit()
+
+
 
 #S Stage: create interaction objects
 #S Stage: create drawing complete
