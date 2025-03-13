@@ -1,8 +1,9 @@
 import pygame
+from math import *
 
-# Initialize pygame
 pygame.init()
 
+global PosX, PosY
 # Screen settings
 overSize = 4
 pygame.display.set_caption("PortraitRobot")
@@ -59,7 +60,6 @@ def drawImage(postionX,postionY):
 
 def drawForeground():
     width,height=background.get_size()
-    screen.blit(background,(0,0))
     screen.blit(table,(0,(60*height/100)))
 
 def drawButtons():
@@ -74,12 +74,12 @@ running = True
 drawing = False
 
 def drawOrder():
-    mousePosX, mousePosY = pygame.mouse.get_pos()
     drawBackground()
     drawButtons()
     drawImage(mousePosX,mousePosY)
     drawForeground()
 
+animation(image, -500, 200, 20, 20, SCREEN_WIDTH/2, 200)
 while running:
 
     drawOrder()
@@ -109,6 +109,10 @@ while running:
             x, y = event.pos
             if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
                 pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+
     pygame.display.flip()
 
 pygame.quit()
