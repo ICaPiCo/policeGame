@@ -16,6 +16,7 @@ def rectangle(lenght,width,color):
         lt(90)
     end_fill()
     up()
+
 def etage(color):
     down()
     rectangle(140,50,color)
@@ -130,8 +131,31 @@ def toit(proba,color):
         rectangle(150,20,'black')
         fd(5)
         
+def background():
+    goto(-800,500)
+    rt(90)
+    rectangle(1000,1600,'skyblue1')
+    lt(180)
+    goto(800,250)
+    fillcolor('chartreuse2')
+    begin_fill()
+    down()
+    for i in range(15):
+        ranAngles=randint(120,150)
+        ranRad=randint(100,200)
+        ranDistance=50+(ranAngles/16)+randint(5,30)
+        setheading(ranAngles)
+        circle(ranRad,ranDistance)
+    goto(-800,0)
+    setheading(0)
+    goto(800,0)
+    goto(800,250)
+    end_fill()
+    goto(800,0)
+    fillcolor('antiquewhite4')
     
 
+    up()
 
 
 def neigborhood():
@@ -142,7 +166,6 @@ def neigborhood():
     housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","seagreen1","indianred1"]
     bridgeH=0
     lastBuilding=False
-    bk(700)
     for i in range(nbbats):
         fd(ecart)
         if i == nbbats-1:
@@ -165,7 +188,9 @@ def neigborhood():
         fd(nbEtages*50)
         lt(90)
         fd(140)
-    bk((140+ecart)*nbbats-700)
+    bk((140+ecart)*nbbats-800)
 
+
+background()
 neigborhood()
 done()
