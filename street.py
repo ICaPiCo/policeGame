@@ -39,7 +39,7 @@ def fenetre(proba):
 
 
 def porte(proba):
-    doorcolors=["gold1","burlywood4","DarkOrange4","DarkGray","LightCyan4","HotPink3"]
+    doorcolors=["gold1","burlywood4","DarkOrange4","gray0","LightCyan4","HotPink3"]
     e=randint(0,len(doorcolors)-1)
     if proba==0:
         rectangle(30,45,doorcolors[e])
@@ -99,11 +99,8 @@ def deco_etage(etage,ecart):
     bk(140)
     
 
-def toit(proba,color):
+def toit(proba):
     if proba>=4:
-        fillcolor(color)
-        down()
-        begin_fill()
         fd(150)
         lt(150)
         fd(80/(cos(30*pi/180)))
@@ -111,12 +108,7 @@ def toit(proba,color):
         fd(80/(cos(30*pi/180)))
         lt(150)
         fd(10)
-        up()
-        end_fill()
     elif proba>=2:
-        fillcolor('black')
-        down()
-        begin_fill()
         fd(150)
         lt(110)
         fd(80/(cos(70*pi/180)))
@@ -124,11 +116,16 @@ def toit(proba,color):
         fd(80/(cos(70*pi/180)))
         lt(110)
         fd(10)
-        up()
-        end_fill()
     else:
         bk(5)
-        rectangle(150,20,'black')
+        fd(150)
+        lt(90)
+        fd(20)
+        lt(90)
+        fd(150)
+        lt(90)
+        fd(20)
+        lt(90)
         fd(5)
         
 def background():
@@ -140,32 +137,86 @@ def background():
     fillcolor('chartreuse2')
     begin_fill()
     down()
-    for i in range(15):
-        ranAngles=randint(120,150)
+    for i in range(10):
+        ranAngles=randint(125,150)
         ranRad=randint(100,200)
         ranDistance=50+(ranAngles/16)+randint(5,30)
         setheading(ranAngles)
         circle(ranRad,ranDistance)
     goto(-800,0)
-    setheading(0)
+    setheading(180)
     goto(800,0)
     goto(800,250)
     end_fill()
-    goto(800,0)
-    fillcolor('antiquewhite4')
-    
-
     up()
+    goto(800,0)
+    rectangle(1600,500,'azure4')
+    rectangle(1600,200,'gray55')
+    goto(0,0)
 
+def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
+    setheading(180)
+    goto(-850-40*i,-120*(total-i)/total)
+    rt(90)
+    grays='gray'+str(70-10*(total-i))
+    fillcolor(grays)
+    color(grays)
+    begin_fill()
+    down()
+    fd(150)
+    a=randint(0,3)
+    fd(a*50)
+    rt(90)
+    for i in range(12):
+        fd(150)
+        b=randint(0,3)
+        while a!=b:
+            if a<b:
+                lt(90)
+                fd(50)
+                rt(90)
+                a+=1
+            elif b<a:
+                rt(90)
+                fd(50)
+                lt(90)
+                a+=-1
+        fd(10)
+        c=randint(2,11)
+        if c<=6:
+            toit(c)
+    goto(800,-120*(total-i)/total)
+    goto(-850-40*i,-120*(total-i)/total)
+    up()
+    end_fill()
+    color('black')
+    goto(0,0)
+            
+
+
+
+def road():
+    goto(-800,-200)
+    setheading(270)
+    rectangle(150,1600,'gray20')
+    goto(-860,-260)
+    lt(90)
+    cote=10/cos(50*pi/180)
+    for i in range(20):
+        fd(80)
+        rectangle(60,-10,'seashell')
+    goto(0,0)
 
 def neigborhood():
     global bridgeH
     global lastBuilding
     ecart=40
     nbbats=8
-    housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","seagreen1","indianred1"]
+    housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","indianred1"]
     bridgeH=0
     lastBuilding=False
+    goto(-780,-155)
+    setheading(0)
     for i in range(nbbats):
         fd(ecart)
         if i == nbbats-1:
@@ -183,7 +234,12 @@ def neigborhood():
             fd(50)
             rt(90)
         c=randint(0,6)
-        toit(c,'black')
+        fillcolor('black')
+        begin_fill()
+        down()
+        toit(c)
+        end_fill()
+        up()
         rt(90)#descendre tt les etages
         fd(nbEtages*50)
         lt(90)
@@ -191,6 +247,12 @@ def neigborhood():
     bk((140+ecart)*nbbats-800)
 
 
-background()
+nbBgHouses=2
+#background()
+for i in range(nbBgHouses):
+    backgroundHouses(nbBgHouses,i)
 neigborhood()
+road()
+
+
 done()
