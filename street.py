@@ -1,15 +1,10 @@
 from turtle import*
 from random import*
 from math import*
-#Fillcolor()          begin.fill()            end.fill()
-#10 15 30 10 30 10 30 15 10
-nbmagic=0
-for i in range(18):
-    nbmagic+=sin(i*10*pi/180)
+
+
 up()
-bk(700)
 speed(10)
-nbbats=8
 def rectangle(lenght,width,color):
     fillcolor(color)
     begin_fill()
@@ -60,8 +55,11 @@ def porte(proba):
         end_fill()
         up()
 
-def deco_etage(etage):
+def deco_etage(etage,ecart):
+    global bridgeH
+    global lastBuilding
     a=randint(0,2)
+    br=randint(0,9)
     fd(15)
     up()
     for i in range(3):
@@ -81,11 +79,28 @@ def deco_etage(etage):
             fd(10)
             lt(90)
         fd(40)
-    bk(135)
+    fd(5)
+    if br==0 and etage!=0 and not lastBuilding:
+        bridgeH=etage
+        fd(ecart)
+        lt(90)
+        fillcolor('cornsilk2')
+        begin_fill()
+        down()
+        circle(ecart/2,180)
+        bk(15)
+        circle(ecart/2,-180)
+        bk(15)
+        end_fill()
+        up()
+        rt(90)
+        bk(ecart)
+    bk(140)
+    
 
-def toit(proba):
+def toit(proba,color):
     if proba>=4:
-        fillcolor('black')
+        fillcolor(color)
         down()
         begin_fill()
         fd(150)
@@ -119,24 +134,38 @@ def toit(proba):
 
 
 
-
-housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","seagreen1","indianred1"]
-print(nbmagic)
-for i in range(nbbats):
-    fd(25)
-    nbEtages=randint(1,5)
-    randcolors=randint(0,len(housecolors)-1)
-    for i in range(nbEtages):
-        etage(housecolors[randcolors])
-        deco_etage(i)
+def neigborhood():
+    global bridgeH
+    global lastBuilding
+    ecart=40
+    nbbats=8
+    housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","seagreen1","indianred1"]
+    bridgeH=0
+    lastBuilding=False
+    bk(700)
+    for i in range(nbbats):
+        fd(ecart)
+        if i == nbbats-1:
+            lastBuilding=True
+        if bridgeH==0:
+            nbEtages=randint(1,5)
+        else:
+            nbEtages=bridgeH+randint(1,5-bridgeH)
+            bridgeH=0
+        randcolors=randint(0,len(housecolors)-1)
+        for i in range(nbEtages):
+            etage(housecolors[randcolors])
+            deco_etage(i,ecart)
+            lt(90)
+            fd(50)
+            rt(90)
+        c=randint(0,6)
+        toit(c,'black')
+        rt(90)#descendre tt les etages
+        fd(nbEtages*50)
         lt(90)
-        fd(50)
-        rt(90)
-    c=randint(0,6)
-    toit(c)
-    rt(90)#descendre tt les etages
-    fd(nbEtages*50)
-    lt(90)
-    fd(150)
+        fd(140)
+    bk((140+ecart)*nbbats-700)
 
+neigborhood()
 done()
