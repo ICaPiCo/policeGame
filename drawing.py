@@ -1,5 +1,5 @@
 import pygame
-
+from math import*
 # Initialize pygame
 pygame.init()
 
@@ -13,7 +13,7 @@ CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 #IMAGES
 image = pygame.image.load("napoleon.png")
 background = pygame.image.load("background.jpg")
-background = pygame.transform.scale(background, (SCREEN_WIDTH,SCREEN_HEIGHT))
+background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
 table = pygame.image.load("table.png")
 table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
@@ -40,18 +40,27 @@ font = pygame.font.Font(None, 30)
 
 def collision(a,b):
     return pygame.collidepoint(a,b)
-def i():
-    pass
 
 
+def clicking_on(object):
+    if pygame.mouse.get_pressed()[0]:
+        if collision(object, pygame.mouse.get_pos()):
+            return True
+        else:
+            return False
 
 
 
 
 
 def drawBackground():
-    width,height=background.get_size()
-    screen.blit(background,(0,0))
+    width, height = background.get_size()
+    mX, mY = pygame.mouse.get_pos()
+    backX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
+    backY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
+    screen.blit(background, (backX, backY))
+    text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
+    screen.blit(text_back, (10, 50))
 
 
 def drawImage(postionX,postionY):
@@ -59,8 +68,14 @@ def drawImage(postionX,postionY):
 
 def drawForeground():
     width,height=background.get_size()
-    screen.blit(background,(0,0))
-    screen.blit(table,(0,(60*height/100)))
+    mX, mY = pygame.mouse.get_pos()
+    #0.1 can change
+    TableX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
+    TableY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.045 *height)  #0.1 can change
+    table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
+    
+    screen.blit(table,(TableX,TableY+560))
+    screen.blit(table_text, (10, 80))
 
 def drawButtons():
     pygame.draw.rect(screen, BLACK, button_color_black)
@@ -75,13 +90,18 @@ drawing = False
 
 def drawOrder():
     mousePosX, mousePosY = pygame.mouse.get_pos()
-    drawBackground()
+    text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
+    drawForeground()
     drawButtons()
     drawImage(mousePosX,mousePosY)
-    drawForeground()
+    
 
+    screen.blit(text_mouse, (10, 10))   
+
+font = pygame.font.Font(None,37)
 while running:
-
+    screen.fill((0,0,0))
+    drawBackground()
     drawOrder()
 
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
@@ -91,6 +111,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+                pygame.quit()   
+                sys.exit()
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
             if button_color_black.collidepoint(x, y):
