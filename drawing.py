@@ -37,6 +37,17 @@ button_size_down = pygame.Rect(650, 280, 100, 40)
 # Font setup
 font = pygame.font.Font(None, 30)
 
+def collision(a,b):
+    return pygame.collidepoint(a,b)
+def i():
+    pass
+
+
+
+
+
+
+
 def drawBackground():
     width,heigth=background.get_size()
     screen.blit(background,(0,0))
@@ -91,6 +102,6 @@ pygame.quit()
 
 #S Stage: create interaction objects
 #S Stage: create drawing complete
-#S Stage: create story
+#S Stage: create story & progression - objects in background
 #S Stage: create minigames
 #S Stage: create looking around
