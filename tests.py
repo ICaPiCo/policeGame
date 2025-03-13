@@ -80,8 +80,6 @@ def door():
     end_fill()
     penup()
     goto(x,y)
-    
-
 def jump():
     global num
     posX = xcor()
@@ -100,9 +98,6 @@ def window():
         end_fill()
         penup()
     goto(x,y)
-
-
-
 def balcony():
     x = xcor()
     y = ycor()
@@ -126,8 +121,7 @@ def balcony():
 
     
     end_fill()
-    goto(x,y)
-    
+    goto(x,y) 
 def level():
     global num
     posX = xcor()
@@ -154,5 +148,6 @@ def building():
 def road():
     goto(posX,posY)
     pass
+
 
 
