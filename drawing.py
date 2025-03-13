@@ -3,6 +3,9 @@ from math import*
 # Initialize pygame
 pygame.init()
 
+global PosX, PosY
+PosX, PosY = -700, 200
+
 # Screen settings
 overSize = 4
 pygame.display.set_caption("PortraitRobot")
@@ -71,7 +74,7 @@ def drawForeground():
     mX, mY = pygame.mouse.get_pos()
     #0.1 can change
     TableX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
-    TableY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.045 *height)  #0.1 can change
+    TableY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.03 *height)  #0.1 can change
     table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
     
     screen.blit(table,(TableX,TableY+560))
@@ -99,6 +102,23 @@ def drawOrder():
     screen.blit(text_mouse, (10, 10))   
 
 font = pygame.font.Font(None,37)
+    
+
+def animation(image,startX,startY,SpeedX,SpeedY,endX,endY):
+    image_rect = image.get_rect(topleft=(PosX, PosY))
+    currentPosX, currentPosY = image_rect.centerx, image_rect.centery
+    while currentPosX < endX and currentPosY < endY:
+        if currentPosX < endX:
+            currentPosX += SpeedX
+        if currentPosY < endY:
+            currentPosY += SpeedY
+
+        drawBackground()
+        drawImage(currentPosX, currentPosY)
+        drawForeground()
+        drawButtons()
+        pygame.display.flip()
+animation(image, -500, 200, 20, 20, SCREEN_WIDTH/2, 200)
 while running:
     screen.fill((0,0,0))
     drawBackground()
@@ -135,6 +155,10 @@ while running:
             x, y = event.pos
             if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
                 pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
+
     pygame.display.flip()
 
 pygame.quit()
