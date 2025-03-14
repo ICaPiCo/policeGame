@@ -2,12 +2,11 @@ import pygame
 from math import*
 from random import*
 import time
-import os
 
 # Initialize pygame
 pygame.init()
 
-global PosX, PosY
+global PosX, PosY, textI
 PosX, PosY = 1000, 200
 
 print(pygame.display.Info())
@@ -83,8 +82,8 @@ def drawBackground():
     backX = 0#-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
     backY = 0#-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
     screen.blit(background, (backX-100, backY))
-    text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
-    screen.blit(text_back, (10, 50))
+    #text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
+    #screen.blit(text_back, (10, 50))
 
 def drawNapoleon(postionX,postionY):
     global PosX, PosY
@@ -115,7 +114,7 @@ def drawOrder():
     mousePosX, mousePosY = pygame.mouse.get_pos()
     text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
     e,r = animateFrame()
-    debug_text = font.render(f"Posish: {e:.2f}/{r:.2f}", True, (255, 255, 255))
+    debug_text = font.render(f"Posish: {e,r}", True, (255, 255, 255))
     screen.blit(debug_text,(10,150))
     drawNapoleon(e,r)
     drawForeground()
@@ -261,20 +260,6 @@ while running or Menu:
         xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
         screen.blit(xtext, (10,100))
         pygame.display.flip()
-    
-    while Yapping:
-        pass
-    while Drawing:
-        pass
-    while Generation:
-        pass
-    while ScoreMenu:
-        pass
-
-
-
-
-
 
 pygame.quit()
 
