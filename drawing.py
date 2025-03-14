@@ -59,6 +59,12 @@ Drawing = False
 Generation = False
 ScoreMenu = False
 textI = 0
+font = pygame.font.Font(None,37)
+running = False
+drawing = False
+Menu = True 
+x1,y1,z1 = 100,100,100
+o=0
 
 def text_speech(posX, posY, text, speed, color, bgColor):
     global textI
@@ -150,12 +156,7 @@ def animateFrame():
 def drawMenu():
     screen.fill((0, 0, 0))
 
-font = pygame.font.Font(None,37)
-running = False
-drawing = False
-Menu = True 
-x1,y1,z1 = 100,100,100
-o=0
+
 
 def buttonCliqued():
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -252,7 +253,14 @@ while running or Menu:
         xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
         screen.blit(xtext, (10,100))
         pygame.display.flip()
-
+    while Yapping:
+        pass
+    while Drawing:
+        pass
+    while Generation:
+        pass 
+    while ScoreMenu:
+        pass
 pygame.quit()
 
 
