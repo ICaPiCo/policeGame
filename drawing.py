@@ -6,7 +6,6 @@ import time
 # Initialize pygame
 pygame.init()
 
-global PosX, PosY
 global PosX, PosY, textI
 PosX, PosY = 1000, 200
 
@@ -57,46 +56,6 @@ def setup():
 setup()
 
 
-# Screen settings
-overSize = 4
-pygame.display.set_caption("PortraitRobot")
-screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
-SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
-CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
-
-#IMAGES
-napoleon = pygame.image.load("napoleon.png")
-background = pygame.image.load("background.jpg")
-background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
-table = pygame.image.load("table.png")
-table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
-
-# Colours
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-
-# Brush sett
-brush_color = BLACK
-brush_size = 5
-
-# Create screen and canvas
-canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
-canvas.fill(WHITE)
-
-# UI buttons make em collidepointable
-button_color_black = pygame.Rect(650, 100, 100, 40)
-button_color_white = pygame.Rect(650, 160, 100, 40)
-button_size_up = pygame.Rect(650, 220, 100, 40)
-button_size_down = pygame.Rect(650, 280, 100, 40)
-
-# Font setup
-font = pygame.font.Font(None, 30)
-frame= 0
-global mousePosX,mousePosY
-mousePosX,mousePosY = 0,0
-stored_x,stored_y = 200,200
-trigger = False
-trig_done = False
 def text_speech(posX,posY,text,speed,color,bgColor):
     textList=list(text)
     for i in range(len(textList)):
@@ -120,8 +79,6 @@ def drawBackground():
     backX = 0#-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
     backY = 0#-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
     screen.blit(background, (backX-100, backY))
-    text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
-    screen.blit(text_back, (10, 50))
     #text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
     #screen.blit(text_back, (10, 50))
 
@@ -154,7 +111,6 @@ def drawOrder():
     mousePosX, mousePosY = pygame.mouse.get_pos()
     text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
     e,r = animateFrame()
-    debug_text = font.render(f"Posish: {e:.2f}/{r:.2f}", True, (255, 255, 255))
     debug_text = font.render(f"Posish: {e,r}", True, (255, 255, 255))
     screen.blit(debug_text,(10,150))
     drawNapoleon(e,r)
@@ -277,7 +233,6 @@ while running or Menu:
         screen.blit(menu_text, (SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2))
         #if menu_rect.collidepoint(pygame.mouse.get_pos()):
         #   x1, y1, z1 = 255, 255, 255
-        wantToQuit()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
