@@ -11,49 +11,47 @@ PosX, PosY = 1000, 200
 
 print(pygame.display.Info())
 
-def setup():
-    # Screen settings
-    overSize = 4
-    pygame.display.set_caption("PortraitRobot")
-    screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
-    SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
-    CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 
-    #IMAGES
-    napoleon = pygame.image.load("napoleon.png")
-    background = pygame.image.load("background.jpg")
-    background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
-    table = pygame.image.load("table.png")
-    table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
+# Screen settings
+overSize = 4
+pygame.display.set_caption("PortraitRobot")
+screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
+SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
+CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 
-    # Colours
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
+#IMAGES
+napoleon = pygame.image.load("napoleon.png")
+background = pygame.image.load("background.jpg")
+background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
+table = pygame.image.load("table.png")
+table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
-    # Brush sett
-    brush_color = BLACK
-    brush_size = 5
+# Colours
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
-    # Create screen and canvas
-    canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
-    canvas.fill(WHITE)
+# Brush sett
+brush_color = BLACK
+brush_size = 5
 
-    # UI buttons make em collidepointable
-    button_color_black = pygame.Rect(650, 100, 100, 40)
-    button_color_white = pygame.Rect(650, 160, 100, 40)
-    button_size_up = pygame.Rect(650, 220, 100, 40)
-    button_size_down = pygame.Rect(650, 280, 100, 40)
+# Create screen and canvas
+canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
+canvas.fill(WHITE)
 
-    # Font setup
-    font = pygame.font.Font(None, 30)
-    frame= 0
-    global mousePosX,mousePosY
-    mousePosX,mousePosY = 0,0
-    stored_x,stored_y = 200,200
-    trigger = False
-    trig_done = False
+# UI buttons make em collidepointable
+button_color_black = pygame.Rect(650, 100, 100, 40)
+button_color_white = pygame.Rect(650, 160, 100, 40)
+button_size_up = pygame.Rect(650, 220, 100, 40)
+button_size_down = pygame.Rect(650, 280, 100, 40)
 
-setup()
+# Font setup
+font = pygame.font.Font(None, 30)
+frame= 0
+global mousePosX,mousePosY
+mousePosX,mousePosY = 0,0
+stored_x,stored_y = 200,200
+trigger = False
+trig_done = False
 
 
 def text_speech(posX,posY,text,speed,color,bgColor):
