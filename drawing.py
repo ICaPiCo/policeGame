@@ -2,6 +2,7 @@ import pygame
 from math import*
 from random import*
 import time
+import os
 
 # Initialize pygame
 pygame.init()
@@ -229,18 +230,7 @@ while running or Menu:
         screen.blit(menu_text, (SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2))
         #if menu_rect.collidepoint(pygame.mouse.get_pos()):
         #   x1, y1, z1 = 255, 255, 255
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    pygame.quit()
-                    sys.exit()
-                elif event.key == pygame.K_SPACE:
-                    Menu = False
-                    running = True
-                    continue
+        wantToQuit()
         
         x1 = int((sin(o) + 1) * 100)  # Red
         y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
@@ -249,6 +239,20 @@ while running or Menu:
         xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
         screen.blit(xtext, (10,100))
         pygame.display.flip()
+    
+    while Yapping:
+        pass
+    while Drawing:
+        pass
+    while Generation:
+        pass
+    while ScoreMenu:
+        pass
+
+
+
+
+
 
 pygame.quit()
 
