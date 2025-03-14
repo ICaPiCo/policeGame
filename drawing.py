@@ -53,6 +53,7 @@ stored_x,stored_y = 200,200
 trigger = False
 trig_done = False
 
+#hello etst
 
 def text_speech(posX,posY,text,speed,color,bgColor):
     textList=list(text)
