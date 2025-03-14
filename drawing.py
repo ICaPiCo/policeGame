@@ -92,8 +92,8 @@ def clicking_on(object):
 def drawBackground():
     width, height = background.get_size()
     mX, mY = pygame.mouse.get_pos()
-    backX = 0#-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
-    backY = 0#-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
+    backX = 0-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
+    backY = 0-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
     screen.blit(background, (backX-100, backY))
     #text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
     #screen.blit(text_back, (10, 50))
@@ -106,11 +106,11 @@ def drawForeground():
     width,height=background.get_size()
     mX, mY = pygame.mouse.get_pos()
     #0.1 can change
-    TableX = 0#-(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
-    TableY = 0#-(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
+    TableX = 0-(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
+    TableY = 0-(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
     table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
     
-    screen.blit(table,(TableX,TableY+570))
+    screen.blit(table,(TableX,TableY+620))
     screen.blit(table_text, (10, 80))
 
 def drawButtons():
@@ -255,6 +255,8 @@ while running or Menu:
         pygame.display.flip()
     while Yapping:
         pass
+        #talking - we want to be able to look around while talking? - what is it really for?
+        #inser description
     while Drawing:
         pass
     while Generation:
@@ -262,7 +264,6 @@ while running or Menu:
     while ScoreMenu:
         pass
 pygame.quit()
-
 
 
 #S Stage: create interaction objects
