@@ -72,8 +72,8 @@ def clicking_on(object):
 def drawBackground():
     width, height = background.get_size()
     mX, mY = pygame.mouse.get_pos()
-    backX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
-    backY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
+    backX = 0#-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
+    backY = 0#-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
     screen.blit(background, (backX-100, backY))
     text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
     screen.blit(text_back, (10, 50))
@@ -86,8 +86,8 @@ def drawForeground():
     width,height=background.get_size()
     mX, mY = pygame.mouse.get_pos()
     #0.1 can change
-    TableX = -(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
-    TableY = -(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
+    TableX = 0#-(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
+    TableY = 0#-(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
     table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
     
     screen.blit(table,(TableX,TableY+570))
@@ -107,7 +107,7 @@ def drawOrder():
     mousePosX, mousePosY = pygame.mouse.get_pos()
     text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
     e,r = animateFrame()
-    debug_text = font.render(f"Posish: {e,r}", True, (255, 255, 255))
+    debug_text = font.render(f"Posish: {e:.2f}/{r:.2f}", True, (255, 255, 255))
     screen.blit(debug_text,(10,150))
     drawNapoleon(e,r)
     drawForeground()
