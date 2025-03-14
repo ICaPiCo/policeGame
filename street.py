@@ -156,9 +156,11 @@ def background():
 
 def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
     setheading(180)
-    goto(-850-40*i,-120*(total-i)/total)
+    yhouse=-200+200*(total-i)/total
+    print(yhouse)
+    goto(-850-40*i,yhouse)
     rt(90)
-    grays='gray'+str(70-10*(total-i))
+    grays='gray'+str(20+(55*(total-i)//total))
     fillcolor(grays)
     color(grays)
     begin_fill()
@@ -185,8 +187,8 @@ def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
         c=randint(2,11)
         if c<=6:
             toit(c)
-    goto(800,-120*(total-i)/total)
-    goto(-850-40*i,-120*(total-i)/total)
+    goto(800,yhouse)
+    goto(-850-40*i,yhouse)
     up()
     end_fill()
     color('black')
@@ -247,8 +249,8 @@ def neigborhood():
     bk((140+ecart)*nbbats-800)
 
 
-nbBgHouses=2
-#background()
+nbBgHouses=3
+background()
 for i in range(nbBgHouses):
     backgroundHouses(nbBgHouses,i)
 neigborhood()
