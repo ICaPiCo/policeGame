@@ -249,11 +249,6 @@ while running or Menu:
     while ScoreMenu:
         pass
 
-
-
-
-
-
 pygame.quit()
 
 
