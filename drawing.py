@@ -2,15 +2,59 @@ import pygame
 from math import*
 from random import*
 import time
-import os
 
 # Initialize pygame
 pygame.init()
 
 global PosX, PosY
+global PosX, PosY, textI
 PosX, PosY = 1000, 200
 
 print(pygame.display.Info())
+
+def setup():
+    # Screen settings
+    overSize = 4
+    pygame.display.set_caption("PortraitRobot")
+    screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
+    SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
+    CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
+
+    #IMAGES
+    napoleon = pygame.image.load("napoleon.png")
+    background = pygame.image.load("background.jpg")
+    background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
+    table = pygame.image.load("table.png")
+    table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
+
+    # Colours
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+
+    # Brush sett
+    brush_color = BLACK
+    brush_size = 5
+
+    # Create screen and canvas
+    canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
+    canvas.fill(WHITE)
+
+    # UI buttons make em collidepointable
+    button_color_black = pygame.Rect(650, 100, 100, 40)
+    button_color_white = pygame.Rect(650, 160, 100, 40)
+    button_size_up = pygame.Rect(650, 220, 100, 40)
+    button_size_down = pygame.Rect(650, 280, 100, 40)
+
+    # Font setup
+    font = pygame.font.Font(None, 30)
+    frame= 0
+    global mousePosX,mousePosY
+    mousePosX,mousePosY = 0,0
+    stored_x,stored_y = 200,200
+    trigger = False
+    trig_done = False
+
+setup()
 
 
 # Screen settings
@@ -78,6 +122,8 @@ def drawBackground():
     screen.blit(background, (backX-100, backY))
     text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
     screen.blit(text_back, (10, 50))
+    #text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
+    #screen.blit(text_back, (10, 50))
 
 def drawNapoleon(postionX,postionY):
     global PosX, PosY
@@ -109,6 +155,7 @@ def drawOrder():
     text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
     e,r = animateFrame()
     debug_text = font.render(f"Posish: {e:.2f}/{r:.2f}", True, (255, 255, 255))
+    debug_text = font.render(f"Posish: {e,r}", True, (255, 255, 255))
     screen.blit(debug_text,(10,150))
     drawNapoleon(e,r)
     drawForeground()
@@ -231,6 +278,18 @@ while running or Menu:
         #if menu_rect.collidepoint(pygame.mouse.get_pos()):
         #   x1, y1, z1 = 255, 255, 255
         wantToQuit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_SPACE:
+                    Menu = False
+                    running = True
+                    continue
         
         x1 = int((sin(o) + 1) * 100)  # Red
         y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
@@ -239,15 +298,6 @@ while running or Menu:
         xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
         screen.blit(xtext, (10,100))
         pygame.display.flip()
-    
-    while Yapping:
-        pass
-    while Drawing:
-        pass
-    while Generation:
-        pass
-    while ScoreMenu:
-        pass
 
 pygame.quit()
 
