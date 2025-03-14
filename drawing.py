@@ -53,6 +53,13 @@ mousePosX,mousePosY = 0,0
 stored_x,stored_y = 200,200
 trigger = False
 trig_done = False
+running = False
+Menu = True
+Yapping = False
+Drawing = False
+Generation = False
+ScoreMenu = False
+
 def text_speech(posX,posY,text,speed,color,bgColor):
     textList=list(text)
     for i in range(len(textList)):
@@ -185,22 +192,23 @@ def buttonCliqued():
                     running = False
 
 def wantToQuit():
+    global Menu,running,drawing
     #Get key presses here: feel free to add
-        for event in pygame.event.get():
+    for event in pygame.event.get():
 
-            if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT:
+            running = False
+
+        elif event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_ESCAPE:
                 running = False
-
-            elif event.type == pygame.KEYDOWN:
-
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    pygame.quit()   
-                    sys.exit()
-                    
-                elif event.key == pygame.K_SPACE:
-                    Menu = False if Menu else True
-                    running = False
+                pygame.quit()   
+                sys.exit()
+                
+            elif event.key == pygame.K_SPACE:
+                Menu = False if Menu else True
+                running = False
 
 def canvasStuff():
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
@@ -230,7 +238,21 @@ while running or Menu:
         screen.blit(menu_text, (SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2))
         #if menu_rect.collidepoint(pygame.mouse.get_pos()):
         #   x1, y1, z1 = 255, 255, 255
-        wantToQuit()
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                running = False
+
+            elif event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    pygame.quit()   
+                    sys.exit()
+                    
+                elif event.key == pygame.K_SPACE:
+                    Menu = False if Menu else True
+                    running = True
         
         x1 = int((sin(o) + 1) * 100)  # Red
         y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
