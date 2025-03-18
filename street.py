@@ -4,7 +4,7 @@ from math import*
 
 
 up() #entre chaque fonctions, le stylo est en position up, pour bouger librement
-speed(10) #y'a pas plus vite?? :(
+speed(0) #y'a pas plus vite?? :(
 
 def rectangle(lenght,width,color): #crée un rectangle rempli de couleur, reutilisé beacoup de fois
     fillcolor(color)
@@ -143,6 +143,7 @@ def background(): #dessine des semblants d'arbres avec de l'aleatoire
         ranDistance=50+(ranAngles/16)+randint(5,30)
         setheading(ranAngles)
         circle(ranRad,ranDistance)
+    goto(-800,250)
     goto(-800,0)
     setheading(180)
     goto(800,0)
@@ -215,11 +216,10 @@ def road(): #dessine une route devant les maisons
     whiteStripesOnRoad()
     goto(0,0)
 
-def neigborhood(): #assemble les autres fonctions pour faire un alignement de maisons
+def neigborhood(nbbats): #assemble les autres fonctions pour faire un alignement de maisons
     global bridgeH
     global lastBuilding
     ecart=40
-    nbbats=8
     housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","indianred1"]
     bridgeH=0
     lastBuilding=False
@@ -254,13 +254,14 @@ def neigborhood(): #assemble les autres fonctions pour faire un alignement de ma
         fd(140)
     bk((140+ecart)*nbbats-800)
 
+def city():
+    nbBgHouses=10 #A consommer avec moderation
+    background()
+    for i in range(nbBgHouses):
+        backgroundHouses(nbBgHouses,i)
+    neigborhood(8)
+    road()
 
-nbBgHouses=10
-background()
-for i in range(nbBgHouses):
-    backgroundHouses(nbBgHouses,i)
-neigborhood()
-road()
+city()
 
-
-done()
+done() #pas 256 lignes :( ca veut dire que j'ai peut etre utilise chat gpt car ma signature n'est pas presente
