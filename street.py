@@ -5,7 +5,7 @@ from math import*
 
 up()
 speed(10)
-def rectangle(lenght,width,color):
+def rectangle(lenght,width,color): #crée un rectangle rempli de couleur
     fillcolor(color)
     begin_fill()
     down()
@@ -17,11 +17,11 @@ def rectangle(lenght,width,color):
     end_fill()
     up()
 
-def etage(color):
+def etage(color): #fait un etage
     down()
     rectangle(140,50,color)
 
-def fenetre(proba):
+def fenetre(proba): #fait une fenetre avec ou sans balcon
     if proba!=0:
         rectangle(30,30,'white')
         if proba>=6:
@@ -38,7 +38,7 @@ def fenetre(proba):
             lt(90)
 
 
-def porte(proba):
+def porte(proba): #fait une porte avec un haut rond ou carre avec une couleur alea
     doorcolors=["gold1","burlywood4","DarkOrange4","gray0","LightCyan4","HotPink3"]
     e=randint(0,len(doorcolors)-1)
     if proba==0:
@@ -56,11 +56,11 @@ def porte(proba):
         end_fill()
         up()
 
-def deco_etage(etage,ecart):
+def deco_etage(etage,ecart): #decore chaque etage avec ou sans fenetre ou porte ou pont
     global bridgeH
     global lastBuilding
-    a=randint(0,2)
-    br=randint(0,9)
+    a=randint(0,2) #determine la position de la porte au premier etage, entre 3 positions
+    br=randint(0,9) #1/10 chances d'avoir un pont
     fd(15)
     up()
     for i in range(3):
@@ -99,8 +99,8 @@ def deco_etage(etage,ecart):
     bk(140)
     
 
-def toit(proba):
-    if proba>=4:
+def toit(proba): #fait un toit avec des variantes
+    if proba>=4: #faire un petit toit
         fd(150)
         lt(150)
         fd(80/(cos(30*pi/180)))
@@ -108,7 +108,7 @@ def toit(proba):
         fd(80/(cos(30*pi/180)))
         lt(150)
         fd(10)
-    elif proba>=2:
+    elif proba>=2: #faire un grand toit
         fd(150)
         lt(110)
         fd(80/(cos(70*pi/180)))
@@ -116,7 +116,7 @@ def toit(proba):
         fd(80/(cos(70*pi/180)))
         lt(110)
         fd(10)
-    else:
+    else: #faire un toit rectangulaire
         bk(5)
         fd(150)
         lt(90)
@@ -128,7 +128,7 @@ def toit(proba):
         lt(90)
         fd(5)
         
-def background():
+def background(): #dessine des semblants d'arbres avec de l'aleatoire
     goto(-800,500)
     rt(90)
     rectangle(1000,1600,'skyblue1')
@@ -154,24 +154,23 @@ def background():
     rectangle(1600,200,'gray55')
     goto(0,0)
 
-def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
+def backgroundHouses(total,i):#dessine les silouhettes de maisons en background
     setheading(180)
-    yhouse=-200+200*(total-i)/total
-    print(yhouse)
+    yhouse=-150+(total-i-1)*100/total #AA formule compliquée pour les maisons, complémentaire au fd avec commentaire AA 
     goto(-850-40*i,yhouse)
     rt(90)
-    grays='gray'+str(20+(55*(total-i)//total))
+    grays='gray'+str(20+(55*(total-i)//total)) #fait des couleurs de maisons de plus en plus foncées en gris
     fillcolor(grays)
     color(grays)
     begin_fill()
     down()
-    fd(150)
-    a=randint(0,3)
+    fd(20*(total-i+2)+60) #AA avoir une hauteur prédéfinie(60), + de plus en plus petit par rapport a i
+    a=randint(0,2)
     fd(a*50)
     rt(90)
-    for i in range(12):
+    for o in range(12):
         fd(150)
-        b=randint(0,3)
+        b=randint(0,2) #différence de hauteur des tmaisosn de fond
         while a!=b:
             if a<b:
                 lt(90)
@@ -185,8 +184,15 @@ def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
                 a+=-1
         fd(10)
         c=randint(2,11)
-        if c<=6:
-            toit(c)
+        if i+1==total:#1- si on est sur la derniere ligne de maisons
+            if randint(0,1)!=0:#une chance sur deux d'avoir:
+                toit(4) #petit toit 
+        elif c<=6: #1- si c<=6 (1/2chances), encore une chance sur deux d'avoir:
+            toit(c) #petit toit ou grand toit
+        elif c==11:#1- si on est pas sur la derniere ligne, et c a 1/9chances de faire:
+            toit(2) #grand toit
+    setheading(0)
+    fd(150)
     goto(800,yhouse)
     goto(-850-40*i,yhouse)
     up()
@@ -195,21 +201,21 @@ def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
     goto(0,0)
             
 
+def whiteStripesOnRoad():
+    for i in range(20):
+        fd(80)
+        rectangle(60,-10,'seashell')
 
-
-def road():
+def road(): #dessine une route devant les maisons
     goto(-800,-200)
     setheading(270)
     rectangle(150,1600,'gray20')
     goto(-860,-260)
     lt(90)
-    cote=10/cos(50*pi/180)
-    for i in range(20):
-        fd(80)
-        rectangle(60,-10,'seashell')
+    whiteStripesOnRoad()
     goto(0,0)
 
-def neigborhood():
+def neigborhood(): #assemble les autres fonctions pour faire un alignement de maisons
     global bridgeH
     global lastBuilding
     ecart=40
@@ -217,7 +223,7 @@ def neigborhood():
     housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","indianred1"]
     bridgeH=0
     lastBuilding=False
-    goto(-780,-155)
+    goto(-760,-155)
     setheading(0)
     for i in range(nbbats):
         fd(ecart)
@@ -249,7 +255,7 @@ def neigborhood():
     bk((140+ecart)*nbbats-800)
 
 
-nbBgHouses=3
+nbBgHouses=10
 background()
 for i in range(nbBgHouses):
     backgroundHouses(nbBgHouses,i)
