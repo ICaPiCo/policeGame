@@ -3,9 +3,10 @@ from random import*
 from math import*
 
 
-up()
-speed(10)
-def rectangle(lenght,width,color): #crée un rectangle rempli de couleur
+up() #entre chaque fonctions, le stylo est en position up, pour bouger librement
+speed(10) #y'a pas plus vite?? :(
+
+def rectangle(lenght,width,color): #crée un rectangle rempli de couleur, reutilisé beacoup de fois
     fillcolor(color)
     begin_fill()
     down()
@@ -17,14 +18,13 @@ def rectangle(lenght,width,color): #crée un rectangle rempli de couleur
     end_fill()
     up()
 
-def etage(color): #fait un etage
-    down()
+def etage(color): #fait un etage, surtout pour clarifier dans le code qu'on ne fait pas qu'un rectangle lambda mais un etage
     rectangle(140,50,color)
 
 def fenetre(proba): #fait une fenetre avec ou sans balcon
     if proba!=0:
         rectangle(30,30,'white')
-        if proba>=6:
+        if proba>=6: #avec balcon
             lt(90)
             fd(10)
             lt(90)
@@ -39,7 +39,7 @@ def fenetre(proba): #fait une fenetre avec ou sans balcon
 
 
 def porte(proba): #fait une porte avec un haut rond ou carre avec une couleur alea
-    doorcolors=["gold1","burlywood4","DarkOrange4","gray0","LightCyan4","HotPink3"]
+    doorcolors=["gold1","burlywood4","DarkOrange4","gray0","LightCyan4","HotPink3"] #liste pour avoir couleur aleatoire 
     e=randint(0,len(doorcolors)-1)
     if proba==0:
         rectangle(30,45,doorcolors[e])
@@ -50,7 +50,7 @@ def porte(proba): #fait une porte avec un haut rond ou carre avec une couleur al
         fd(30)
         lt(90)
         fd(30)
-        circle(15,180)
+        circle(15,180) #moitie de cercle
         fd(30)
         lt(90)
         end_fill()
@@ -59,19 +59,19 @@ def porte(proba): #fait une porte avec un haut rond ou carre avec une couleur al
 def deco_etage(etage,ecart): #decore chaque etage avec ou sans fenetre ou porte ou pont
     global bridgeH
     global lastBuilding
-    a=randint(0,2) #determine la position de la porte au premier etage, entre 3 positions
+    a=randint(0,2) #A determine la position de la porte au premier etage, entre 3 positions
     br=randint(0,9) #1/10 chances d'avoir un pont
     fd(15)
     up()
     for i in range(3):
-        if i==a and etage==0:
+        if i==a and etage==0: #A  si on est a l'emplacement de la porte et au premier etage
             d=randint(0,4)
-            porte(d)
+            porte(d) #porte avec 1/4 chances d'etre rectangulaire
         else:
             if etage != 0:
-                b=randint(0,9)
+                b=randint(0,9) #B 1/3 chance environ d'avoir une fenetre avec balcon 
             else:
-                b=randint(0,5)
+                b=randint(0,5) #B 1/4 chance de ne pas avoir de fenetre si au premier etage
             lt(90)
             fd(10)
             rt(90)
@@ -81,11 +81,11 @@ def deco_etage(etage,ecart): #decore chaque etage avec ou sans fenetre ou porte 
             lt(90)
         fd(40)
     fd(5)
-    if br==0 and etage!=0 and not lastBuilding:
-        bridgeH=etage
+    if br==0 and etage!=0 and not lastBuilding: #1/10 chance si on est pas au premier etage et que ce n'est pas le dernier building
+        bridgeH=etage #                         #pour avoir un pont (ce serait tres drole si ca existait vraiment)
         fd(ecart)
         lt(90)
-        fillcolor('cornsilk2')
+        fillcolor('cornsilk2') #j'aime bien les couleurs comme ca, dans le PoliceGame aussi je me suis amuse avec 'color theory'
         begin_fill()
         down()
         circle(ecart/2,180)
