@@ -66,15 +66,23 @@ Menu = True
 x1,y1,z1 = 100,100,100
 o=0
 
+
+def create_text():
+    info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
+    text = ""
+    
+    return text
+
+
 def text_speech(posX, posY, text, speed, color, bgColor):
     global textI
     if textI < len(text):
-        if choice([True, False]):
+        if choice([1,0,0,0]):
             
                 
-                newText = font.render(text[:textI+1], True, color, bgColor)
-                screen.blit(newText, (posX, posY))
-                textI += 1
+            newText = font.render(text[:textI+1], True, color, bgColor)
+            screen.blit(newText, (posX, posY))
+            textI += 1
         else: 
             newText = font.render(text[:textI], True, color, bgColor)
             screen.blit(newText, (posX, posY))
@@ -144,7 +152,8 @@ def animateFrame():
     else:
         trigger = True
     if trigger == True:  
-        text_speech(400,400,"Hello world",1,(0,0,0),(255,255,255))
+        
+        text_speech(300,300,created_text,1,(0,0,0),(255,255,255))
         
     frameX = -10*frame-(mousePosX/SCREEN_WIDTH)*0.08
     frameY = (sin(frame)*10)-(mousePosY/SCREEN_HEIGHT)*0.10
@@ -204,6 +213,8 @@ def canvasStuff():
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
     screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
     screen.blit(canvas, (screenX,screenY))
+created_text = create_text()
+#How to loop it?
 
 #MAIN Loop for menu / game
 while running or Menu:
@@ -264,6 +275,7 @@ while running or Menu:
     while ScoreMenu:
         pass
 pygame.quit()
+
 
 
 #S Stage: create interaction objects
