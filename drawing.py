@@ -3,6 +3,7 @@ from math import*
 from random import*
 import time
 import os
+from random import randint
 # Initialize pygame
 pygame.init()
 
@@ -47,8 +48,9 @@ button_size_down = pygame.Rect(650, 280, 100, 40)
 # Font setup
 font = pygame.font.Font(None, 30)
 frame= 0
-global mousePosX,mousePosY
+global mousePosX,mousePosY,n
 mousePosX,mousePosY = 0,0
+n = 0
 stored_x,stored_y = 200,200
 trigger = False
 trig_done = False
@@ -66,16 +68,25 @@ Menu = True
 x1,y1,z1 = 100,100,100
 o=0
 
-
-def create_text():
+def create_text(n):
     info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
     text = ""
     
+    # Convert dictionary keys to a list so we can access by index
+    keys_list = list(info.keys())
+    
+    key_index = n % len(keys_list)
+    current_key = keys_list[key_index]
+
+    random_value = info[current_key][randint(0, len(info[current_key])-1)]
+    
+    text += f"{current_key}: {random_value}, {current_key}: {random_value},{current_key}: {random_value} "
+    
     return text
-
-
 def text_speech(posX, posY, text, speed, color, bgColor):
     global textI
+    if 'textI' not in globals():
+        textI = 0  
     if textI < len(text):
         if choice([1,0,0,0]):
             
@@ -131,7 +142,7 @@ def drawButtons():
 
 
 def drawOrder():
-    global mousePosX,mousePosY
+    global mousePosX,mousePosY,n
     mousePosX, mousePosY = pygame.mouse.get_pos()
     text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
     e,r = animateFrame()
@@ -144,19 +155,29 @@ def drawOrder():
     screen.blit(text_mouse, (10, 10))   
 
 def animateFrame():
-    global frame,mousePosX,mousePosY,trigger,trig_done
+    global frame,mousePosX,mousePosY,trigger,trig_done,n,textI
     width, height = background.get_size()
     nap_rect = napoleon.get_rect(topleft=((frame-1)*-10,sin(frame-1)*10))
     if frame<60:# and #not nap_rect.collidepoint(mousePosX,mousePosY):
-        frame+=1
+        frame+=1 
     else:
         trigger = True
-    if trigger == True:  
+    if frame >= 60:
+        n= 0 
         
-        text_speech(300,300,created_text,1,(0,0,0),(255,255,255))
-        
-    frameX = -10*frame-(mousePosX/SCREEN_WIDTH)*0.08
-    frameY = (sin(frame)*10)-(mousePosY/SCREEN_HEIGHT)*0.10
+    if trigger == True:
+        created_text = create_text(n)
+        # Only get new text when previous text display is complete
+        if textI >= len(created_text):
+            n += 1
+            textI = 0  # Reset text index for new text
+        created_text+=create_text(n)
+        # Only call text_speech when we want to display text
+        text_speech(300, 300, created_text, 1, (0, 0, 0), (255, 255, 255))
+    frameX = -10*frame  # Fixed animation for Napoleon
+    frameY = sin(frame)*10
+    frameX -= (mousePosX/SCREEN_WIDTH)*0.08*width
+    frameY -= (mousePosY/SCREEN_HEIGHT)*0.10*height
     
     return frameX, frameY
     
@@ -189,6 +210,7 @@ def buttonCliqued():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                    n = 0
 
 def wantToQuit():
     global Menu,running,drawing
@@ -213,7 +235,7 @@ def canvasStuff():
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
     screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
     screen.blit(canvas, (screenX,screenY))
-created_text = create_text()
+
 #How to loop it?
 
 #MAIN Loop for menu / game
@@ -228,7 +250,8 @@ while running or Menu:
         canvasStuff()
         wantToQuit()
         buttonCliqued()
-        pygame.display.flip()
+        pygame.display.flip()#
+        
 
     while Menu:
         o+=0.01
@@ -257,6 +280,7 @@ while running or Menu:
                     running = True
                     trigger = False
                     textI = 0
+                    n=0
         x1 = int((sin(o) + 1) * 100)  # Red
         y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
         z1 = int((sin(o + cos(0)) + 1) * 125)  # Blue (offset by cos)
