@@ -70,17 +70,16 @@ o=0
 
 def create_text(n):
     info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
-    text = ""
     
-    # Convert dictionary keys to a list so we can access by index
+    # Get the key based on n
     keys_list = list(info.keys())
+    current_key = keys_list[n % len(keys_list)]
     
-    key_index = n % len(keys_list)
-    current_key = keys_list[key_index]
-
-    random_value = info[current_key][randint(0, len(info[current_key])-1)]
+    # Generate a complete description with a random value for the current feature
+    values = info[current_key]
+    random_value = values[randint(0, len(values)-1)]
     
-    text += f"{current_key}: {random_value}, {current_key}: {random_value},{current_key}: {random_value} "
+    text = f"{current_key}: {random_value}"
     
     return text
 def text_speech(posX, posY, text, speed, color, bgColor):
@@ -154,34 +153,36 @@ def drawOrder():
     
     screen.blit(text_mouse, (10, 10))   
 
-def animateFrame():
+def animateFrame(textDone = False):
     global frame,mousePosX,mousePosY,trigger,trig_done,n,textI
     width, height = background.get_size()
+    if not hasattr(animateFrame, "textDone"):
+        animateFrame.textDone = False
     nap_rect = napoleon.get_rect(topleft=((frame-1)*-10,sin(frame-1)*10))
     if frame<60:# and #not nap_rect.collidepoint(mousePosX,mousePosY):
         frame+=1 
+        
     else:
         trigger = True
     if frame >= 60:
         n= 0 
         
-    if trigger == True:
+    if trigger == True and not animateFrame.textDone:
         created_text = create_text(n)
-        # Only get new text when previous text display is complete
+        
         if textI >= len(created_text):
             n += 1
-            textI = 0  # Reset text index for new text
-        created_text+=create_text(n)
-        # Only call text_speech when we want to display text
+            textI = 0 
+
         text_speech(300, 300, created_text, 1, (0, 0, 0), (255, 255, 255))
-    frameX = -10*frame  # Fixed animation for Napoleon
+        animateFrame.textDone = True
+    frameX = -10*frame  
     frameY = sin(frame)*10
     frameX -= (mousePosX/SCREEN_WIDTH)*0.08*width
     frameY -= (mousePosY/SCREEN_HEIGHT)*0.10*height
     
     return frameX, frameY
-    
-
+  
 
 def drawMenu():
     screen.fill((0, 0, 0))
