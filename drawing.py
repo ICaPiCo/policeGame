@@ -6,7 +6,7 @@ import os
 from random import randint
 # Initialize pygame
 pygame.init()
-
+clock = pygame.time.Clock()
 global PosX, PosY, textI
 PosX, PosY = 1000, 200
 
@@ -68,28 +68,19 @@ Menu = True
 x1,y1,z1 = 100,100,100
 o=0
 
-def create_text(n):
+def create_text():
     info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
-    
-    # Get the key based on n
-    keys_list = list(info.keys())
-    current_key = keys_list[n % len(keys_list)]
-    
-    # Generate a complete description with a random value for the current feature
-    values = info[current_key]
-    random_value = values[randint(0, len(values)-1)]
-    
-    text = f"{current_key}: {random_value}"
-    
+    text = ""
+    for i in info:
+        text += f"{i}:{info[i][randint(0,2)]}\n"
+        text +=" , "
     return text
 def text_speech(posX, posY, text, speed, color, bgColor):
     global textI
     if 'textI' not in globals():
         textI = 0  
     if textI < len(text):
-        if choice([1,0,0,0]):
-            
-                
+        if choice([1,0,0,0,0,0,0,0]):    
             newText = font.render(text[:textI+1], True, color, bgColor)
             screen.blit(newText, (posX, posY))
             textI += 1
@@ -153,29 +144,21 @@ def drawOrder():
     
     screen.blit(text_mouse, (10, 10))   
 
-def animateFrame(textDone = False):
-    global frame,mousePosX,mousePosY,trigger,trig_done,n,textI
+def animateFrame():
+    global frame,mousePosX,mousePosY,trigger,trig_done,n,textI,created_text
     width, height = background.get_size()
-    if not hasattr(animateFrame, "textDone"):
-        animateFrame.textDone = False
     nap_rect = napoleon.get_rect(topleft=((frame-1)*-10,sin(frame-1)*10))
     if frame<60:# and #not nap_rect.collidepoint(mousePosX,mousePosY):
         frame+=1 
-        
     else:
         trigger = True
+   
     if frame >= 60:
-        n= 0 
+        pass 
         
-    if trigger == True and not animateFrame.textDone:
-        created_text = create_text(n)
-        
-        if textI >= len(created_text):
-            n += 1
-            textI = 0 
-
+    if trigger == True:
         text_speech(300, 300, created_text, 1, (0, 0, 0), (255, 255, 255))
-        animateFrame.textDone = True
+        
     frameX = -10*frame  
     frameY = sin(frame)*10
     frameX -= (mousePosX/SCREEN_WIDTH)*0.08*width
@@ -188,8 +171,9 @@ def drawMenu():
     screen.fill((0, 0, 0))
 
 
-
-def buttonCliqued():
+'''
+def buttonCliqued(brush_color, brush_size, drawing):
+    
     if event.type == pygame.MOUSEBUTTONDOWN:
             x, y = event.pos
             if button_color_black.collidepoint(x, y):
@@ -208,10 +192,8 @@ def buttonCliqued():
                 x, y = event.pos
                 if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
                     pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    n = 0
+
+ '''   
 
 def wantToQuit():
     global Menu,running,drawing
@@ -250,9 +232,28 @@ while running or Menu:
         drawOrder()
         canvasStuff()
         wantToQuit()
-        buttonCliqued()
+        #buttonCliqued(brush_color, brush_size, drawing)
         pygame.display.flip()#
+        clock.tick(30)
         
+        if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_color_black.collidepoint(x, y):
+                    brush_color = BLACK
+                elif button_color_white.collidepoint(x, y):
+                    brush_color = WHITE
+                elif button_size_up.collidepoint(x, y):
+                    brush_size = min(20, brush_size + 2)
+                elif button_size_down.collidepoint(x, y):
+                    brush_size = max(2, brush_size - 2)
+                elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    drawing = True
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    drawing = False
+                elif event.type == pygame.MOUSEMOTION and drawing:
+                    x, y = event.pos
+                    if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                        pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
 
     while Menu:
         o+=0.01
@@ -281,7 +282,8 @@ while running or Menu:
                     running = True
                     trigger = False
                     textI = 0
-                    n=0
+                    global created_text 
+                    created_text = create_text()
         x1 = int((sin(o) + 1) * 100)  # Red
         y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
         z1 = int((sin(o + cos(0)) + 1) * 125)  # Blue (offset by cos)
@@ -290,9 +292,10 @@ while running or Menu:
         screen.blit(xtext, (10,100))
         pygame.display.flip()
     while Yapping:
+        
         pass
         #talking - we want to be able to look around while talking? - what is it really for?
-        #inser description
+        #insetr description
     while Drawing:
         pass
     while Generation:
