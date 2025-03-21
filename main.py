@@ -58,10 +58,6 @@ BLACK = (0, 0, 0)
 brush_color = BLACK
 brush_size = 5
 
-# Create screen and canvas
-canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
-canvas.fill(WHITE)
-
 # UI buttons make em collidepointable
 button_color_black = pygame.Rect(650, 100, 100, 40)
 button_color_white = pygame.Rect(650, 160, 100, 40)
@@ -85,31 +81,7 @@ def drawButtons():
     pygame.draw.rect(screen, BLACK, button_size_down)
     screen.blit(font.render("+", True, WHITE), (670, 230))
     screen.blit(font.render("-", True, WHITE), (670, 290))
-
-def doDrawing():
-    if drawing == True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                if button_color_black.collidepoint(x, y):
-                    brush_color = BLACK
-                elif button_color_white.collidepoint(x, y):
-                    brush_color = WHITE
-                elif button_size_up.collidepoint(x, y):
-                    brush_size = min(20, brush_size + 2)
-                elif button_size_down.collidepoint(x, y):
-                    brush_size = max(2, brush_size - 2)
-                elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    drawing = True
-            elif event.type == pygame.MOUSEBUTTONUP:
-                drawing = False
-            elif event.type == pygame.MOUSEMOTION and drawing:
-                x, y = event.pos
-                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
-        pygame.display.flip()
+ 
 
 
 running = True
@@ -162,8 +134,33 @@ while running:
         time.sleep(randint(1,10)/200)
         pygame.display.flip()
 
+    canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
+    canvas.fill(WHITE)
+    canvas.blit(canvas,(CANVAS_WIDTH, CANVAS_HEIGHT))
+    pygame.display.flip()
+
     while drawing:
-        doDrawing()
+        if drawing == True:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    if button_color_black.collidepoint(x, y):
+                        brush_color = BLACK
+                    elif button_color_white.collidepoint(x, y):
+                        brush_color = WHITE
+                    elif button_size_up.collidepoint(x, y):
+                        brush_size = min(20, brush_size + 2)
+                    elif button_size_down.collidepoint(x, y):
+                        brush_size = max(2, brush_size - 2)
+                    elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                        drawing = True
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    drawing = False
+                elif event.type == pygame.MOUSEMOTION and drawing:
+                    x, y = event.pos
+                    if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                        pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+            pygame.display.flip()
         drawButtons()
 
     #while genration:
