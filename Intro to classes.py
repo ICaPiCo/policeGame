@@ -7,16 +7,19 @@ class Item:
         self.damage = damage
         self.weight = weight
         Item.counted +=1
-    @classmethod
+    @classmethod  # @classmethod and @staticmethod not really useful
     def from_dict(cls,data):
         return cls(data["name"], data["damage"], data["weight"])
     
     @staticmethod
     def is_heavy(weight):
         return weight>10
+    
     @classmethod
     def count(cls):
         return cls.counted
+
+
 class Weapon(Item):
     weapon_count = 0
     def __init__(self,name, damage, weight, durability):
