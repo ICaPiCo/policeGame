@@ -277,7 +277,7 @@ while running or Menu or Drawing:
         
 
     while Menu:
-        o+=0.01
+        o+=0.01  
         
         drawMenu()
         font = pygame.font.Font(None,50)
