@@ -77,11 +77,11 @@ trigger = False
 trig_done = False
 running = False
 Menu = True
-Yapping = False
 Drawing = False
 Generation = False
 ScoreMenu = False
 textI = 0
+textY = 0
 font = pygame.font.Font(None,37)
 running = False
 drawing = False
@@ -93,24 +93,32 @@ def create_text():
     info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
     text = ""
     for i in info:
-        text += f"{i}:{info[i][randint(0,2)]}\n"
-        text +=" , "
+        text += f"{i}:{info[i][randint(0,2)]}"
+        text +="\n"
     return text
+    
 def text_speech(posX, posY, text, speed, color, bgColor):
-    global textI
+    
+    global textI,textY
+    
+    
     if 'textI' not in globals():
         textI = 0  
-    if textI < len(text):
+    lines = text.split("\n")
+    if textI < len(lines):
+
         if choice([1,0,0,0,0,0,0,0]):    
-            newText = font.render(text[:textI+1], True, color, bgColor)
-            screen.blit(newText, (posX, posY))
-            textI += 1
+            newText = font.render(lines[textI], True, color, bgColor)
+            
         else: 
-            newText = font.render(text[:textI], True, color, bgColor)
-            screen.blit(newText, (posX, posY))
-            textI += 1
-    
-    
+            newText = font.render(lines[textI-1], True, color, bgColor)
+            
+        screen.blit(newText, (posX, posY+(textI*30)))
+            
+        textI += 1
+    else: 
+        pass
+
 
 def clicking_on(object):
     if pygame.mouse.get_pressed()[0]:
@@ -179,6 +187,7 @@ def animateFrame():
         
     if trigger == True:
         text_speech(300, 300, created_text, 1, (0, 0, 0), (255, 255, 255))
+
         
     frameX = -10*frame  
     frameY = sin(frame)*10
@@ -192,7 +201,7 @@ def drawMenu():
     screen.fill((0, 0, 0))
 
 
-'''
+
 def buttonCliqued(brush_color, brush_size, drawing):
     
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -213,11 +222,18 @@ def buttonCliqued(brush_color, brush_size, drawing):
                 x, y = event.pos
                 if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
                     pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
-
- '''   
-
+  
+def next_screen():
+    global Menu,running,Drawing
+    if running:
+        running = False
+        Drawing = True
+    if Menu:
+        Menu = False
+        running = True
+    
 def wantToQuit():
-    global Menu,running,drawing
+    global running
     #Get key presses here: feel free to add
     for event in pygame.event.get():
 
@@ -232,19 +248,20 @@ def wantToQuit():
                 sys.exit()
                 
             elif event.key == pygame.K_SPACE:
-                Menu = False if Menu else True
-                running = False
-
+                next_screen()
 def canvasStuff():
     global screenX, screenY
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
     screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
     screen.blit(canvas, (screenX,screenY))
 
+
+def drawSuspects():
+    pass
 #How to loop it?
 
 #MAIN Loop for menu / game
-while running or Menu:
+while running or Menu or Drawing:
 
     #SECOND Loop for running
     while running:
@@ -252,58 +269,21 @@ while running or Menu:
         drawBackground()
         drawOrder()
         canvasStuff()
+        wantToQuit()
         
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    pygame.quit()   
-                    import sys
-                    sys.exit()
-                    
-                elif event.key == pygame.K_SPACE:
-                    Menu = False if Menu else True
-                    running = False
-                    
-            # Drawing logic
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                if button_color_black.collidepoint(x, y):
-                    brush_color = BLACK
-                elif button_color_white.collidepoint(x, y):
-                    brush_color = WHITE
-                elif button_size_up.collidepoint(x, y):
-                    brush_size = min(20, brush_size + 2)
-                elif button_size_down.collidepoint(x, y):
-                    brush_size = max(2, brush_size - 2)
-                elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    drawing = True
-                    
-            elif event.type == pygame.MOUSEBUTTONUP:
-                drawing = False
-                
-            elif event.type == pygame.MOUSEMOTION and drawing:
-                x, y = event.pos
-                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    # Convert screen coordinates to canvas coordinates
-                    canvas_x = x - screenX
-                    canvas_y = y - screenY
-                    pygame.draw.circle(canvas, brush_color, (canvas_x, canvas_y), brush_size)
-        
-        pygame.display.flip()
+        pygame.display.flip()#
         clock.tick(30)
 
+        
+
     while Menu:
-        o+=0.01
+        o+=0.01  
         
         drawMenu()
         font = pygame.font.Font(None,50)
         menu_text = font.render("Press space to start", True, (x1,y1,z1))
         screen.blit(menu_text, (SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2))
+        
         #if menu_rect.collidepoint(pygame.mouse.get_pos()):
         #   x1, y1, z1 = 255, 255, 255
         for event in pygame.event.get():
@@ -326,6 +306,9 @@ while running or Menu:
                     textI = 0
                     global created_text 
                     created_text = create_text()
+                
+
+
         x1 = int((sin(o) + 1) * 100)  # Red
         y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
         z1 = int((sin(o + cos(0)) + 1) * 125)  # Blue (offset by cos)
@@ -333,15 +316,18 @@ while running or Menu:
         xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
         screen.blit(xtext, (10,100))
         pygame.display.flip()
-    while Yapping:
-        
-        pass
+
         #talking - we want to be able to look around while talking? - what is it really for?
         #insetr description
     while Drawing:
+        screen.fill((255,255,255)) 
+        buttonCliqued(brush_color, brush_size, drawing)
+        wantToQuit()
+        pygame.display.flip()
+
         pass
     while Generation:
-        pass 
+        screen.fill((255,255,255)) 
     while ScoreMenu:
         pass
 pygame.quit()
