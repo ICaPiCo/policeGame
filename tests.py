@@ -1,306 +1,202 @@
-from turtle import*
-import random
-import math
-import time
-'''
-def div2(n):
-    """test si divisible par 2"""
-    if n % 2 == 0:
-        return True
-    else:
-        return False
-assert div2(2) == True
-assert(div2(3) == False, "3 est divisible par 2")
-assert div2(4) == True
-
-
-def div3(n):
-    """test si divisible par 3"""
-    if n % 3 == 0:
-        return True
-    else:
-        return False
-assert div3(2) == False
-assert div3(3) == True
-assert div3(4) == False
-
-def div5(n):
-    """test si divisible par 5"""
-    if n % 5 == 0:
-        return True
-    else:
-        return False
-assert div5(2) == False
-assert div5(3) == False
-assert div5(5) == True
-
-def divN(N,nb):
-    """test si divisible par n en (nb divisible par N) """
-    if nb % N == 0:
-        return True
-    else:
-        return False
-assert divN(2,2) == True
-assert divN(3,3) == True
-assert divN(6,5) == False
-
-'''
-
-from turtle import*
-from random import*
+import pygame
 from math import*
+from random import*
+import time
+import os
+from random import randint
+# Initialize pygame
+pygame.init()
+clock = pygame.time.Clock()
+global PosX, PosY, textI
+PosX, PosY = 1000, 200
+
+print(pygame.display.Info())
 
 
-up()
-speed(10)
-def rectangle(lenght,width,color):
-    fillcolor(color)
-    begin_fill()
-    down()
-    for i in range(2):
-        fd(lenght)
-        lt(90)
-        fd(width)
-        lt(90)
-    end_fill()
-    up()
+# Screen settings
+overSize = 4
+pygame.display.set_caption("PortraitRobot")
+screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
+SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
+CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 
-def etage(color):
-    down()
-    rectangle(140,50,color)
+#IMAGES
+napoleon = pygame.image.load("napoleon.png")
+background = pygame.image.load("background.jpg")
+background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
+table = pygame.image.load("table.png")
+table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
-def fenetre(proba):
-    if proba!=0:
-        rectangle(30,30,'white')
-        if proba>=6:
-            lt(90)
-            fd(10)
-            lt(90)
-            fd(5)
-            lt(90)
-            rectangle(15,40,'brown')
-            lt(90)
-            fd(5)
-            rt(90)
-            fd(10)
-            lt(90)
+# Colours
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 
+# Brush settings
+brush_color = BLACK
+brush_size = 5
 
-def porte(proba):
-    doorcolors=["gold1","burlywood4","DarkOrange4","gray0","LightCyan4","HotPink3"]
-    e=randint(0,len(doorcolors)-1)
-    if proba==0:
-        rectangle(30,45,doorcolors[e])
-    else:
-        fillcolor(doorcolors[e])
-        down()
-        begin_fill()
-        fd(30)
-        lt(90)
-        fd(30)
-        circle(15,180)
-        fd(30)
-        lt(90)
-        end_fill()
-        up()
+# Create screen and canvas
+canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
+canvas.fill(WHITE)
 
-def deco_etage(etage,ecart):
-    global bridgeH
-    global lastBuilding
-    a=randint(0,2)
-    br=randint(0,9)
-    fd(15)
-    up()
-    for i in range(3):
-        if i==a and etage==0:
-            d=randint(0,4)
-            porte(d)
-        else:
-            if etage != 0:
-                b=randint(0,9)
-            else:
-                b=randint(0,5)
-            lt(90)
-            fd(10)
-            rt(90)
-            fenetre(b)
-            rt(90)
-            fd(10)
-            lt(90)
-        fd(40)
-    fd(5)
-    if br==0 and etage!=0 and not lastBuilding:
-        bridgeH=etage
-        fd(ecart)
-        lt(90)
-        fillcolor('cornsilk2')
-        begin_fill()
-        down()
-        circle(ecart/2,180)
-        bk(15)
-        circle(ecart/2,-180)
-        bk(15)
-        end_fill()
-        up()
-        rt(90)
-        bk(ecart)
-    bk(140)
+# UI buttons make em collidepointable
+button_color_black = pygame.Rect(650, 100, 100, 40)
+button_color_white = pygame.Rect(650, 160, 100, 40)
+button_size_up = pygame.Rect(650, 220, 100, 40)
+button_size_down = pygame.Rect(650, 280, 100, 40)
+
+# Font setup
+font = pygame.font.Font(None, 30)
+frame= 0
+global mousePosX,mousePosY,n
+mousePosX,mousePosY = 0,0
+n = 0
+stored_x,stored_y = 200,200
+trigger = False
+trig_done = False
+running = False
+Menu = True
+Yapping = False
+Drawing = False
+Generation = False
+ScoreMenu = False
+textI = 0
+font = pygame.font.Font(None,37)
+running = False
+drawing = False
+Menu = True 
+x1,y1,z1 = 100,100,100
+o=0
+
+def create_text():
+    info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
+    text = ""
+    for i in info:
+        text += f"{i}:{info[i][randint(0,2)]}\n"
+        text +=" , "
+    return text
+def text_speech(posX, posY, text, speed, color, bgColor):
+    global textI
+    if 'textI' not in globals():
+        textI = 0  
+    if textI < len(text):
+        if choice([1,0,0,0,0,0,0,0]):    
+            newText = font.render(text[:textI+1], True, color, bgColor)
+            screen.blit(newText, (posX, posY))
+            textI += 1
+        else: 
+            newText = font.render(text[:textI], True, color, bgColor)
+            screen.blit(newText, (posX, posY))
+            textI += 1
+    
     
 
-def toit(proba):
-    if proba>=4:
-        fd(150)
-        lt(150)
-        fd(80/(cos(30*pi/180)))
-        lt(60)
-        fd(80/(cos(30*pi/180)))
-        lt(150)
-        fd(10)
-    elif proba>=2:
-        fd(150)
-        lt(110)
-        fd(80/(cos(70*pi/180)))
-        lt(140)
-        fd(80/(cos(70*pi/180)))
-        lt(110)
-        fd(10)
-    else:
-        bk(5)
-        fd(150)
-        lt(90)
-        fd(20)
-        lt(90)
-        fd(150)
-        lt(90)
-        fd(20)
-        lt(90)
-        fd(5)
-        
-def background():
-    goto(-800,500)
-    rt(90)
-    rectangle(1000,1600,'skyblue1')
-    lt(180)
-    goto(800,250)
-    fillcolor('chartreuse2')
-    begin_fill()
-    down()
-    for i in range(10):
-        ranAngles=randint(125,150)
-        ranRad=randint(100,200)
-        ranDistance=50+(ranAngles/16)+randint(5,30)
-        setheading(ranAngles)
-        circle(ranRad,ranDistance)
-    goto(-800,0)
-    setheading(180)
-    goto(800,0)
-    goto(800,250)
-    end_fill()
-    up()
-    goto(800,0)
-    rectangle(1600,500,'azure4')
-    rectangle(1600,200,'gray55')
-    goto(0,0)
-
-def backgroundHouses(total,i):#a fix, i et total un peu bizarre~~
-    setheading(180)
-    goto(-850-40*i,-120*(total-i)/total)
-    rt(90)
-    grays='gray'+str(70-10*(total-i))
-    fillcolor(grays)
-    color(grays)
-    begin_fill()
-    down()
-    fd(150)
-    a=randint(0,3)
-    fd(a*50)
-    rt(90)
-    for i in range(12):
-        fd(150)
-        b=randint(0,3)
-        while a!=b:
-            if a<b:
-                lt(90)
-                fd(50)
-                rt(90)
-                a+=1
-            elif b<a:
-                rt(90)
-                fd(50)
-                lt(90)
-                a+=-1
-        fd(10)
-        c=randint(2,11)
-        if c<=6:
-            toit(c)
-    goto(800,-120*(total-i)/total)
-    goto(-850-40*i,-120*(total-i)/total)
-    up()
-    end_fill()
-    color('black')
-    goto(0,0)
-            
-
-
-
-def road():
-    goto(-800,-200)
-    setheading(270)
-    rectangle(150,1600,'gray20')
-    goto(-860,-260)
-    lt(90)
-    cote=10/cos(50*pi/180)
-    for i in range(20):
-        fd(80)
-        rectangle(60,-10,'seashell')
-    goto(0,0)
-
-def neigborhood():
-    global bridgeH
-    global lastBuilding
-    ecart=40
-    nbbats=8
-    housecolors=["firebrick","firebrick1","beige","bisque","bisque2","DarkKhaki","DarkSalmon","LightPink","papayawhip","PeachPuff","indianred1"]
-    bridgeH=0
-    lastBuilding=False
-    goto(-780,-155)
-    setheading(0)
-    for i in range(nbbats):
-        fd(ecart)
-        if i == nbbats-1:
-            lastBuilding=True
-        if bridgeH==0:
-            nbEtages=randint(1,5)
+def clicking_on(object):
+    if pygame.mouse.get_pressed()[0]:
+        if collision(object, pygame.mouse.get_pos()):
+            return True
         else:
-            nbEtages=bridgeH+randint(1,5-bridgeH)
-            bridgeH=0
-        randcolors=randint(0,len(housecolors)-1)
-        for i in range(nbEtages):
-            etage(housecolors[randcolors])
-            deco_etage(i,ecart)
-            lt(90)
-            fd(50)
-            rt(90)
-        c=randint(0,6)
-        fillcolor('black')
-        begin_fill()
-        down()
-        toit(c)
-        end_fill()
-        up()
-        rt(90)#descendre tt les etages
-        fd(nbEtages*50)
-        lt(90)
-        fd(140)
-    bk((140+ecart)*nbbats-800)
+            return False
+
+def drawBackground():
+    width, height = background.get_size()
+    mX, mY = pygame.mouse.get_pos()
+    backX = 0-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
+    backY = 0-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
+    screen.blit(background, (backX-100, backY))
+    #text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
+    #screen.blit(text_back, (10, 50))
+
+def drawNapoleon(postionX,postionY):
+    global PosX, PosY
+    screen.blit(napoleon,(PosX+postionX,PosY+postionY))
+
+def drawForeground():
+    width,height=background.get_size()
+    mX, mY = pygame.mouse.get_pos()
+    #0.1 can change
+    TableX = 0-(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
+    TableY = 0-(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
+    table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
+    
+    screen.blit(table,(TableX,TableY+620))
+    screen.blit(table_text, (10, 80))
+
+def drawButtons():
+    pygame.draw.rect(screen, BLACK, button_color_black)
+    pygame.draw.rect(screen, WHITE, button_color_white)
+    pygame.draw.rect(screen, BLACK, button_size_up)
+    pygame.draw.rect(screen, BLACK, button_size_down)
+    screen.blit(font.render("+", True, WHITE), (670, 230))
+    screen.blit(font.render("-", True, WHITE), (670, 290))
+
+running = True
+drawing = False
+
+def drawOrder():
+    global mousePosX,mousePosY,n
+    mousePosX, mousePosY = pygame.mouse.get_pos()
+    text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
+    e,r = animateFrame()
+    debug_text = font.render(f"Posish: {e:.2f}/{r:.2f}", True, (255, 255, 255))
+    screen.blit(debug_text,(10,150))
+    drawNapoleon(e,r)
+    drawForeground()
+    drawButtons()
+    mousePosX, mousePosY = pygame.mouse.get_pos()
+    drawImage(mousePosX,mousePosY)
+    
+    screen.blit(text_mouse, (10, 10))   
+
+def animateFrame():
+    global frame,mousePosX,mousePosY,trigger,trig_done,n,textI,created_text
+    width, height = background.get_size()
+    nap_rect = napoleon.get_rect(topleft=((frame-1)*-10,sin(frame-1)*10))
+    if frame<60:# and #not nap_rect.collidepoint(mousePosX,mousePosY):
+        frame+=1 
+    else:
+        trigger = True
+   
+    if frame >= 60:
+        pass 
+        
+    if trigger == True:
+        text_speech(300, 300, created_text, 1, (0, 0, 0), (255, 255, 255))
+        
+    frameX = -10*frame  
+    frameY = sin(frame)*10
+    frameX -= (mousePosX/SCREEN_WIDTH)*0.08*width
+    frameY -= (mousePosY/SCREEN_HEIGHT)*0.10*height
+    
+    return frameX, frameY
+  
+
+def drawMenu():
+    screen.fill((0, 0, 0))
 
 
-nbBgHouses=2
-#background()
-for i in range(nbBgHouses):
-    backgroundHouses(nbBgHouses,i)
-neigborhood()
-road()
+"""
+def buttonCliqued(brush_color, brush_size, drawing):
+    
+    if event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            if button_color_black.collidepoint(x, y):
+                brush_color = BLACK
+            elif button_color_white.collidepoint(x, y):
+                brush_color = WHITE
+            elif button_size_up.collidepoint(x, y):
+                brush_size = min(20, brush_size + 2)
+            elif button_size_down.collidepoint(x, y):
+                brush_size = max(2, brush_size - 2)
+            elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                drawing = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            drawing = False
+        elif event.type == pygame.MOUSEMOTION and drawing:
+            x, y = event.pos
+            if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+    pygame.display.flip()
 
-
-done()
+pygame.quit()
+"""

@@ -3,6 +3,7 @@ from math import*
 from random import*
 import time
 import os
+import sys
 from random import randint
 # Initialize pygame
 pygame.init()
@@ -215,6 +216,7 @@ def wantToQuit():
                 running = False
 
 def canvasStuff():
+    global screenX, screenY
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
     screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
     screen.blit(canvas, (screenX,screenY))
@@ -226,17 +228,29 @@ while running or Menu:
 
     #SECOND Loop for running
     while running:
-
-    #main stuff going on here
+        # main stuff going on here
         drawBackground()
         drawOrder()
         canvasStuff()
-        wantToQuit()
-        #buttonCliqued(brush_color, brush_size, drawing)
-        pygame.display.flip()#
-        clock.tick(30)
         
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    pygame.quit()   
+                    import sys
+                    sys.exit()
+                    
+                elif event.key == pygame.K_SPACE:
+                    Menu = False if Menu else True
+                    running = False
+                    
+            # Drawing logic
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if button_color_black.collidepoint(x, y):
                     brush_color = BLACK
@@ -248,12 +262,20 @@ while running or Menu:
                     brush_size = max(2, brush_size - 2)
                 elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
                     drawing = True
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    drawing = False
-                elif event.type == pygame.MOUSEMOTION and drawing:
-                    x, y = event.pos
-                    if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                        pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+                    
+            elif event.type == pygame.MOUSEBUTTONUP:
+                drawing = False
+                
+            elif event.type == pygame.MOUSEMOTION and drawing:
+                x, y = event.pos
+                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    # Convert screen coordinates to canvas coordinates
+                    canvas_x = x - screenX
+                    canvas_y = y - screenY
+                    pygame.draw.circle(canvas, brush_color, (canvas_x, canvas_y), brush_size)
+        
+        pygame.display.flip()
+        clock.tick(30)
 
     while Menu:
         o+=0.01
