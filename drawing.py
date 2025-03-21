@@ -3,15 +3,16 @@ from math import*
 from random import*
 import time
 import os
+import sys
 from random import randint
+
+os.system("cls")
+
 # Initialize pygame
 pygame.init()
 clock = pygame.time.Clock()
 global PosX, PosY, textI
 PosX, PosY = 1000, 200
-
-print(pygame.display.Info())
-
 
 # Screen settings
 overSize = 4
@@ -20,11 +21,31 @@ screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 
+def load_random_image(folder_path):
+    """Load a random image from the specified folder"""
+    if not os.path.exists(folder_path):
+        print(f"Error: The directory '{folder_path}' does not exist!")
+        return None
+        
+    image_files = [f for f in os.listdir(folder_path)]
+    
+    if not image_files:
+        print(f"Error: No image files found in '{folder_path}'!")
+        return None
+        
+    random_image = choice(image_files)
+    try:
+        return pygame.image.load(os.path.join(folder_path, random_image))
+    except pygame.error as e:
+        print(f"Error loading image {random_image}: {e}")
+        return None
+
 #IMAGES
-napoleon = pygame.image.load("napoleon.png")
-background = pygame.image.load("background.jpg")
+napoleon = load_random_image("images/testimonials")
+
+background = pygame.image.load("images/background.jpg")
 background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
-table = pygame.image.load("table.png")
+table = pygame.image.load("images/table.png")
 table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
 # Colours
@@ -229,6 +250,7 @@ def wantToQuit():
             elif event.key == pygame.K_SPACE:
                 next_screen()
 def canvasStuff():
+    global screenX, screenY
     borderPatrol = ((10*SCREEN_HEIGHT)/100)
     screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
     screen.blit(canvas, (screenX,screenY))
@@ -243,8 +265,7 @@ while running or Menu or Drawing:
 
     #SECOND Loop for running
     while running:
-
-    #main stuff going on here
+        # main stuff going on here
         drawBackground()
         drawOrder()
         canvasStuff()
