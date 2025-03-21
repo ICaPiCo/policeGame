@@ -4,30 +4,53 @@ from random import*
 import time
 import os
 from random import randint
+
+os.system("cls")
+
 # Initialize pygame
 pygame.init()
-clock = pygame.time.Clock()
-global PosX, PosY, textI
-PosX, PosY = 1000, 200
-
-print(pygame.display.Info())
+drawing = False
+score=0
+combo=0
 
 
 # Screen settings
 overSize = 4
-pygame.display.set_caption("PortraitRobot")
+pygame.display.set_caption("Drawn To Justice")
 screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
+borderPatrol = ((10*SCREEN_HEIGHT)/100)
+screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
+
+def load_random_image(folder_path):
+    """Load a random image from the specified folder"""
+    if not os.path.exists(folder_path):
+        print(f"Error: The directory '{folder_path}' does not exist!")
+        return None
+        
+    image_files = [f for f in os.listdir(folder_path)]
+    
+    if not image_files:
+        print(f"Error: No image files found in '{folder_path}'!")
+        return None
+        
+    random_image = choice(image_files)
+    try:
+        return pygame.image.load(os.path.join(folder_path, random_image))
+    except pygame.error as e:
+        print(f"Error loading image {random_image}: {e}")
+        return None
 
 #IMAGES
-napoleon = pygame.image.load("images/testimonials/napoleon.png")
+logo = pygame.image.load("images/logo.png")
+testimony = pygame.image.load("images/testimonials/napoleon.png")
 background = pygame.image.load("images/background.jpg")
-background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
+background = pygame.transform.scale(background, (SCREEN_WIDTH,SCREEN_HEIGHT))
 table = pygame.image.load("images/table.png")
 table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
-# Colours
+# Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
@@ -46,81 +69,14 @@ button_size_up = pygame.Rect(650, 220, 100, 40)
 button_size_down = pygame.Rect(650, 280, 100, 40)
 
 # Font setup
-font = pygame.font.Font(None, 30)
-frame= 0
-global mousePosX,mousePosY,n
-mousePosX,mousePosY = 0,0
-n = 0
-stored_x,stored_y = 200,200
-trigger = False
-trig_done = False
-running = False
-Menu = True
-Yapping = False
-Drawing = False
-Generation = False
-ScoreMenu = False
-textI = 0
-font = pygame.font.Font(None,37)
-running = False
-drawing = False
-Menu = True 
-x1,y1,z1 = 100,100,100
-o=0
-
-def create_text():
-    info = {"nose":["green","red","blue"],"hair":["black","blond","brown"],"eyes":["blue","green","brown"],"skin":["white","black","brown"]}
-    text = ""
-    for i in info:
-        text += f"{i}:{info[i][randint(0,2)]}\n"
-        text +=" , "
-    return text
-def text_speech(posX, posY, text, speed, color, bgColor):
-    global textI
-    if 'textI' not in globals():
-        textI = 0  
-    if textI < len(text):
-        if choice([1,0,0,0,0,0,0,0]):    
-            newText = font.render(text[:textI+1], True, color, bgColor)
-            screen.blit(newText, (posX, posY))
-            textI += 1
-        else: 
-            newText = font.render(text[:textI], True, color, bgColor)
-            screen.blit(newText, (posX, posY))
-            textI += 1
-    
-    
-
-def clicking_on(object):
-    if pygame.mouse.get_pressed()[0]:
-        if collision(object, pygame.mouse.get_pos()):
-            return True
-        else:
-            return False
+font = pygame.font.SysFont(None, int(SCREEN_HEIGHT/20))
 
 def drawBackground():
-    width, height = background.get_size()
-    mX, mY = pygame.mouse.get_pos()
-    backX = 0-(((mX / SCREEN_WIDTH) - 0.5) * 0.1 *width)  #0.1 can change
-    backY = 0-(((mY / SCREEN_HEIGHT) - 0.5) * 0.1 * height)
-    screen.blit(background, (backX-100, backY))
-    #text_back = font.render(f"BackPos: {backX:.2f}, {backY:.2f}", True, (255, 255, 255))
-    #screen.blit(text_back, (10, 50))
+    width,heigth=background.get_size()
+    screen.blit(background,(0,0))
 
-def drawNapoleon(postionX,postionY):
-    global PosX, PosY
-    screen.blit(napoleon,(PosX+postionX,PosY+postionY))
-
-def drawForeground():
-    width,height=background.get_size()
-    mX, mY = pygame.mouse.get_pos()
-    #0.1 can change
-    TableX = 0-(((mX / SCREEN_WIDTH) - 0.5) * 0.05 *width)  #0.05 can change
-    TableY = 0-(((mY / SCREEN_HEIGHT) - 0.5) * 0.11 *height)  #0.1 can change
-    table_text = font.render(f"TablePos: {TableX:.2f}, {TableY:.2f}", True, (255, 255, 255))
-    
-    screen.blit(table,(TableX,TableY+620))
-    screen.blit(table_text, (10, 80))
+def drawImage(image,postionX,postionY):
+    screen.blit(image,(postionX,postionY))
 
 def drawButtons():
     pygame.draw.rect(screen, BLACK, button_color_black)
@@ -130,73 +86,89 @@ def drawButtons():
     screen.blit(font.render("+", True, WHITE), (670, 230))
     screen.blit(font.render("-", True, WHITE), (670, 290))
 
+def doDrawing():
+    if drawing == True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_color_black.collidepoint(x, y):
+                    brush_color = BLACK
+                elif button_color_white.collidepoint(x, y):
+                    brush_color = WHITE
+                elif button_size_up.collidepoint(x, y):
+                    brush_size = min(20, brush_size + 2)
+                elif button_size_down.collidepoint(x, y):
+                    brush_size = max(2, brush_size - 2)
+                elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    drawing = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                drawing = False
+            elif event.type == pygame.MOUSEMOTION and drawing:
+                x, y = event.pos
+                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+        pygame.display.flip()
+
+
 running = True
-drawing = False
+menu = True
+drawing = True
+x1,y1,z1 = 100,100,100
+color=0
+clock = pygame.time.Clock()
 
-def drawOrder():
-    global mousePosX,mousePosY,n
-    mousePosX, mousePosY = pygame.mouse.get_pos()
-    text_mouse = font.render(f"Mouse position: {mousePosX,mousePosY}", True, (255, 255, 255))
-    e,r = animateFrame()
-    debug_text = font.render(f"Posish: {e:.2f}/{r:.2f}", True, (255, 255, 255))
-    screen.blit(debug_text,(10,150))
-    drawNapoleon(e,r)
-    drawForeground()
-    drawButtons()
-    mousePosX, mousePosY = pygame.mouse.get_pos()
-    drawImage(mousePosX,mousePosY)
-    
-    screen.blit(text_mouse, (10, 10))   
 
-def animateFrame():
-    global frame,mousePosX,mousePosY,trigger,trig_done,n,textI,created_text
-    width, height = background.get_size()
-    nap_rect = napoleon.get_rect(topleft=((frame-1)*-10,sin(frame-1)*10))
-    if frame<60:# and #not nap_rect.collidepoint(mousePosX,mousePosY):
-        frame+=1 
-    else:
-        trigger = True
-   
-    if frame >= 60:
-        pass 
+while running:
+    while menu:
+        color+=0.01
+        screen.fill((0, 0, 0))
+        menu_text = font.render("Press space to start", True, (x1,y1,z1))
+        screen.blit(menu_text, (SCREEN_WIDTH/2-200, (SCREEN_HEIGHT/2)+200))
+        for event in pygame.event.get():   
+            if event.type == pygame.KEYDOWN:  # First check if it's a keyboard event
+                if event.key == pygame.K_SPACE:
+                    menu = False
+            if event.type == pygame.QUIT:  # Good practice to add quit condition
+                running = False
+                menu = False
+                
+        x1 = int((sin(color) * 127.5) + 127.5)  # Red (0–255)
+        y1 = int((sin(color + 2) * 127.5) + 127.5)  # Green (0–255)
+        z1 = int((sin(color + 4) * 127.5) + 127.5)  # Blue (0–255)
         
-    if trigger == True:
-        text_speech(300, 300, created_text, 1, (0, 0, 0), (255, 255, 255))
-        
-    frameX = -10*frame  
-    frameY = sin(frame)*10
-    frameX -= (mousePosX/SCREEN_WIDTH)*0.08*width
-    frameY -= (mousePosY/SCREEN_HEIGHT)*0.10*height
-    
-    return frameX, frameY
-  
+        xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
+        screen.blit(xtext, (10,100))
+        screen.blit(logo, (SCREEN_WIDTH/4, SCREEN_HEIGHT/20))
+        pygame.display.flip()
 
-def drawMenu():
-    screen.fill((0, 0, 0))
+    testimonyPoxX,testimonyPoxY = SCREEN_WIDTH,0
+    for i in range(int(SCREEN_WIDTH*2/3/5)):
+        testimonyPoxX-=5
+        drawBackground()
+        drawImage(testimony, testimonyPoxX, testimonyPoxY)
+        drawImage(table, 0, SCREEN_HEIGHT/2)
+        clock.tick(60)
+        pygame.display.flip()
 
+    text = "Hello this is a test"
+    newtext = ""
+    x,y = SCREEN_WIDTH/4,SCREEN_HEIGHT/3
+    for i in text:
+        newtext += i
+        drawText = font.render(newtext, True, (255,255,255), (0,0,0))
+        screen.blit(drawText, (x,y))
+        time.sleep(randint(1,10)/200)
+        pygame.display.flip()
 
-"""
-def buttonCliqued(brush_color, brush_size, drawing):
-    
-    if event.type == pygame.MOUSEBUTTONDOWN:
-            x, y = event.pos
-            if button_color_black.collidepoint(x, y):
-                brush_color = BLACK
-            elif button_color_white.collidepoint(x, y):
-                brush_color = WHITE
-            elif button_size_up.collidepoint(x, y):
-                brush_size = min(20, brush_size + 2)
-            elif button_size_down.collidepoint(x, y):
-                brush_size = max(2, brush_size - 2)
-            elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                drawing = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            drawing = False
-        elif event.type == pygame.MOUSEMOTION and drawing:
-            x, y = event.pos
-            if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
-    pygame.display.flip()
+    while drawing:
+        doDrawing()
+        drawButtons()
+
+    #while genration:
+    #while selecting:
+    #while bossSpeech:
+    #while playAgain:
 
 pygame.quit()
-"""
