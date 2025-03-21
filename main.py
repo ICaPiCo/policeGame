@@ -3,16 +3,15 @@ from math import*
 from random import*
 import time
 import os
-import sys
 from random import randint
-
-os.system("cls")
-
 # Initialize pygame
 pygame.init()
 clock = pygame.time.Clock()
 global PosX, PosY, textI
 PosX, PosY = 1000, 200
+
+print(pygame.display.Info())
+
 
 # Screen settings
 overSize = 4
@@ -21,28 +20,8 @@ screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize,SCREEN_HEIGHT/overSize
 
-def load_random_image(folder_path):
-    """Load a random image from the specified folder"""
-    if not os.path.exists(folder_path):
-        print(f"Error: The directory '{folder_path}' does not exist!")
-        return None
-        
-    image_files = [f for f in os.listdir(folder_path)]
-    
-    if not image_files:
-        print(f"Error: No image files found in '{folder_path}'!")
-        return None
-        
-    random_image = choice(image_files)
-    try:
-        return pygame.image.load(os.path.join(folder_path, random_image))
-    except pygame.error as e:
-        print(f"Error loading image {random_image}: {e}")
-        return None
-
 #IMAGES
-napoleon = load_random_image("images/testimonials")
-
+napoleon = pygame.image.load("images/testimonials/napoleon.png")
 background = pygame.image.load("images/background.jpg")
 background = pygame.transform.scale(background, (SCREEN_WIDTH+200,SCREEN_HEIGHT+200))
 table = pygame.image.load("images/table.png")
@@ -52,7 +31,7 @@ table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Brush sett
+# Brush settings
 brush_color = BLACK
 brush_size = 5
 
@@ -151,6 +130,8 @@ def drawButtons():
     screen.blit(font.render("+", True, WHITE), (670, 230))
     screen.blit(font.render("-", True, WHITE), (670, 290))
 
+running = True
+drawing = False
 
 def drawOrder():
     global mousePosX,mousePosY,n
@@ -162,6 +143,8 @@ def drawOrder():
     drawNapoleon(e,r)
     drawForeground()
     drawButtons()
+    mousePosX, mousePosY = pygame.mouse.get_pos()
+    drawImage(mousePosX,mousePosY)
     
     screen.blit(text_mouse, (10, 10))   
 
@@ -192,7 +175,7 @@ def drawMenu():
     screen.fill((0, 0, 0))
 
 
-'''
+"""
 def buttonCliqued(brush_color, brush_size, drawing):
     
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -207,141 +190,13 @@ def buttonCliqued(brush_color, brush_size, drawing):
                 brush_size = max(2, brush_size - 2)
             elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
                 drawing = True
-            elif event.type == pygame.MOUSEBUTTONUP:
-                drawing = False
-            elif event.type == pygame.MOUSEMOTION and drawing:
-                x, y = event.pos
-                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            drawing = False
+        elif event.type == pygame.MOUSEMOTION and drawing:
+            x, y = event.pos
+            if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+    pygame.display.flip()
 
- '''   
-
-def wantToQuit():
-    global Menu,running,drawing
-    #Get key presses here: feel free to add
-    for event in pygame.event.get():
-
-        if event.type == pygame.QUIT:
-            running = False
-
-        elif event.type == pygame.KEYDOWN:
-
-            if event.key == pygame.K_ESCAPE:
-                running = False
-                pygame.quit()   
-                sys.exit()
-                
-            elif event.key == pygame.K_SPACE:
-                Menu = False if Menu else True
-                running = False
-
-def canvasStuff():
-    global screenX, screenY
-    borderPatrol = ((10*SCREEN_HEIGHT)/100)
-    screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol
-    screen.blit(canvas, (screenX,screenY))
-
-#How to loop it?
-
-#MAIN Loop for menu / game
-while running or Menu:
-
-    #SECOND Loop for running
-    while running:
-        # main stuff going on here
-        drawBackground()
-        drawOrder()
-        canvasStuff()
-        
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    pygame.quit()   
-                    import sys
-                    sys.exit()
-                    
-                elif event.key == pygame.K_SPACE:
-                    Menu = False if Menu else True
-                    running = False
-                    
-            # Drawing logic
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                x, y = event.pos
-                if button_color_black.collidepoint(x, y):
-                    brush_color = BLACK
-                elif button_color_white.collidepoint(x, y):
-                    brush_color = WHITE
-                elif button_size_up.collidepoint(x, y):
-                    brush_size = min(20, brush_size + 2)
-                elif button_size_down.collidepoint(x, y):
-                    brush_size = max(2, brush_size - 2)
-                elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    drawing = True
-                    
-            elif event.type == pygame.MOUSEBUTTONUP:
-                drawing = False
-                
-            elif event.type == pygame.MOUSEMOTION and drawing:
-                x, y = event.pos
-                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    # Convert screen coordinates to canvas coordinates
-                    canvas_x = x - screenX
-                    canvas_y = y - screenY
-                    pygame.draw.circle(canvas, brush_color, (canvas_x, canvas_y), brush_size)
-        
-        pygame.display.flip()
-        clock.tick(30)
-
-    while Menu:
-        o+=0.01
-        
-        drawMenu()
-        font = pygame.font.Font(None,50)
-        menu_text = font.render("Press space to start", True, (x1,y1,z1))
-        screen.blit(menu_text, (SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2))
-        #if menu_rect.collidepoint(pygame.mouse.get_pos()):
-        #   x1, y1, z1 = 255, 255, 255
-        for event in pygame.event.get():
-
-            if event.type == pygame.QUIT:
-                running = False
-
-            elif event.type == pygame.KEYDOWN:
-
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    pygame.quit()   
-                    sys.exit()
-                    
-                elif event.key == pygame.K_SPACE:
-                    frame = 0
-                    Menu = False if Menu else True
-                    running = True
-                    trigger = False
-                    textI = 0
-                    global created_text 
-                    created_text = create_text()
-        x1 = int((sin(o) + 1) * 100)  # Red
-        y1 = int((sin(o + -cos(0)) + 1) * 80)  # Green (offset by -cos)
-        z1 = int((sin(o + cos(0)) + 1) * 125)  # Blue (offset by cos)
-        
-        xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
-        screen.blit(xtext, (10,100))
-        pygame.display.flip()
-    while Yapping:
-        
-        pass
-        #talking - we want to be able to look around while talking? - what is it really for?
-        #insetr description
-    while Drawing:
-        pass
-    while Generation:
-        pass 
-    while ScoreMenu:
-        pass
 pygame.quit()
+"""
