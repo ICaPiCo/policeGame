@@ -44,7 +44,7 @@ def load_random_image(folder_path):
 
 #IMAGES
 logo = pygame.image.load("images/logo.png")
-testimony = pygame.image.load("images/testimonials/napoleon.png")
+testimony = load_random_image("images/testimonials")
 background = pygame.image.load("images/background.jpg")
 background = pygame.transform.scale(background, (SCREEN_WIDTH,SCREEN_HEIGHT))
 table = pygame.image.load("images/table.png")
@@ -82,7 +82,6 @@ def drawButtons():
     screen.blit(font.render("+", True, WHITE), (670, 230))
     screen.blit(font.render("-", True, WHITE), (670, 290))
  
-
 
 running = True
 menu = True
@@ -134,34 +133,48 @@ while running:
         time.sleep(randint(1,10)/200)
         pygame.display.flip()
 
+    # Create canvas once before entering the drawing loop
     canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
     canvas.fill(WHITE)
-    canvas.blit(canvas,(CANVAS_WIDTH, CANVAS_HEIGHT))
+    
+    # Draw initial canvas and UI
+    screen.blit(canvas, (screenX, screenY))
+    drawButtons()
     pygame.display.flip()
 
+    # Drawing loop
     while drawing:
-        if drawing == True:
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    x, y = event.pos
-                    if button_color_black.collidepoint(x, y):
-                        brush_color = BLACK
-                    elif button_color_white.collidepoint(x, y):
-                        brush_color = WHITE
-                    elif button_size_up.collidepoint(x, y):
-                        brush_size = min(20, brush_size + 2)
-                    elif button_size_down.collidepoint(x, y):
-                        brush_size = max(2, brush_size - 2)
-                    elif screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                        drawing = True
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    drawing = False
-                elif event.type == pygame.MOUSEMOTION and drawing:
-                    x, y = event.pos
-                    if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                        pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
-            pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                drawing = False
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    drawing = False  # Exit the drawing loop
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_color_black.collidepoint(x, y):
+                    brush_color = BLACK
+                elif button_color_white.collidepoint(x, y):
+                    brush_color = WHITE
+                elif button_size_up.collidepoint(x, y):
+                    brush_size = min(20, brush_size + 2)
+                elif button_size_down.collidepoint(x, y):
+                    brush_size = max(2, brush_size - 2)
+            elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
+                x, y = event.pos
+                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
+                    pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+        
+        # Redraw the background, canvas, and buttons every frame
+        drawBackground()
+        drawImage(table, 0, SCREEN_HEIGHT/2)
+        screen.blit(canvas, (screenX, screenY))
         drawButtons()
+        
+        # Update the display
+        pygame.display.flip()
+        clock.tick(60)  # Limit to 60 FPS
 
     #while genration:
     #while selecting:
