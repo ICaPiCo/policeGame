@@ -30,11 +30,18 @@ class Weapon(Item):
     def weaponCount(cls):
         return cls.weapon_count
     
-        
-        
+    
+def fight(a,b):
+    return a.damage > b.damage
+    
 sword = Weapon("sword",20,30,10)
 print(sword.is_heavy(sword.weight))
 print(Weapon.weaponCount())
 stick = Item("stick",10,40)
 print(stick.is_heavy(stick.weight))
 print(Item.count())
+
+
+print(f"A stick vs a Sword ; does the stick win?: {fight(stick,sword)}")
+print(f"A sword vs a stick ; does the sword win?: {fight(sword, stick)}")
+print(f"A stick vs a stick ; does the stick win?: {fight(stick, stick)}")

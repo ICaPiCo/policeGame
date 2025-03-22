@@ -22,7 +22,7 @@ screen = pygame.display.set_mode((1920,1200), pygame.FULLSCREEN)
 COLOR = (255, 255, 255)
 trail = []
 previous_pos = pygame.mouse.get_pos()
-
+saved_surface = screen.copy()
 class Drawn:
     def __init__(self,name,PosX,PosY,color,layer,size,shape):
         self.PosX = PosX
@@ -51,13 +51,13 @@ while True:
     rect.draw() #hmm not sure how to do this 
     pygame.display.flip() 
 '''
-last_thickness = 1
+last_thickness = 3
 
 while True:
     current_pos = pygame.mouse.get_pos()
     deltaX, deltaY = pygame.mouse.get_rel()
     distance = sqrt(deltaX**2 + deltaY**2)
-    thickness = max(1, distance * 0.29)  
+    thickness = max(3, distance * 0.29)  
     
 
     for event in pygame.event.get():
@@ -75,6 +75,8 @@ while True:
                     COLOR = (0, 0, 0)
                 else:
                     COLOR = (255, 255, 255)
+            elif event.key == pygame.K_r:
+                screen.fill((0,0,0))
         elif event.type == pygame.KEYUP:
             if event.key ==  pygame.K_SPACE:
                 drawing = False
@@ -86,11 +88,15 @@ while True:
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == pygame.BUTTON_LEFT:
                 drawing = False  
-    
+        elif event.type == pygame.WINDOWMINIMIZED:  # Save the screen before minimizing 
+            saved_surface = screen.copy()
+        elif event.type == pygame.WINDOWFOCUSGAINED:  # Restore the screen when refocused
+            screen.blit(saved_surface, (0, 0))
+            pygame.display.update()
     if drawing:
-        if distance > 0:
-            
-            pygame.draw.line(screen,COLOR , previous_pos, current_pos, int(last_thickness))
+        if distance > 0.1:
+            r,t = current_pos
+            pygame.draw.line(screen, COLOR, previous_pos, current_pos, int(last_thickness))  
             previous_pos = current_pos  
             last_thickness = last_thickness * 0.75 + thickness * 0.25
     else:
