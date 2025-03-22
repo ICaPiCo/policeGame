@@ -53,16 +53,20 @@ table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GREEN = (20, 255, 20)
 
 # Brush settings
 brush_color = BLACK
 brush_size = 5
 
 # UI buttons make em collidepointable
-button_color_black = pygame.Rect(650, 100, 100, 40)
-button_color_white = pygame.Rect(650, 160, 100, 40)
-button_size_up = pygame.Rect(650, 220, 100, 40)
-button_size_down = pygame.Rect(650, 280, 100, 40)
+Space=20
+button_color_black = pygame.Rect(screenX+Space, screenY+10, 100, 40)
+button_color_white_outline = pygame.Rect(screenX+100+Space, screenY+10, 100, 40)
+button_color_white = pygame.Rect(screenX+100+Space+5, screenY+10+5, 90, 30)
+button_size_up = pygame.Rect(screenX+200+Space, screenY+10, 100, 40)
+button_size_down = pygame.Rect(screenX+300+Space, screenY+10, 100, 40)
+button_done = pygame.Rect(screenX+400+Space, screenY+350, 100, 40)
 
 # Font setup
 font = pygame.font.SysFont(None, int(SCREEN_HEIGHT/20))
@@ -75,12 +79,14 @@ def drawImage(image,postionX,postionY):
     screen.blit(image,(postionX,postionY))
 
 def drawButtons():
+    pygame.draw.rect(screen, GREEN, button_done)
     pygame.draw.rect(screen, BLACK, button_color_black)
+    pygame.draw.rect(screen, BLACK, button_color_white_outline)
     pygame.draw.rect(screen, WHITE, button_color_white)
     pygame.draw.rect(screen, BLACK, button_size_up)
     pygame.draw.rect(screen, BLACK, button_size_down)
-    screen.blit(font.render("+", True, WHITE), (670, 230))
-    screen.blit(font.render("-", True, WHITE), (670, 290))
+    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3), screenY+10))
+    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3), screenY+10))
  
 
 running = True
@@ -109,8 +115,8 @@ while running:
         y1 = int((sin(color + 2) * 127.5) + 127.5)  # Green (0–255)
         z1 = int((sin(color + 4) * 127.5) + 127.5)  # Blue (0–255)
         
-        xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
-        screen.blit(xtext, (10,100))
+        #xtext = font.render(f"{x1} / {y1} / {z1}", True,(255,255,255))
+        #screen.blit(xtext, (10,100))
         screen.blit(logo, (SCREEN_WIDTH/4, SCREEN_HEIGHT/20))
         pygame.display.flip()
 
@@ -125,11 +131,11 @@ while running:
 
     text = "Hello this is a test"
     newtext = ""
-    x,y = SCREEN_WIDTH/4,SCREEN_HEIGHT/3
+    textX,textY = SCREEN_WIDTH/4,SCREEN_HEIGHT/3
     for i in text:
         newtext += i
         drawText = font.render(newtext, True, (255,255,255), (0,0,0))
-        screen.blit(drawText, (x,y))
+        screen.blit(drawText, (textX,textY))
         time.sleep(randint(1,10)/200)
         pygame.display.flip()
 
@@ -154,6 +160,8 @@ while running:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if button_color_black.collidepoint(x, y):
+                    drawing = False
+                elif button_color_black.collidepoint(x, y):
                     brush_color = BLACK
                 elif button_color_white.collidepoint(x, y):
                     brush_color = WHITE
@@ -168,6 +176,8 @@ while running:
         
         # Redraw the background, canvas, and buttons every frame
         drawBackground()
+        drawImage(testimony, testimonyPoxX, testimonyPoxY)
+        screen.blit(drawText, (textX,textY))
         drawImage(table, 0, SCREEN_HEIGHT/2)
         screen.blit(canvas, (screenX, screenY))
         drawButtons()
