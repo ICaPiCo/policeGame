@@ -45,8 +45,15 @@ def load_random_image(folder_path):
 #IMAGES
 logo = pygame.image.load("images/logo.png")
 testimony = load_random_image("images/testimonials")
+boss = load_random_image("images/boss")
+criminal = load_random_image("images/criminals")
+
 background = pygame.image.load("images/background.jpg")
 background = pygame.transform.scale(background, (SCREEN_WIDTH,SCREEN_HEIGHT))
+
+mugshot = pygame.image.load("images/mugshot.jpg")
+mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
 table = pygame.image.load("images/table.png")
 table = pygame.transform.scale(table, (SCREEN_WIDTH,SCREEN_HEIGHT))
 
@@ -79,7 +86,6 @@ def drawImage(image,postionX,postionY):
     screen.blit(image,(postionX,postionY))
 
 def drawButtons():
-    pygame.draw.rect(screen, GREEN, button_done)
     pygame.draw.rect(screen, BLACK, button_color_black)
     pygame.draw.rect(screen, BLACK, button_color_white_outline)
     pygame.draw.rect(screen, WHITE, button_color_white)
@@ -87,11 +93,21 @@ def drawButtons():
     pygame.draw.rect(screen, BLACK, button_size_down)
     screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3), screenY+10))
     screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3), screenY+10))
+
+def drawDone():
+    pygame.draw.rect(screen, GREEN, button_done)
  
+def doCriminal():
+    screen.blit(criminal, (SCREEN_WIDTH/4, SCREEN_HEIGHT/2.5))
+
 
 running = True
 menu = True
 drawing = True
+isCriminal = True
+bossSpeech = True
+playAgain = True
+drawings = []
 x1,y1,z1 = 100,100,100
 color=0
 clock = pygame.time.Clock()
@@ -145,6 +161,7 @@ while running:
     
     # Draw initial canvas and UI
     screen.blit(canvas, (screenX, screenY))
+    drawDone()
     drawButtons()
     pygame.display.flip()
 
@@ -159,7 +176,7 @@ while running:
                     drawing = False  # Exit the drawing loop
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if button_color_black.collidepoint(x, y):
+                if button_done.collidepoint(x, y):
                     drawing = False
                 elif button_color_black.collidepoint(x, y):
                     brush_color = BLACK
@@ -180,15 +197,78 @@ while running:
         screen.blit(drawText, (textX,textY))
         drawImage(table, 0, SCREEN_HEIGHT/2)
         screen.blit(canvas, (screenX, screenY))
+        drawDone()
         drawButtons()
         
         # Update the display
         pygame.display.flip()
         clock.tick(60)  # Limit to 60 FPS
 
-    #while genration:
-    #while selecting:
-    #while bossSpeech:
-    #while playAgain:
+    # Save canvas snapshot when exiting drawing loop
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    latest_drawing = os.path.join("saved_drawings", f"drawing_{timestamp}.png")
+    drawings.append(latest_drawing)
+    # Create directory if it doesn't exist
+    os.makedirs("saved_drawings", exist_ok=True)
+
+    # Save the canvas as a PNG file
+    pygame.image.save(canvas, latest_drawing)
+    print(f"Drawing saved to {latest_drawing}")
+    lastDrawing = pygame.image.load(latest_drawing)
+
+    while isCriminal:
+        screen.fill((0, 0, 0))
+        screen.blit(mugshot,(0,0))
+        screen.blit(lastDrawing, (screenX, screenY))
+        drawDone()
+        doCriminal()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                isCriminal = False
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    isCriminal = False  
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_done.collidepoint(x, y):
+                    isCriminal = False
+        pygame.display.flip()
+
+    
+    pygame.display.flip()
+    bossPoxX,bossPoxY = SCREEN_WIDTH,300
+    for i in range(int(SCREEN_WIDTH*2/3/5)):
+        bossPoxX-=5
+        screen.fill((20, 20, 20))
+        drawImage(boss, bossPoxX, bossPoxY)
+        clock.tick(60)
+        pygame.display.flip()
+
+    text = "Nice Job "
+    newtext = ""
+    textX,textY = SCREEN_WIDTH/4,SCREEN_HEIGHT/3
+    for i in text:
+        newtext += i
+        drawText = font.render(newtext, True, (255,255,255), (0,0,0))
+        screen.blit(drawText, (textX,textY))
+        time.sleep(randint(1,10)/200)
+        pygame.display.flip()    
+
+    drawDone()
+    pygame.display.flip()
+    while playAgain:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                playAgain = False
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    playAgain = False
+                    running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = event.pos
+                if button_done.collidepoint(x, y):
+                    playAgain = False
 
 pygame.quit()
