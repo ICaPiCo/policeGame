@@ -2,7 +2,7 @@
 
 This Pygame-based application provides an engaging drawing experience where users create portraits based on witness testimonies and participate in a criminal investigation narrative. The game combines creative drawing mechanics with an immersive storyline featuring animated characters and dynamic visual effects.
 
-The application features a sophisticated drawing system with adjustable brush settings, parallax background effects, and a complete game flow from menu to final evaluation. Users progress through different stages including witness testimony, portrait creation, criminal identification, and boss evaluation, making it both an artistic tool and an entertaining game experience.
+The application features a sophisticated drawing system with adjustable brush settings, **parallax background effects**, and a complete game flow from menu to final evaluation. Users progress through different stages including witness testimony, portrait creation, criminal identification, and boss evaluation, making it both an artistic tool and an entertaining game experience.
 
 ## Repository Structure
 ```
