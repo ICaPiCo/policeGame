@@ -33,7 +33,15 @@ class Drawn:
         self.shape = shape
     def draw(self):
         pygame.draw.circle(screen, self.color, (self.PosX, self.PosY),self.size)
-
+    def move(self, x, y):
+        self.PosX += x
+        self.PosY += y
+class Thing(Drawn):
+    '''this is the same as the other one but a subclass'''
+    def __init__(self, name, PosX, PosY, color, layer, size, shape):
+        super().__init__(name, PosX, PosY, color, layer, size, shape) # super uselfull
+    def draw(self):
+        pygame.draw.circle(screen, self.color, (self.PosX, self.PosY), self.size)
 '''
 while True:
 
@@ -43,13 +51,13 @@ while True:
     rect.draw() #hmm not sure how to do this 
     pygame.display.flip() 
 '''
-
+last_thickness = 1
 
 while True:
     current_pos = pygame.mouse.get_pos()
     deltaX, deltaY = pygame.mouse.get_rel()
     distance = sqrt(deltaX**2 + deltaY**2)
-    thickness = max(1, distance * 0.3)  
+    thickness = max(1, distance * 0.29)  
     
 
     for event in pygame.event.get():
@@ -65,17 +73,26 @@ while True:
             elif event.key == pygame.K_e:
                 if COLOR == (255,255,255) :
                     COLOR = (0, 0, 0)
-                else: 
-                    COLOR = (255,255,255)
+                else:
+                    COLOR = (255, 255, 255)
         elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_SPACE:
+            if event.key ==  pygame.K_SPACE:
+                drawing = False
+                last_thickness = 1
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == pygame.BUTTON_LEFT:
+                drawing = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == pygame.BUTTON_LEFT:
                 drawing = False  
     
     if drawing:
         if distance > 0:
             
-            pygame.draw.line(screen,COLOR , previous_pos, current_pos, int(thickness))
+            pygame.draw.line(screen,COLOR , previous_pos, current_pos, int(last_thickness))
             previous_pos = current_pos  
+            last_thickness = last_thickness * 0.75 + thickness * 0.25
     else:
         
         previous_pos = pygame.mouse.get_pos() 
