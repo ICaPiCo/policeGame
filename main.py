@@ -142,9 +142,35 @@ x1, y1, z1 = 100, 100, 100  # RGB values for color cycling text
 color = 0  # Color cycling animation parameter
 clock = pygame.time.Clock()  # Game clock for frame rate control
 
+class person:
+    
+    def __init__(self,mood,hair):
+        self.mood = mood
+        self.hair = hair
+    def build(self,posX,posY):
+        base = pygame.image.load("images/creation/basic guy.png")
+        image = pygame.image.load(f"images/creation/face_{self.mood}.png")
+        hair = pygame.image.load(f"images/creation/hair_{self.hair}.png")
+        surface = pygame.Surface((image.get_width(), image.get_height()))
+        surface.fill((255,255,255))
+        surface.blit(base, (0, 0))
+        surface.blit(image, (0, 0))
+        
+        surface.blit(hair, (0, 0))
+        screen.blit(surface, (posX, posY))
+    def genid(self):
+        id = {"face":self.mood,"hair":self.hair}
+        
 
+
+    
 # Main game loop
 while running:
+    
+    culprit = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
+    culprit1 = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
+    culprit2 = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
+    
     # Start menu loop
     while menu:
         color += 0.01  # Increment color animation parameter
@@ -183,6 +209,7 @@ while running:
         pygame.display.flip()
 
     # Display testimony text letter by letter
+    
     text = "Hello this is a test"
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
@@ -219,6 +246,7 @@ while running:
                     drawing = False
                 elif button_color_black.collidepoint(x, y):
                     brush_color = BLACK
+                    
                 elif button_color_white.collidepoint(x, y):
                     brush_color = WHITE
                 elif button_size_up.collidepoint(x, y):
@@ -260,11 +288,18 @@ while running:
     # Criminal comparison screen loop
     while isCriminal:
         screen.fill((0, 0, 0))
-        screen.blit(mugshot, (0, 0))
+        screen.blit(mugshot, (0, 0))    
+        culprit.build(0,0)
+        culprit1.build(SCREEN_WIDTH/3, 0)
+        culprit2.build(SCREEN_WIDTH/3*2, 0)
+        
+
+        
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
         doCriminal()  # Show the criminal image for comparison
         
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 isCriminal = False
