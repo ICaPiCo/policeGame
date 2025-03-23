@@ -147,9 +147,10 @@ clock = pygame.time.Clock()  # Game clock for frame rate control
 
 class person:
     alle = []
-    def __init__(self,mood,hair):
+    def __init__(self,mood,hair,name):
         self.mood = mood
         self.hair = hair
+        self.name = name
         person.alle.append(self)
     def build(self,posX,posY):
         base = pygame.image.load("images/creation/basic guy.png")
@@ -170,7 +171,8 @@ class person:
         elif self == culprit1:
             ct = font.render("Culprit 1", True, (128, 0, 128))
             surface.blit(ct, (200, 400))
-    
+        self.posX = posX
+        self.posY = posY
         screen.blit(surface, (posX, posY))
     def genid(self):
         id = {"face":self.mood,"hair":self.hair}
@@ -183,22 +185,33 @@ class person:
     def genText(self,id):
         text = f"Face: {id['face']}, Hair: {id['hair']}"
         return text
-
+    def clickGlow(self):
+        global selected_culprit
+        chr_rect = pygame.Rect(self.posX, self.posY, SCREEN_WIDTH/3, 5*SCREEN_HEIGHT/6)
+        mouse_pos = pygame.mouse.get_pos()
+        if chr_rect.collidepoint(mouse_pos) and not button_done.collidepoint(mouse_pos):
+            pygame.draw.rect(screen, (255, 0, 0), chr_rect, 5)
+            if  pygame.mouse.get_pressed()[0]:
+                pygame.draw.rect(screen, (255, 255, 0), chr_rect, 5)
+                selected_culprit = self
+                return selected_culprit
+                
 mood_options = ["angry", "happy","dumb","sunglasses"]
 hair_options = ["fluffy", "spicky", "pea","judge"]
 difficulty = 3
 # Main game loop
 while running:
-    
-    culprit = person(choice(mood_options), choice(hair_options))
+    person.alle = []
+    selected_culprit = None
+    culprit = person(choice(mood_options), choice(hair_options),"badguy")
     culprit_id  = culprit.genid()
     mood_weights = [difficulty if mood == culprit_id["face"] else 1 for mood in mood_options]
     hair_weights = [difficulty if hair == culprit_id["hair"] else 1 for hair in hair_options]
     mood_weights1 = [difficulty-1 if mood == culprit_id["face"] else 1 for mood in mood_options]
     hair_weights2 = [difficulty-1 if hair == culprit_id["hair"] else 1 for hair in hair_options]
     #print(f"culprit: {culprit_id}")
-    culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0])
-    culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0])
+    culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0],"littlebad")
+    culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"notsobad")
     a = culprit1.genid()
     b = culprit2.genid()
     ps = person.alle[:]  
@@ -240,6 +253,18 @@ while running:
 
     # Testimony scene animation - slide in from right
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
+    animation_speed = 40  # Higher number = faster animation
+    target_x = SCREEN_WIDTH / 3  # Target position
+
+    while testimonyPosX > target_x:
+        testimonyPosX = max(target_x, testimonyPosX - animation_speed)
+        drawBackground()
+        drawImage(testimony, testimonyPosX, testimonyPosY)
+        drawImage(table, 0, 0)
+        pygame.display.flip()
+        clock.tick(60)  
+    '''
+    testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
     a = SCREEN_WIDTH*2/3/20
     for i in range(int(a)):
         testimonyPosX -=20  # Move boss image left
@@ -247,7 +272,7 @@ while running:
         drawImage(testimony, testimonyPosX, testimonyPosY)
         drawImage(table, 0, 0)
         clock.tick(60)  # Limit to 60 FPS
-        pygame.display.flip()
+        pygame.display.flip()'''
 
 
 
@@ -289,6 +314,7 @@ while running:
             if event.type == pygame.QUIT:
                 drawing = False
                 running = False
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     drawing = False  # Exit the drawing loop
@@ -300,12 +326,14 @@ while running:
                 if event.key == pygame.K_SPACE:
                     canvas.fill(WHITE)
             elif event.type == pygame.MOUSEBUTTONDOWN:
+
                 D = True
                 x, y = event.pos
                 previous_pos = current_pos
-                # Handle button clicks
+        
                 if button_done.collidepoint(x, y):
                     drawing = False
+                    
                 elif button_color_black.collidepoint(x, y):
                     brush_color = BLACK
                 elif button_color_white.collidepoint(x, y):
@@ -340,11 +368,7 @@ while running:
         txt = font.render(str(current_pos),True,(255,255,255))
         
         screen.blit(drawText, (textX, textY))
-<<<<<<< HEAD
         
-=======
-        drawImage(table, 0, 0)
->>>>>>> f89579aec0723e4a93b1fe187e4e08a994a04fc3
         screen.blit(canvas, (screenX, screenY))
         screen.blit(txt, (0, 0))
         drawDone()
@@ -371,10 +395,14 @@ while running:
     while isCriminal:
         screen.fill((0, 0, 0))
         screen.blit(mugshot, (0, 0)) 
-        
+        selected_culprit = None
         for i, p in enumerate(ps):
             p.build(i * (SCREEN_WIDTH / 3), 0)
 
+        culprit.clickGlow()
+        culprit1.clickGlow()
+        culprit2.clickGlow()
+        
         '''
         culprit.build(0,0)
         culprit1.build(SCREEN_WIDTH/3, 0)
@@ -384,6 +412,8 @@ while running:
         
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
+        if not selected_culprit ==None:
+            break
         #doCriminal()  # Show the criminal image for comparison
         
 
@@ -401,7 +431,7 @@ while running:
                     sys.exit()  
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if button_done.collidepoint(x, y):
+                if button_done.collidepoint(x, y) and not selected_culprit == None:
                     isCriminal = False
         pygame.display.flip()
 
@@ -418,7 +448,7 @@ while running:
         pygame.display.flip()
 
     # Display boss feedback text letter by letter
-    text = "Nice Job "
+    text = f"Nice Job, you chose: {selected_culprit.name} "
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
     for i in text:
