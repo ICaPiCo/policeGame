@@ -59,7 +59,7 @@ boss = load_random_image("images/boss")  # Random boss image
 criminal = load_random_image("images/criminals")  # Random criminal image
 
 # Load and scale background image
-background = pygame.image.load("images/background.jpg")
+background = pygame.image.load("images/background.png")
 background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Load and scale mugshot image
@@ -246,7 +246,7 @@ while running:
         testimonyPosX -=20  # Move testimony image left
         drawBackground()
         drawImage(testimony, testimonyPosX, testimonyPosY)
-        drawImage(table, 0, SCREEN_HEIGHT/2)
+        drawImage(table, 0, 0)
         clock.tick(60)  # Limit to 60 FPS
         pygame.display.flip()
 
