@@ -4,6 +4,7 @@ from random import *
 import time
 import os
 from random import randint
+import sys
 
 os.system("cls")  # Clear console screen
 
@@ -151,7 +152,10 @@ class person:
         base = pygame.image.load("images/creation/basic guy.png")
         image = pygame.image.load(f"images/creation/face_{self.mood}.png")
         hair = pygame.image.load(f"images/creation/hair_{self.hair}.png")
-        surface = pygame.Surface((image.get_width(), image.get_height()))
+        base = pygame.transform.scale(base, (SCREEN_WIDTH/3, SCREEN_HEIGHT))
+        image = pygame.transform.scale(image, (SCREEN_WIDTH/3, SCREEN_HEIGHT))
+        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/3, SCREEN_HEIGHT))
+        surface = pygame.Surface((SCREEN_WIDTH/3, SCREEN_HEIGHT))
         surface.fill((255,255,255))
         surface.blit(base, (0, 0))
         surface.blit(image, (0, 0))
@@ -185,6 +189,11 @@ while running:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     menu = False  # Exit menu when space is pressed
+                if event.key == pygame.K_p:
+                    running = False
+                    menu = False
+                    pygame.quit()
+                    sys.exit()  
             if event.type == pygame.QUIT:
                 running = False
                 menu = False
@@ -200,8 +209,8 @@ while running:
 
     # Testimony scene animation - slide in from right
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
-    for i in range(int(SCREEN_WIDTH*2/3/5)):
-        testimonyPosX -= 5  # Move testimony image left
+    for i in range(int(SCREEN_WIDTH*2/3/20)):
+        testimonyPosX -=20  # Move testimony image left
         drawBackground()
         drawImage(testimony, testimonyPosX, testimonyPosY)
         drawImage(table, 0, SCREEN_HEIGHT/2)
@@ -239,6 +248,11 @@ while running:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     drawing = False  # Exit the drawing loop
+                if event.key == pygame.K_p:
+                    running = False
+                    menu = False
+                    pygame.quit()
+                    sys.exit()  
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 # Handle button clicks
@@ -307,6 +321,11 @@ while running:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     isCriminal = False  
+                if event.key == pygame.K_p:
+                    running = False
+                    menu = False
+                    pygame.quit()
+                    sys.exit()  
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if button_done.collidepoint(x, y):
@@ -318,8 +337,8 @@ while running:
     
     # Boss feedback scene animation - slide in from right
     bossPosX, bossPosY = SCREEN_WIDTH, 300
-    for i in range(int(SCREEN_WIDTH*2/3/5)):
-        bossPosX -= 5  # Move boss image left
+    for i in range(int(SCREEN_WIDTH*2/3/10)):
+        bossPosX -= 10  # Move boss image left
         screen.fill((20, 20, 20))
         drawImage(boss, bossPosX, bossPosY)
         clock.tick(60)  # Limit to 60 FPS
@@ -350,6 +369,11 @@ while running:
                 if event.key == pygame.K_ESCAPE:
                     playAgain = False
                     running = False
+                if event.key == pygame.K_p:
+                    running = False
+                    menu = False
+                    pygame.quit()
+                    sys.exit()  
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if button_done.collidepoint(x, y):
