@@ -144,38 +144,60 @@ color = 0  # Color cycling animation parameter
 clock = pygame.time.Clock()  # Game clock for frame rate control
 
 class person:
-    
+    alle = []
     def __init__(self,mood,hair):
         self.mood = mood
         self.hair = hair
+        person.alle.append(self)
     def build(self,posX,posY):
         base = pygame.image.load("images/creation/basic guy.png")
         image = pygame.image.load(f"images/creation/face_{self.mood}.png")
         hair = pygame.image.load(f"images/creation/hair_{self.hair}.png")
-        base = pygame.transform.scale(base, (SCREEN_WIDTH/3, SCREEN_HEIGHT))
-        image = pygame.transform.scale(image, (SCREEN_WIDTH/3, SCREEN_HEIGHT))
-        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/3, SCREEN_HEIGHT))
+        base = pygame.transform.scale(base, (SCREEN_WIDTH/3-1,5* SCREEN_HEIGHT/6))
+        image = pygame.transform.scale(image, (SCREEN_WIDTH/3-1,5* SCREEN_HEIGHT/6))
+        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/3-1, 5*SCREEN_HEIGHT/6))
         surface = pygame.Surface((SCREEN_WIDTH/3, SCREEN_HEIGHT))
         surface.fill((255,255,255))
+        surface.blit(mugshot,(0,0))
         surface.blit(base, (0, 0))
         surface.blit(image, (0, 0))
-        
         surface.blit(hair, (0, 0))
+        if self == culprit:
+            surface.blit(table, (0, 0))
         screen.blit(surface, (posX, posY))
     def genid(self):
         id = {"face":self.mood,"hair":self.hair}
-        
+        return id
+    def calculate_similarity(self,id2):
+        id1 = self.genid()  
+        id2 = id2.genid()
+        matches = sum(1 for key in id1 if id1[key] == id2[key])  # Count matching keys
+        return (matches / 2) * 100 
+    def genText(self,id):
+        text = f"Face: {id['face']}, Hair: {id['hair']}"
+        return text
 
-
-    
+mood_options = ["angry", "happy"]
+hair_options = ["fluffy", "spicky", "pea"]
+difficulty = 2
 # Main game loop
 while running:
     
     culprit = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
-    culprit1 = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
-    culprit2 = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
-    
+    culprit_id  = culprit.genid()
+    mood_weights = [difficulty if mood == culprit_id["face"] else 1 for mood in mood_options]
+    hair_weights = [difficulty if hair == culprit_id["hair"] else 1 for hair in hair_options]
+    #print(f"culprit: {culprit_id}")
+    culprit1 = person(choices(mood_options,mood_weights)[0], choices(hair_options,hair_weights)[0])
+    culprit2 = person(choices(mood_options,mood_weights)[0],  choices(hair_options,hair_weights)[0])
+    a = culprit1.genid()
+    b = culprit2.genid()
+    ps = person.alle[:]  
+    shuffle(ps)
+    #print(f"Are culprit2 and 3 similar?: {a},{b}<=>{culprit_id}")
+    #print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
     # Start menu loop
+    
     while menu:
         color += 0.01  # Increment color animation parameter
         screen.fill((0, 0, 0))  # Clear screen
@@ -275,7 +297,7 @@ while running:
         
         # Redraw the scene each frame
         drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY)
+        
         screen.blit(drawText, (textX, textY))
         drawImage(table, 0, SCREEN_HEIGHT/2)
         screen.blit(canvas, (screenX, screenY))
@@ -302,12 +324,17 @@ while running:
     # Criminal comparison screen loop
     while isCriminal:
         screen.fill((0, 0, 0))
-        screen.blit(mugshot, (0, 0))    
+        screen.blit(mugshot, (0, 0)) 
+        
+        for i, p in enumerate(ps):
+            p.build(i * (SCREEN_WIDTH / 3), 0)
+
+        '''
         culprit.build(0,0)
         culprit1.build(SCREEN_WIDTH/3, 0)
         culprit2.build(SCREEN_WIDTH/3*2, 0)
         
-
+'''
         
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
