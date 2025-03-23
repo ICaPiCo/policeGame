@@ -129,8 +129,12 @@ def drawDone():
 def doCriminal():
     """Draw the criminal image in the comparison screen."""
     screen.blit(criminal, (SCREEN_WIDTH/4, SCREEN_HEIGHT/2.5))
-
-
+def dict_to_text(dictionary):
+    """Convert a dictionary to a formatted text string."""
+    text = ""
+    for key, value in dictionary.items():
+        text += f"{key}: {value}\n"
+    return text.strip()
 # Game state variables
 running = True  # Main game loop flag
 menu = True  # Start menu state
@@ -240,8 +244,8 @@ while running:
         pygame.display.flip()
 
     # Display testimony text letter by letter
-    
-    text = "Hello this is a test"
+   
+    text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
     for i in text:
@@ -262,7 +266,19 @@ while running:
     pygame.display.flip()
 
     # Drawing interface loop
+    thickness = 3
+    last_thickness = thickness
+    previous_pos = pygame.mouse.get_pos()
+    deltaX, deltaY = 0, 0
+    D = False
     while drawing:
+        current_pos = pygame.mouse.get_pos()
+        deltaX, deltaY = pygame.mouse.get_rel()
+        distance = sqrt(deltaX**2 + deltaY**2)
+        thickness = max(3, distance * 0.29) 
+        
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 drawing = False
@@ -275,32 +291,52 @@ while running:
                     menu = False
                     pygame.quit()
                     sys.exit()  
+                if event.key == pygame.K_SPACE:
+                    canvas.fill(WHITE)
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                D = True
                 x, y = event.pos
+                previous_pos = current_pos
                 # Handle button clicks
                 if button_done.collidepoint(x, y):
                     drawing = False
                 elif button_color_black.collidepoint(x, y):
                     brush_color = BLACK
-                    
                 elif button_color_white.collidepoint(x, y):
                     brush_color = WHITE
                 elif button_size_up.collidepoint(x, y):
-                    brush_size = min(20, brush_size + 2)  # Increase brush size with upper limit
+                    last_thickness = min(30, last_thickness + 1)  # Increase brush size with upper limit
                 elif button_size_down.collidepoint(x, y):
-                    brush_size = max(2, brush_size - 2)  # Decrease brush size with lower limit
+                    last_thickness = max(2, brush_size - 1)  # Decrease brush size with lower limit
+            elif event.type ==pygame.MOUSEBUTTONUP:
+                D = False
+                
+
+                
             elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
-                # Draw on canvas when mouse is moved with button pressed
                 x, y = event.pos
-                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT:
-                    pygame.draw.circle(canvas, brush_color, (x - screenX, y - screenY), brush_size)
+                
+                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT and D:
+                    if distance > 0.1:
+                        # Convert screen coordinates to canvas coordinates
+                        canvas_x1, canvas_y1 = previous_pos[0] - screenX, previous_pos[1] - screenY
+                        canvas_x2, canvas_y2 = x - screenX, y - screenY
+            
+            # Draw on the canvas with canvas coordinates
+                        pygame.draw.line(canvas, brush_color, (canvas_x1, canvas_y1), (canvas_x2, canvas_y2), int(last_thickness))
+                        previous_pos = (x, y)
+                        last_thickness = last_thickness * 0.7 + thickness * 0.3
+                      
+        
         
         # Redraw the scene each frame
         drawBackground()
+        txt = font.render(str(current_pos),True,(255,255,255))
         
         screen.blit(drawText, (textX, textY))
         drawImage(table, 0, SCREEN_HEIGHT/2)
         screen.blit(canvas, (screenX, screenY))
+        screen.blit(txt, (0, 0))
         drawDone()
         drawButtons()
         
