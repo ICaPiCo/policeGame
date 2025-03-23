@@ -340,7 +340,11 @@ while running:
         txt = font.render(str(current_pos),True,(255,255,255))
         
         screen.blit(drawText, (textX, textY))
+<<<<<<< HEAD
         
+=======
+        drawImage(table, 0, 0)
+>>>>>>> f89579aec0723e4a93b1fe187e4e08a994a04fc3
         screen.blit(canvas, (screenX, screenY))
         screen.blit(txt, (0, 0))
         drawDone()
@@ -447,6 +451,11 @@ while running:
                 x, y = event.pos
                 if button_done.collidepoint(x, y):
                     playAgain = False
+
+    drawing = True  # Drawing mode state
+    isCriminal = True  # Criminal comparison state
+    bossSpeech = True  # Boss feedback state
+    playAgain = True  # Play again prompt state
 
 # Quit pygame when game is done
 pygame.quit()
