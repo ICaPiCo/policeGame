@@ -263,18 +263,7 @@ while running:
         drawImage(table, 0, 0)
         pygame.display.flip()
         clock.tick(60)  
-    '''
-    testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
-    a = SCREEN_WIDTH*2/3/20
-    for i in range(int(a)):
-        testimonyPosX -=20  # Move boss image left
-        drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY)
-        drawImage(table, 0, 0)
-        clock.tick(60)  # Limit to 60 FPS
-        pygame.display.flip()'''
-
-
+  
 
     text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
     newtext = ""
