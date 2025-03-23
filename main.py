@@ -21,7 +21,7 @@ screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize, SCREEN_HEIGHT/overSize
 borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
-screenX, screenY = ((3*SCREEN_WIDTH)/overSize)-borderPatrol, ((3*SCREEN_HEIGHT)/overSize)-borderPatrol  # Canvas position
+screenX, screenY = (((3*SCREEN_WIDTH)/overSize)-90)-borderPatrol, (((3*SCREEN_HEIGHT)/overSize)-130)-borderPatrol  # Canvas position
 
 
 def load_random_image(folder_path):
@@ -59,7 +59,7 @@ boss = load_random_image("images/boss")  # Random boss image
 criminal = load_random_image("images/criminals")  # Random criminal image
 
 # Load and scale background image
-background = pygame.image.load("images/background.jpg")
+background = pygame.image.load("images/background.png")
 background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Load and scale mugshot image
@@ -94,9 +94,7 @@ font = pygame.font.SysFont(None, int(SCREEN_HEIGHT/20))
 
 def drawBackground():
     """Draw the background image to the screen."""
-    width, height = background.get_size()
     screen.blit(background, (0, 0))
-
 
 def drawImage(image, positionX, positionY):
     """
@@ -215,7 +213,7 @@ while running:
         
         # Create color-cycling "Press space to start" text
         menu_text = font.render("Press space to start", True, (x1, y1, z1))
-        screen.blit(menu_text, (SCREEN_WIDTH/2-200, (SCREEN_HEIGHT/2)+200))
+        screen.blit(menu_text, (SCREEN_WIDTH/2-200, (SCREEN_HEIGHT/2)+250))
         
         # Event handling
         for event in pygame.event.get():   
@@ -242,16 +240,17 @@ while running:
 
     # Testimony scene animation - slide in from right
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
-    for i in range(int(SCREEN_WIDTH*2/3/20)):
-        testimonyPosX -=20  # Move testimony image left
+    a = SCREEN_WIDTH*2/3/20
+    for i in range(int(a)):
+        testimonyPosX -=20  # Move boss image left
         drawBackground()
         drawImage(testimony, testimonyPosX, testimonyPosY)
-        drawImage(table, 0, SCREEN_HEIGHT/2)
+        drawImage(table, 0, 0)
         clock.tick(60)  # Limit to 60 FPS
         pygame.display.flip()
 
-    # Display testimony text letter by letter
-   
+
+
     text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
@@ -341,7 +340,7 @@ while running:
         txt = font.render(str(current_pos),True,(255,255,255))
         
         screen.blit(drawText, (textX, textY))
-        drawImage(table, 0, SCREEN_HEIGHT/2)
+        
         screen.blit(canvas, (screenX, screenY))
         screen.blit(txt, (0, 0))
         drawDone()
