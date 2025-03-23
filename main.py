@@ -206,7 +206,7 @@ while running:
     ps = person.alle[:]  
     shuffle(ps)
     #print(f"Are culprit2 and 3 similar?: {a},{b}<=>{culprit_id}")
-    print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
+    #print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
     # Start menu loop
     
     while menu:
