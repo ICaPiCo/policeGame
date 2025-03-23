@@ -167,7 +167,12 @@ class person:
         surface.blit(image, (0, 0))
         surface.blit(hair, (0, 0))
         if self == culprit:
-            surface.blit(table, (0, 0))
+            ct = font.render("Culprit",True,(128,0,128))
+            surface.blit(ct, (200, 400))
+        elif self == culprit1:
+            ct = font.render("Culprit 1", True, (128, 0, 128))
+            surface.blit(ct, (200, 400))
+    
         screen.blit(surface, (posX, posY))
     def genid(self):
         id = {"face":self.mood,"hair":self.hair}
@@ -175,31 +180,33 @@ class person:
     def calculate_similarity(self,id2):
         id1 = self.genid()  
         id2 = id2.genid()
-        matches = sum(1 for key in id1 if id1[key] == id2[key])  # Count matching keys
+        matches = sum(1 for thing in id1 if id1[thing] == id2[thing])  # Count matching keys
         return (matches / 2) * 100 
     def genText(self,id):
         text = f"Face: {id['face']}, Hair: {id['hair']}"
         return text
 
-mood_options = ["angry", "happy"]
-hair_options = ["fluffy", "spicky", "pea"]
-difficulty = 2
+mood_options = ["angry", "happy","dumb","sunglasses"]
+hair_options = ["fluffy", "spicky", "pea","judge"]
+difficulty = 3
 # Main game loop
 while running:
     
-    culprit = person(choice(["angry","happy"]), choice(["fluffy","spicky","pea"]))
+    culprit = person(choice(mood_options), choice(hair_options))
     culprit_id  = culprit.genid()
     mood_weights = [difficulty if mood == culprit_id["face"] else 1 for mood in mood_options]
     hair_weights = [difficulty if hair == culprit_id["hair"] else 1 for hair in hair_options]
+    mood_weights1 = [difficulty-1 if mood == culprit_id["face"] else 1 for mood in mood_options]
+    hair_weights2 = [difficulty-1 if hair == culprit_id["hair"] else 1 for hair in hair_options]
     #print(f"culprit: {culprit_id}")
-    culprit1 = person(choices(mood_options,mood_weights)[0], choices(hair_options,hair_weights)[0])
-    culprit2 = person(choices(mood_options,mood_weights)[0],  choices(hair_options,hair_weights)[0])
+    culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0])
+    culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0])
     a = culprit1.genid()
     b = culprit2.genid()
     ps = person.alle[:]  
     shuffle(ps)
     #print(f"Are culprit2 and 3 similar?: {a},{b}<=>{culprit_id}")
-    #print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
+    print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
     # Start menu loop
     
     while menu:
@@ -374,7 +381,7 @@ while running:
         
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
-        doCriminal()  # Show the criminal image for comparison
+        #doCriminal()  # Show the criminal image for comparison
         
 
         for event in pygame.event.get():
