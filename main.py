@@ -24,6 +24,20 @@ borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
 screenX, screenY = (((3*SCREEN_WIDTH)/overSize)-90)-borderPatrol, (((3*SCREEN_HEIGHT)/overSize)-130)-borderPatrol  # Canvas position
 
 
+def load_random_font(folder_path):
+    """
+    Load a random font from the specified folder.
+
+    Args:
+        folder_path (str): Path to the folder containing fonts
+
+    Returns:
+        Font: Randomly selected font, or None if failed
+    """
+    fonts = [f for f in os.listdir(folder_path)]
+    random_font = choice(fonts)
+    return (os.path.join(folder_path, random_font))
+
 def load_random_image(folder_path):
     """
     Load a random image from the specified folder.
@@ -33,11 +47,7 @@ def load_random_image(folder_path):
         
     Returns:
         Surface: Randomly selected image as pygame Surface, or None if failed
-    """
-    if not os.path.exists(folder_path):
-        print(f"Error: The directory '{folder_path}' does not exist!")
-        return None
-        
+    """    
     image_files = [f for f in os.listdir(folder_path)]
     
     if not image_files:
@@ -88,9 +98,6 @@ button_size_up = pygame.Rect(screenX+200+Space, screenY+10, 100, 40)  # Increase
 button_size_down = pygame.Rect(screenX+300+Space, screenY+10, 100, 40)  # Decrease brush size button
 button_done = pygame.Rect(screenX+400+Space, screenY+350, 100, 40)  # Done/Continue button
 
-# Set up font
-font = pygame.font.SysFont(None, int(SCREEN_HEIGHT/20))
-
 
 def drawBackground():
     """Draw the background image to the screen."""
@@ -107,7 +114,6 @@ def drawImage(image, positionX, positionY):
     """
     screen.blit(image, (positionX, positionY))
 
-
 def drawButtons():
     """Draw all the drawing tool buttons (colors and brush sizes)."""
     pygame.draw.rect(screen, BLACK, button_color_black)
@@ -118,21 +124,21 @@ def drawButtons():
     screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3), screenY+10))
     screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3), screenY+10))
 
-
 def drawDone():
     """Draw the green 'Done' button."""
     pygame.draw.rect(screen, GREEN, button_done)
  
-
 def doCriminal():
     """Draw the criminal image in the comparison screen."""
     screen.blit(criminal, (SCREEN_WIDTH/4, SCREEN_HEIGHT/2.5))
+
 def dict_to_text(dictionary):
     """Convert a dictionary to a formatted text string."""
     text = ""
     for key, value in dictionary.items():
         text += f"{key}: {value}\n"
     return text.strip()
+
 # Game state variables
 running = True  # Main game loop flag
 menu = True  # Start menu state
@@ -183,7 +189,7 @@ class person:
         matches = sum(1 for thing in id1 if id1[thing] == id2[thing])  # Count matching keys
         return (matches / 2) * 100 
     def genText(self,id):
-        text = f"Face: {id['face']}, Hair: {id['hair']}"
+        text = "Face: ",id['face'],", Hair: ",id['hair']
         return text
     def clickGlow(self):
         global selected_culprit
@@ -199,8 +205,10 @@ class person:
 mood_options = ["angry", "happy","dumb","sunglasses"]
 hair_options = ["fluffy", "spicky", "pea","judge"]
 difficulty = 3
+
 # Main game loop
 while running:
+
     person.alle = []
     selected_culprit = None
     culprit = person(choice(mood_options), choice(hair_options),"badguy")
@@ -220,10 +228,12 @@ while running:
     #print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
     # Start menu loop
     
+    font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT/20))
+
     while menu:
         color += 0.01  # Increment color animation parameter
         screen.fill((0, 0, 0))  # Clear screen
-        
+
         # Create color-cycling "Press space to start" text
         menu_text = font.render("Press space to start", True, (x1, y1, z1))
         screen.blit(menu_text, (SCREEN_WIDTH/2-200, (SCREEN_HEIGHT/2)+250))
@@ -255,6 +265,7 @@ while running:
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
     animation_speed = 40  # Higher number = faster animation
     target_x = SCREEN_WIDTH / 3  # Target position
+    font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT/20))
 
     while testimonyPosX > target_x:
         testimonyPosX = max(target_x, testimonyPosX - animation_speed)
@@ -401,7 +412,7 @@ while running:
         
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
-        if not selected_culprit ==None:
+        if not selected_culprit == None:
             break
         #doCriminal()  # Show the criminal image for comparison
         
@@ -438,6 +449,10 @@ while running:
 
     # Display boss feedback text letter by letter
     text = f"Nice Job, you chose: {selected_culprit.name} "
+    if slelected_culprit == "badguy":
+        score += 1
+        combo += 1
+    else: combo = 0
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
     for i in text:
