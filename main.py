@@ -13,7 +13,7 @@ pygame.init()
 drawing = False
 streak = 0
 combo = 0
-
+Space = 20
 # Screen settings
 overSize = 4  # Scaling factor for canvas relative to screen size
 pygame.display.set_caption("Drawn To Justice")
@@ -23,8 +23,12 @@ CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize, SCREEN_HEIGHT/overSize
 CANVAS_WIDTH, CANVAS_HEIGHT = CANVAS_WIDTH*1.35,CANVAS_HEIGHT*1.25
 borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
 screenX, screenY = (((3*SCREEN_WIDTH)/overSize)-95)-borderPatrol, (((3*SCREEN_HEIGHT)/overSize)-175)-borderPatrol  # Canvas position
-
-
+button_color_black = pygame.Rect((screenX+Space), (screenY+10), 100, 40)  # Black color button
+button_color_white_outline = pygame.Rect(screenX+100+Space, (screenY+10), 100, 40)  # White color button outline
+button_color_white = pygame.Rect(screenX+100+Space+5, screenY+10+5, 90, 30)  # White color button inner part
+button_size_up = pygame.Rect(screenX+200+Space, screenY+10, 100, 40)  # Increase brush size button
+button_size_down = pygame.Rect(screenX+300+Space, screenY+10, 100, 40)  # Decrease brush size button
+button_done = pygame.Rect(screenX+400+Space, screenY+350, 100, 40)
 def load_random_font(folder_path):
     """
     Load a random font from the specified folder.
@@ -71,8 +75,7 @@ criminal = load_random_image("images/criminals")  # Random criminal image
 
 # Load and scale background image
 background = pygame.image.load("images/background.png")
-background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
-
+background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_HEIGHT )))
 # Load and scale mugshot image
 mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -93,19 +96,18 @@ brush_size = 5
 
 # Define UI button rectangles for collision detection
 Space = 20  # Spacing between buttons
-button_color_black = pygame.Rect(screenX+Space, screenY+10, 100, 40)  # Black color button
-button_color_white_outline = pygame.Rect(screenX+100+Space, screenY+10, 100, 40)  # White color button outline
-button_color_white = pygame.Rect(screenX+100+Space+5, screenY+10+5, 90, 30)  # White color button inner part
-button_size_up = pygame.Rect(screenX+200+Space, screenY+10, 100, 40)  # Increase brush size button
-button_size_down = pygame.Rect(screenX+300+Space, screenY+10, 100, 40)  # Decrease brush size button
-button_done = pygame.Rect(screenX+400+Space, screenY+350, 100, 40)  # Done/Continue button
+  # Done/Continue button
 
 
 def drawBackground():
     """Draw the background image to the screen."""
-    screen.blit(background, (0, 0))
+    mx,my = pygame.mouse.get_pos()
+    
+    x = 0-(((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*0.7)
+    y = 0-(((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*0.7)
+    screen.blit(background, (x,y))
 
-def drawImage(image, positionX, positionY):
+def drawImage(image, positionX, positionY,layer):
     """
     Draw an image at the specified position.
     
@@ -114,17 +116,26 @@ def drawImage(image, positionX, positionY):
         positionX (int): X-coordinate for image placement
         positionY (int): Y-coordinate for image placement
     """
+    mx,my = pygame.mouse.get_pos()
+    positionX-=(((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*layer)
+   
+    positionY-=(((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*layer) 
     screen.blit(image, (positionX, positionY))
 
 def drawButtons():
     """Draw all the drawing tool buttons (colors and brush sizes)."""
+    mx,my = pygame.mouse.get_pos()
     pygame.draw.rect(screen, BLACK, button_color_black)
     pygame.draw.rect(screen, BLACK, button_color_white_outline)
     pygame.draw.rect(screen, WHITE, button_color_white)
     pygame.draw.rect(screen, BLACK, button_size_up)
     pygame.draw.rect(screen, BLACK, button_size_down)
-    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3), screenY+10))
-    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3), screenY+10))
+    parallax_x = int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05 * SCREEN_WIDTH * 2))
+    parallax_y = int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05 * SCREEN_HEIGHT * 2))
+
+    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3) + parallax_x, screenY+10 + parallax_y))
+    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3) + parallax_x, screenY+10 + parallax_y))
+    
 
 def drawDone():
     """Draw the green 'Done' button."""
@@ -288,8 +299,8 @@ while running:
     while testimonyPosX > target_x:
         testimonyPosX = max(target_x, testimonyPosX - animation_speed)
         drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY)
-        drawImage(table, 0, 0)
+        drawImage(testimony, testimonyPosX, testimonyPosY,1)
+        drawImage(table, 0, 0,2)
         pygame.display.flip()
         clock.tick(60)  
   
@@ -309,7 +320,7 @@ while running:
     canvas.fill(WHITE)
     
     # Draw initial canvas and UI
-    screen.blit(canvas, (screenX, screenY))
+    
     drawDone()
     drawButtons()
     pygame.display.flip()
@@ -326,6 +337,8 @@ while running:
         distance = sqrt(deltaX**2 + deltaY**2)
         thickness = max(3, distance * 0.29) 
         
+        
+        #((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*layer
 
 
         for event in pygame.event.get():
@@ -383,11 +396,25 @@ while running:
         
         # Redraw the scene each frame
         drawBackground()
-        drawImage(table, 0, 0)
-        drawImage(testimony, testimonyPosX, testimonyPosY)
+        drawImage(testimony, testimonyPosX, testimonyPosY,1)
+        drawImage(table, 0, 0,2)
+        mx,my = pygame.mouse.get_pos()
+        
+        canvasX = screenX + int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*2))
+        canvasY = screenY + int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*2))
+        screen.blit(canvas, (canvasX, canvasY))
+        parallax_x = int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05 * SCREEN_WIDTH * 2))
+        parallax_y = int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05 * SCREEN_HEIGHT * 2))
+
+        button_color_black = pygame.Rect(screenX + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
+        button_color_white_outline = pygame.Rect(screenX + 100 + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
+        button_color_white = pygame.Rect(screenX + 100 + Space + 5 + parallax_x, screenY + 10 + 5 + parallax_y, 90, 30)
+        button_size_up = pygame.Rect(screenX + 200 + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
+        button_size_down = pygame.Rect(screenX + 300 + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
         txt = font.render(str(current_pos),True,(255,255,255))
         screen.blit(drawText, (textX, textY))
-        screen.blit(canvas, (screenX, screenY))
+        #screen.blit(canvas, (screenX, screenY))
+        
         screen.blit(txt, (0, 0))
         drawDone()
         drawButtons()
@@ -462,7 +489,7 @@ while running:
     for i in range(int(SCREEN_WIDTH*2/3/10)):
         bossPosX -= 10  # Move boss image left
         screen.fill((20, 20, 20))
-        drawImage(boss, bossPosX, bossPosY)
+        drawImage(boss, bossPosX, bossPosY,1)
         clock.tick(60)  # Limit to 60 FPS
         pygame.display.flip()
 
