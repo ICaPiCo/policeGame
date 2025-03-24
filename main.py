@@ -158,13 +158,15 @@ class person:
         self.hair = hair
         self.name = name
         person.alle.append(self)
-    def build(self,posX,posY):
+    def build(self,posX,posY,difficulty):
         base = pygame.image.load("images/creation/basic guy.png")
         image = pygame.image.load(f"images/creation/face_{self.mood}.png")
         hair = pygame.image.load(f"images/creation/hair_{self.hair}.png")
-        base = pygame.transform.scale(base, (SCREEN_WIDTH/3-1,5* SCREEN_HEIGHT/6))
-        image = pygame.transform.scale(image, (SCREEN_WIDTH/3-1,5* SCREEN_HEIGHT/6))
-        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/3-1, 5*SCREEN_HEIGHT/6))
+        if difficulty>4:
+            difficulty = 4
+        base = pygame.transform.scale(base, (SCREEN_WIDTH/difficulty-1,3* SCREEN_HEIGHT/6))
+        image = pygame.transform.scale(image, (SCREEN_WIDTH/difficulty-1,3* SCREEN_HEIGHT/6))
+        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/difficulty-1, 3*SCREEN_HEIGHT/6))
         surface = pygame.Surface((SCREEN_WIDTH/3, SCREEN_HEIGHT))
         surface.fill((255,255,255))
         surface.blit(mugshot,(0,0))
@@ -191,9 +193,11 @@ class person:
     def genText(self,id):
         text = "Face: ",id['face'],", Hair: ",id['hair']
         return text
-    def clickGlow(self):
+    def clickGlow(self,difficulty):
         global selected_culprit
-        chr_rect = pygame.Rect(self.posX, self.posY, SCREEN_WIDTH/3, 5*SCREEN_HEIGHT/6)
+        if difficulty>4:
+            difficulty = 4
+        chr_rect = pygame.Rect(self.posX, self.posY, SCREEN_WIDTH/difficulty, 3*SCREEN_HEIGHT/6)
         mouse_pos = pygame.mouse.get_pos()
         if chr_rect.collidepoint(mouse_pos) and not button_done.collidepoint(mouse_pos):
             pygame.draw.rect(screen, (255, 0, 0), chr_rect, 5)
@@ -208,7 +212,7 @@ difficulty = 3
 
 # Main game loop
 while running:
-
+    
     person.alle = []
     selected_culprit = None
     culprit = person(choice(mood_options), choice(hair_options),"badguy")
@@ -218,12 +222,25 @@ while running:
     mood_weights1 = [difficulty-1 if mood == culprit_id["face"] else 1 for mood in mood_options]
     hair_weights2 = [difficulty-1 if hair == culprit_id["hair"] else 1 for hair in hair_options]
     #print(f"culprit: {culprit_id}")
+    culprits = []
+    
     culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0],"littlebad")
     culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"notsobad")
-    a = culprit1.genid()
-    b = culprit2.genid()
-    ps = person.alle[:]  
-    shuffle(ps)
+    culprit3 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"VERYBADCHOICE")
+    culprit4 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"VERYVERYBADCHOICE")
+    culprit5 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"Culprit5")
+    culprit6 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"Culprit6")
+    culprit7 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"Culprit7")
+    available = [culprit,culprit1,culprit2,culprit3,culprit4,culprit5,culprit6,culprit7]
+    for i in range(difficulty):
+        if i<len(available):
+            culprits.append(available[i])
+        else:
+            break
+    
+    #a = culprit1.genid()
+    #b = culprit2.genid()
+    shuffle(culprits)
     #print(f"Are culprit2 and 3 similar?: {a},{b}<=>{culprit_id}")
     #print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
     # Start menu loop
@@ -396,12 +413,13 @@ while running:
         screen.fill((0, 0, 0))
         screen.blit(mugshot, (0, 0)) 
         selected_culprit = None
-        for i, p in enumerate(ps):
-            p.build(i * (SCREEN_WIDTH / 3), 0)
+        for i,p in enumerate(culprits):
 
-        culprit.clickGlow()
-        culprit1.clickGlow()
-        culprit2.clickGlow()
+            p.build(((i%4) * (SCREEN_WIDTH / 4)),(i//4)*(SCREEN_HEIGHT/2),difficulty)
+
+        for i,p in enumerate(culprits):
+            p.clickGlow(difficulty)
+       
         
         '''
         culprit.build(0,0)
@@ -497,6 +515,6 @@ while running:
     isCriminal = True  # Criminal comparison state
     bossSpeech = True  # Boss feedback state
     playAgain = True  # Play again prompt state
-
+    difficulty +=1
 # Quit pygame when game is done
 pygame.quit()
