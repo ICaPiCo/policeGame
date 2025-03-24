@@ -11,7 +11,7 @@ os.system("cls")  # Clear console screen
 # Initialize pygame
 pygame.init()
 drawing = False
-score = 0
+streak = 0
 combo = 0
 
 # Screen settings
@@ -466,11 +466,18 @@ while running:
         pygame.display.flip()
 
     # Display boss feedback text letter by letter
-    text = f"Nice Job, you chose: {selected_culprit.name} "
     if selected_culprit == "badguy":
-        score += 1
+        streak += 1
         combo += 1
-    else: combo = 0
+        score = streak*(combo)
+        text = f"Nice Job, you chose the right culprit and you have a score of: {score}"
+    else: 
+        combo = 0
+        score = streak*(combo)
+        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name} and thus have a score of: {score}"
+    
+    
+
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
     for i in text:
