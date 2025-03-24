@@ -384,6 +384,7 @@ while running:
         # Redraw the scene each frame
         drawBackground()
         drawImage(table, 0, 0)
+        drawImage(testimony, testimonyPosX, testimonyPosY)
         txt = font.render(str(current_pos),True,(255,255,255))
         screen.blit(drawText, (textX, textY))
         screen.blit(canvas, (screenX, screenY))
