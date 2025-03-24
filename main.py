@@ -20,8 +20,9 @@ pygame.display.set_caption("Drawn To Justice")
 screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
 CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize, SCREEN_HEIGHT/overSize
+CANVAS_WIDTH, CANVAS_HEIGHT = CANVAS_WIDTH*1.35,CANVAS_HEIGHT*1.25
 borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
-screenX, screenY = (((3*SCREEN_WIDTH)/overSize)-90)-borderPatrol, (((3*SCREEN_HEIGHT)/overSize)-130)-borderPatrol  # Canvas position
+screenX, screenY = (((3*SCREEN_WIDTH)/overSize)-95)-borderPatrol, (((3*SCREEN_HEIGHT)/overSize)-175)-borderPatrol  # Canvas position
 
 
 def load_random_font(folder_path):
@@ -76,6 +77,7 @@ background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+empty = pygame.image.load("images/empty.png")
 # Load and scale table image
 table = pygame.image.load("images/table.png")
 table = pygame.transform.scale(table, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -164,12 +166,11 @@ class person:
         hair = pygame.image.load(f"images/creation/hair_{self.hair}.png")
         if difficulty>4:
             difficulty = 4
-        base = pygame.transform.scale(base, (SCREEN_WIDTH/difficulty-1,3* SCREEN_HEIGHT/6))
-        image = pygame.transform.scale(image, (SCREEN_WIDTH/difficulty-1,3* SCREEN_HEIGHT/6))
-        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/difficulty-1, 3*SCREEN_HEIGHT/6))
-        surface = pygame.Surface((SCREEN_WIDTH/3, SCREEN_HEIGHT))
-        surface.fill((255,255,255))
-        surface.blit(mugshot,(0,0))
+        base = pygame.transform.scale(base, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
+        image = pygame.transform.scale(image, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
+        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
+        surface = pygame.Surface((SCREEN_WIDTH/4, SCREEN_HEIGHT/2))
+        surface.blit(empty,(0,0))
         surface.blit(base, (0, 0))
         surface.blit(image, (0, 0))
         surface.blit(hair, (0, 0))
@@ -197,7 +198,7 @@ class person:
         global selected_culprit
         if difficulty>4:
             difficulty = 4
-        chr_rect = pygame.Rect(self.posX, self.posY, SCREEN_WIDTH/difficulty, 3*SCREEN_HEIGHT/6)
+        chr_rect = pygame.Rect(self.posX, self.posY, SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/6)
         mouse_pos = pygame.mouse.get_pos()
         if chr_rect.collidepoint(mouse_pos) and not button_done.collidepoint(mouse_pos):
             pygame.draw.rect(screen, (255, 0, 0), chr_rect, 5)
@@ -382,10 +383,9 @@ while running:
         
         # Redraw the scene each frame
         drawBackground()
+        drawImage(table, 0, 0)
         txt = font.render(str(current_pos),True,(255,255,255))
-        
         screen.blit(drawText, (textX, textY))
-        
         screen.blit(canvas, (screenX, screenY))
         screen.blit(txt, (0, 0))
         drawDone()
