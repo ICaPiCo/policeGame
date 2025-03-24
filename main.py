@@ -449,7 +449,7 @@ while running:
 
     # Display boss feedback text letter by letter
     text = f"Nice Job, you chose: {selected_culprit.name} "
-    if slelected_culprit == "badguy":
+    if selected_culprit == "badguy":
         score += 1
         combo += 1
     else: combo = 0
