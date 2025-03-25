@@ -5,6 +5,7 @@ import time
 import os
 from random import randint
 import sys
+from math import hypot
 
 os.system("cls")  # Clear console screen
 
@@ -163,25 +164,49 @@ clock = pygame.time.Clock()  # Game clock for frame rate control
 
 class person:
     alle = []
-    def __init__(self,mood,hair,name):
+    
+    def __init__(self,mood,hair,mouth,eyes,ears,nose,name):
         self.mood = mood
         self.hair = hair
-        self.name = name
+        self.mouth = mouth 
+        self.eyes = eyes
+        self.ears = ears 
+        self.name = name 
+        self.nose = nose
+        self.surface = None  # Store pre-built sprite
+        screen.fill((0, 0, 0))  # Clear screen
+        loading_text = font.render("Loading...", True, (255, 255, 255))
+        screen.blit(loading_text, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2))
+        pygame.display.update()  # Refresh the screen
         person.alle.append(self)
+        ''' 
+        INEEFFICIENT:
     def build(self,posX,posY,difficulty):
-        base = pygame.image.load("images/creation/basic guy.png")
-        image = pygame.image.load(f"images/creation/face_{self.mood}.png")
-        hair = pygame.image.load(f"images/creation/hair_{self.hair}.png")
+        #base = pygame.image.load("images/Civilians/basic guy.png")
+        image = pygame.image.load(f"images/Civilians/face_{self.mood}.png")
+        hair = pygame.image.load(f"images/Civilians/hair_{self.hair}.png")
+        eyes = pygame.image.load(f"images/Civilians/eyes_{self.eyes}.png")
+        nose = pygame.image.load(f"images/Civilians/nose_{self.nose}.png")
+        mouth = pygame.image.load(f"images/Civilians/mouth_{self.mouth}.png")
+        ears = pygame.image.load(f"images/Civilians/ears_{self.ears}.png")
         if difficulty>4:
             difficulty = 4
-        base = pygame.transform.scale(base, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
+        #base = pygame.transform.scale(base, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
         image = pygame.transform.scale(image, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
         hair = pygame.transform.scale(hair, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
+        eyes = pygame.transform.scale(eyes, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
+        nose = pygame.transform.scale(nose, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
+        mouth = pygame.transform.scale(mouth, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
+        ears = pygame.transform.scale(ears, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
         surface = pygame.Surface((SCREEN_WIDTH/4, SCREEN_HEIGHT/2))
         surface.blit(empty,(0,0))
-        surface.blit(base, (0, 0))
+        #surface.blit(base, (0, 0))
         surface.blit(image, (0, 0))
         surface.blit(hair, (0, 0))
+        surface.blit(eyes, (0, 0))
+        surface.blit(nose, (0, 0))
+        surface.blit(mouth, (0, 0))
+        surface.blit(ears, (0, 0))
         if self == culprit:
             ct = font.render("Culprit",True,(128,0,128))
             surface.blit(ct, (200, 400))
@@ -191,8 +216,58 @@ class person:
         self.posX = posX
         self.posY = posY
         screen.blit(surface, (posX, posY))
+        '''
+
+        # Load and scale assets once
+        self.load_assets()
+
+    def load_assets(self):
+        """Loads and scales assets once to improve performance."""
+        self.images = {
+            "face": pygame.image.load(f"images/Civilians/face_{self.mood}.png").convert_alpha(),
+            "hair": pygame.image.load(f"images/Civilians/hair_{self.hair}.png").convert_alpha(),
+            "eyes": pygame.image.load(f"images/Civilians/eyes_{self.eyes}.png").convert_alpha(),
+            "nose": pygame.image.load(f"images/Civilians/nose_{self.nose}.png").convert_alpha(),
+            "mouth": pygame.image.load(f"images/Civilians/mouth_{self.mouth}.png").convert_alpha(),
+            "ears": pygame.image.load(f"images/Civilians/ears_{self.ears}.png").convert_alpha(),
+        }
+
+        # Scale images once
+        
+        size = (SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2)        
+        for key in self.images:
+            self.images[key] = pygame.transform.scale(self.images[key], size)
+
+        # Pre-render the character's surface
+        self.render_character()
+
+    def render_character(self):
+        """Creates and stores the character's final surface."""
+        self.surface = pygame.Surface((SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2), pygame.SRCALPHA)
+        self.surface.fill((0, 0, 0, 0))  # Transparent background
+
+        # Draw all parts
+        for img in self.images.values():
+            self.surface.blit(img, (0, 0))
+
+    def build(self, posX, posY, difficulty):
+        """Efficiently renders the character to the screen."""
+        self.posX = posX
+        self.posY = posY
+        if difficulty > 4:
+            difficulty = 4
+
+        screen.blit(self.surface, (posX, posY))
+
+        # Draw culprit text if needed
+        if self in [culprit, culprit1]:
+            label = "Culprit" if self == culprit else "Culprit 1"
+            ct = font.render(label, True, (128, 0, 128))
+            screen.blit(ct, (posX + 200, posY + 400))
+
+
     def genid(self):
-        id = {"face":self.mood,"hair":self.hair}
+        id = {"face":self.mood,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth}
         return id
     def calculate_similarity(self,id2):
         id1 = self.genid()  
@@ -278,16 +353,21 @@ def generate_wild_description(id_dict):
 
 # If you want to use it directly with genid()
 
-mood_options = ["angry", "happy","dumb","sunglasses"]
-hair_options = ["fluffy", "spicky", "pea","judge"]
+mood_options = ["normal","round"]
+hair_options = ["bald", "buzzcut", "short_pointy"]
+mouth_options = ["up_big","up","down"]
+eyes_options = ["angry","sad"]
+ears_options = ["normal","round"]
+nose_options = ["big","normal"]
 difficulty = 3
-
+font = pygame.font.Font(None, 36)
 # Main game loop
+
 while running:
     
     person.alle = []
     selected_culprit = None
-    culprit = person(choice(mood_options), choice(hair_options),"badguy")
+    culprit = person(choice(mood_options), choice(hair_options),choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"badguy")
     culprit_id  = culprit.genid()
     description = generate_wild_description(culprit_id)
     print(description)
@@ -298,13 +378,13 @@ while running:
     #print(f"culprit: {culprit_id}")
     culprits = []
     
-    culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0],"littlebad")
-    culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"notsobad")
-    culprit3 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"VERYBADCHOICE")
-    culprit4 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"VERYVERYBADCHOICE")
-    culprit5 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"Culprit5")
-    culprit6 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"Culprit6")
-    culprit7 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],"Culprit7")
+    culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"littlebad")
+    culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"notsobad")
+    culprit3 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"VERYBADCHOICE")
+    culprit4 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"VERYVERYBADCHOICE")
+    culprit5 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"Culprit5")
+    culprit6 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"Culprit6")
+    culprit7 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"Culprit7")
     available = [culprit,culprit1,culprit2,culprit3,culprit4,culprit5,culprit6,culprit7]
     for i in range(difficulty):
         if i<len(available):
@@ -382,17 +462,16 @@ while running:
     for line in lines:
         # Reset current line text and position for each line
         current_line_text = ""
-        current_y = textY + (current_line_index * 50)
+        current_y = textY + (current_line_index * 60)
         
         for char in line:
-            # Add next character to current line
+            
             current_line_text += char
             
-            # Render current line text
             drawText = font.render(current_line_text, True, (255, 255, 255), (0, 0, 0))
             screen.blit(drawText, (textX, current_y))
             
-            # Random typewriter-like delay
+           
             time.sleep(randint(1, 10)/200)
             pygame.display.flip()
         
@@ -418,7 +497,7 @@ while running:
     while drawing:
         current_pos = pygame.mouse.get_pos()
         deltaX, deltaY = pygame.mouse.get_rel()
-        distance = sqrt(deltaX**2 + deltaY**2)
+        distance = hypot(deltaX, deltaY)
         thickness = max(3, distance * 0.29) 
         
         
@@ -513,6 +592,7 @@ while running:
     lastDrawing = pygame.image.load(latest_drawing)
     selected_culprit = None
     # Criminal comparison screen loop
+    build = True
     while isCriminal:
         screen.fill((0, 0, 0))
         screen.blit(mugshot, (0, 0)) 
@@ -520,7 +600,7 @@ while running:
         for i,p in enumerate(culprits):
 
             p.build(((i%4) * (SCREEN_WIDTH / 4)),(i//4)*(SCREEN_HEIGHT/2),difficulty)
-
+        
         for i,p in enumerate(culprits):
             p.clickGlow(difficulty)
        
@@ -570,8 +650,8 @@ while running:
         pygame.display.flip()
 
     # Display boss feedback text letter by letter
-    print(selected_culprit.name)
-    if selected_culprit.name == "badguy":
+    
+    if selected_culpri == "badguy":
         streak += 1
         combo += 1
         score = streak*(combo)
@@ -579,7 +659,7 @@ while running:
     else: 
         combo = 0
         score = streak*(combo)
-        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name} and thus have a score of: {score}"
+        text = f"Are you dumb or what, you chose the wrong guy: {selected_culpri} and thus have a score of: {score}"
     
     
 
