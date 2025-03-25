@@ -264,12 +264,12 @@ def generate_wild_description(id_dict):
     selected_hair = choice(hair_desc.get(hair, ["bizarre"]))
 
     # Generate wild description
-    description = (
-        f"A {selected_mood} character {choice(verb_modifiers)} "
+    description = [
+        f"a {selected_mood} character {choice(verb_modifiers)} "
         f"sporting {selected_hair} hair, "
-        f"{choice(clutter_phrases)}."
-    )
-
+        f"{choice(clutter_phrases)}"
+    ]
+    shuffle(description)
     return description
 
 # Demonstration function
@@ -353,35 +353,57 @@ while running:
 
     # Testimony scene animation - slide in from right
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
-    animation_speed = 40  # Higher number = faster animation
+    animation_speed = 40 # Higher number = faster animation
     target_x = SCREEN_WIDTH / 3  # Target position
     font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT/20))
 
     while testimonyPosX > target_x:
         testimonyPosX = max(target_x, testimonyPosX - animation_speed)
+        testimonyPosY =(SCREEN_HEIGHT/2)*(0.06*sin(testimonyPosX))
         drawBackground()
         drawImage(testimony, testimonyPosX, testimonyPosY,1)
         drawImage(table, 0, 0,2)
         pygame.display.flip()
         clock.tick(60)  
+        
   
-
     text = f"I saw {description}"
-    newtext = ""
+    line_length = 30  # Number of characters per line
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
-    for i in text:
-        newtext += i
-        drawText = font.render(newtext, True, (255, 255, 255), (0, 0, 0))
-        screen.blit(drawText, (textX, textY))
-        time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
-        pygame.display.flip()
 
+    # Break text into lines of specified length
+    lines = [text[i:i+line_length] for i in range(0, len(text), line_length)]
+    
+    # Variable to track current line being typed
+    current_line_index = 0
+    current_line_text = ""
+
+    for line in lines:
+        # Reset current line text and position for each line
+        current_line_text = ""
+        current_y = textY + (current_line_index * 50)
+        
+        for char in line:
+            # Add next character to current line
+            current_line_text += char
+            
+            # Render current line text
+            drawText = font.render(current_line_text, True, (255, 255, 255), (0, 0, 0))
+            screen.blit(drawText, (textX, current_y))
+            
+            # Random typewriter-like delay
+            time.sleep(randint(1, 10)/200)
+            pygame.display.flip()
+        
+        
+        current_line_index += 1
     # Create canvas for drawing
+    time.sleep(0.5)
     canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
     canvas.fill(WHITE)
     
     # Draw initial canvas and UI
-    
+    drawBackground()
     drawDone()
     drawButtons()
     pygame.display.flip()
@@ -465,11 +487,11 @@ while running:
         canvasY = screenY + int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*2))
         screen.blit(canvas, (screenX, screenY))
        
-        txt = font.render(str(current_pos),True,(255,255,255))
-        screen.blit(drawText, (textX, textY))
+        #txt = font.render(str(current_pos),True,(255,255,255))
+        #screen.blit(drawText, (textX, textY))
         #screen.blit(canvas, (screenX, screenY))
         
-        screen.blit(txt, (0, 0))
+        #screen.blit(txt, (0, 0))
         drawDone()
         drawButtons()
         
