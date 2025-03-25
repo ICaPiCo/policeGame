@@ -68,7 +68,12 @@ def load_random_image(folder_path):
 
 
 # Load game images
-logo = pygame.image.load("images/logo.png")
+menu_screen = pygame.image.load("images/menu_screen.png")
+menu_screen = pygame.transform.scale(menu_screen, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+icon = pygame.image.load("images/icon.png")
+pygame.display.set_icon(icon)
+
 testimony = load_random_image("images/testimonials")  # Random testimony image
 boss = load_random_image("images/boss")  # Random boss image
 criminal = load_random_image("images/criminals")  # Random criminal image
@@ -543,8 +548,8 @@ while running:
         y1 = int((sin(color + 2) * 127.5) + 127.5)     # Green (0–255)
         z1 = int((sin(color + 4) * 127.5) + 127.5)     # Blue (0–255)
         
-        # Display game logo
-        screen.blit(logo, (SCREEN_WIDTH/4, SCREEN_HEIGHT/20))
+        # Display game menu_screen
+        screen.blit(menu_screen, (0, 0))
         pygame.display.flip()  # Update display
 
     # Testimony scene animation - slide in from right
