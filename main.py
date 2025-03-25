@@ -494,7 +494,8 @@ while running:
         pygame.display.flip()
 
     # Display boss feedback text letter by letter
-    if selected_culprit == "badguy":
+    print(selected_culprit.name)
+    if selected_culprit.name == "badguy":
         streak += 1
         combo += 1
         score = streak*(combo)
@@ -507,7 +508,7 @@ while running:
     
 
     newtext = ""
-    textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
+    textX, textY = SCREEN_WIDTH/6, SCREEN_HEIGHT/4
     for i in text:
         newtext += i
         drawText = font.render(newtext, True, (255, 255, 255), (0, 0, 0))
