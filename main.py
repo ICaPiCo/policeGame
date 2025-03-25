@@ -18,11 +18,10 @@ Space = 20
 overSize = 4  # Scaling factor for canvas relative to screen size
 pygame.display.set_caption("Drawn To Justice")
 screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN)
-SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
-CANVAS_WIDTH, CANVAS_HEIGHT = SCREEN_WIDTH/overSize, SCREEN_HEIGHT/overSize
-CANVAS_WIDTH, CANVAS_HEIGHT = CANVAS_WIDTH*1.35,CANVAS_HEIGHT*1.25
+SCREEN_WIDTH, SCREEN_HEIGHT = 1920,1200
+CANVAS_WIDTH, CANVAS_HEIGHT = 655,380
 borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
-screenX, screenY = (((3*SCREEN_WIDTH)/overSize)-95)-borderPatrol, (((3*SCREEN_HEIGHT)/overSize)-175)-borderPatrol  # Canvas position
+screenX, screenY = 1200, 565  # Canvas position
 button_color_black = pygame.Rect((screenX+Space), (screenY+10), 100, 40)  # Black color button
 button_color_white_outline = pygame.Rect(screenX+100+Space, (screenY+10), 100, 40)  # White color button outline
 button_color_white = pygame.Rect(screenX+100+Space+5, screenY+10+5, 90, 30)  # White color button inner part
@@ -81,7 +80,7 @@ mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 speech_bubble = pygame.image.load("images/speech_bubble.png")
-speech_bubble = pygame.transform.scale(speech_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/20))
+speech_bubble = pygame.transform.scale(speech_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/3))
 
 empty = pygame.image.load("images/empty.png")
 # Load and scale table image
@@ -91,6 +90,8 @@ table = pygame.transform.scale(table, (SCREEN_WIDTH, SCREEN_HEIGHT))
 # Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+DARK_GREY = (60,60,60)
+LIGHT_GREY = (90,90,90)
 GREEN = (20, 255, 20)
 
 # Brush settings
@@ -104,13 +105,9 @@ Space = 20  # Spacing between buttons
 
 def drawBackground():
     """Draw the background image to the screen."""
-    mx,my = pygame.mouse.get_pos()
-    
-    x = 0-(((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*0.7)
-    y = 0-(((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*0.7)
-    screen.blit(background, (x,y))
+    screen.blit(background, (0,0))
 
-def drawImage(image, positionX, positionY,layer):
+def drawImage(image, positionX, positionY):
     """
     Draw an image at the specified position.
     
@@ -118,28 +115,20 @@ def drawImage(image, positionX, positionY,layer):
         image (Surface): The pygame image to draw
         positionX (int): X-coordinate for image placement
         positionY (int): Y-coordinate for image placement
-    """
-    mx,my = pygame.mouse.get_pos()
-    positionX-=(((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*layer)
-   
-    positionY-=(((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*layer) 
+    """ 
     screen.blit(image, (positionX, positionY))
 
 def drawButtons():
     """Draw all the drawing tool buttons (colors and brush sizes)."""
-    mx,my = pygame.mouse.get_pos()
     pygame.draw.rect(screen, BLACK, button_color_black)
     pygame.draw.rect(screen, BLACK, button_color_white_outline)
     pygame.draw.rect(screen, WHITE, button_color_white)
-    pygame.draw.rect(screen, BLACK, button_size_up)
-    pygame.draw.rect(screen, BLACK, button_size_down)
-    parallax_x = int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05 * SCREEN_WIDTH * 2))
-    parallax_y = int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05 * SCREEN_HEIGHT * 2))
+    pygame.draw.rect(screen, DARK_GREY, button_size_up)
+    pygame.draw.rect(screen, LIGHT_GREY, button_size_down)
 
-    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3) + parallax_x, screenY+10 + parallax_y))
-    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3) + parallax_x, screenY+10 + parallax_y))
+    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3), screenY+10))
+    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3), screenY+10))
     
-
 def drawDone():
     """Draw the green 'Done' button."""
     pygame.draw.rect(screen, GREEN, button_done)
@@ -302,18 +291,18 @@ while running:
     while testimonyPosX > target_x:
         testimonyPosX = max(target_x, testimonyPosX - animation_speed)
         drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY,1)
-        drawImage(table, 0, 0,2)
+        drawImage(testimony, testimonyPosX, testimonyPosY)
+        drawImage(table, 0, 0)
         pygame.display.flip()
         clock.tick(60)  
   
-    screen.blit(speech_bubble, (0, SCREEN_HEIGHT/20))
     text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
     newtext = ""
-    textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
+    textX, textY = SCREEN_WIDTH/30, SCREEN_HEIGHT/75
     for i in text:
         newtext += i
-        drawText = font.render(newtext, True, (255, 255, 255), (0, 0, 0))
+        screen.blit(speech_bubble, (0, 0))
+        drawText = font.render(newtext, True, (0, 0, 0))
         screen.blit(drawText, (textX, textY))
         time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
         pygame.display.flip()
@@ -399,19 +388,15 @@ while running:
         
         # Redraw the scene each frame
         drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY,1)
-        drawImage(table, 0, 0,2)
-        mx,my = pygame.mouse.get_pos()
+        drawImage(testimony, testimonyPosX, testimonyPosY)
+        drawImage(table, 0, 0)
         
-        canvasX = screenX + int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*2))
-        canvasY = screenY + int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*2))
-        screen.blit(canvas, (screenX, screenY))
-       
-        txt = font.render(str(current_pos),True,(255,255,255))
+        txt = font.render(str(current_pos),True,(0,0,0))
+        screen.blit(speech_bubble, (0, 0))
         screen.blit(drawText, (textX, textY))
         #screen.blit(canvas, (screenX, screenY))
         
-        screen.blit(txt, (0, 0))
+        screen.blit(txt, (SCREEN_WIDTH/1.2, 0))
         drawDone()
         drawButtons()
         
@@ -485,7 +470,7 @@ while running:
     for i in range(int(SCREEN_WIDTH*2/3/10)):
         bossPosX -= 10  # Move boss image left
         screen.fill((20, 20, 20))
-        drawImage(boss, bossPosX, bossPosY,1)
+        drawImage(boss, bossPosX, bossPosY)
         clock.tick(60)  # Limit to 60 FPS
         pygame.display.flip()
 
@@ -507,7 +492,7 @@ while running:
     textX, textY = SCREEN_WIDTH/6, SCREEN_HEIGHT/4
     for i in text:
         newtext += i
-        drawText = font.render(newtext, True, (255, 255, 255), (0, 0, 0))
+        drawText = font.render(newtext, True, (0, 0, 0))
         screen.blit(drawText, (textX, textY))
         time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
         pygame.display.flip()    
