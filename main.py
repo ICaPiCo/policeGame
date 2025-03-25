@@ -105,6 +105,7 @@ Space = 20  # Spacing between buttons
 
 def drawBackground():
     """Draw the background image to the screen."""
+   
     screen.blit(background, (0,0))
 
 def drawImage(image, positionX, positionY):
@@ -115,19 +116,23 @@ def drawImage(image, positionX, positionY):
         image (Surface): The pygame image to draw
         positionX (int): X-coordinate for image placement
         positionY (int): Y-coordinate for image placement
+    """
+    
     """ 
     screen.blit(image, (positionX, positionY))
 
 def drawButtons():
     """Draw all the drawing tool buttons (colors and brush sizes)."""
+    mx,my = pygame.mouse.get_pos()
     pygame.draw.rect(screen, BLACK, button_color_black)
     pygame.draw.rect(screen, BLACK, button_color_white_outline)
     pygame.draw.rect(screen, WHITE, button_color_white)
     pygame.draw.rect(screen, DARK_GREY, button_size_up)
     pygame.draw.rect(screen, LIGHT_GREY, button_size_down)
+    
 
-    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3), screenY+10))
-    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3), screenY+10))
+    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3) , screenY+10 ))
+    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3) , screenY+10 ))
     
 def drawDone():
     """Draw the green 'Done' button."""
@@ -209,7 +214,70 @@ class person:
                 pygame.draw.rect(screen, (255, 255, 0), chr_rect, 5)
                 selected_culprit = self
                 return selected_culprit
-                
+
+def generate_wild_description(id_dict):
+    """
+    Generate a chaotic yet somewhat coherent character description.
+    Includes intentional clutter and randomness.
+    """
+  
+
+    # Mood and hair base descriptors
+    mood_desc = {
+        "angry": ["fiery", "seething", "rage-filled", "volcanic"],
+        "happy": ["jubilant", "beaming", "sunshine-infused", "grinning"],
+        "dumb": ["bewildered", "perplexed", "mind-foggy", "slightly derailed"],
+        "sunglasses": ["cool", "shadowy", "mysteriously smooth", "enigmatic"]
+    }
+
+    hair_desc = {
+        "fluffy": ["cloud-like", "cotton-candy", "puffball", "marshmallow"],
+        "spicky": ["razor-edged", "electric", "lightning-struck", "geometric"],
+        "pea": ["rounded", "spherical", "vegetable-inspired", "carrot-like"],
+        "judge": ["precise", "authoritative", "wigged", "structured"]
+    }
+
+    # Clutter phrases to add randomness
+    clutter_phrases = [
+        "while juggling invisible unicorns",
+        "under a microscope of paradox",
+        "during a quantum hiccup",
+        "amidst theoretical background noise",
+        "navigating bureaucratic daydreams",
+        "with a soundtrack of static",
+        "in a dimension of mild confusion",
+        "tracing probability shadows",
+        "at 9:31 and thirty three seconds"
+    ]
+
+    # Verb modifiers
+    verb_modifiers = [
+        "awkwardly", "mysteriously", "accidentally", "theoretically",
+        "hypothetically", "inexplicably", "coincidentally","quaquaversally"
+    ]
+
+    # Obtain mood and hair, with fallback
+    mood = id_dict.get('face', choice(list(mood_desc.keys())))
+    hair = id_dict.get('hair', choice(list(hair_desc.keys())))
+
+    # Randomly select descriptors
+    selected_mood = choice(mood_desc.get(mood, ["undefined"]))
+    selected_hair = choice(hair_desc.get(hair, ["bizarre"]))
+
+    # Generate wild description
+    description = (
+        f"A {selected_mood} character {choice(verb_modifiers)} "
+        f"sporting {selected_hair} hair, "
+        f"{choice(clutter_phrases)}."
+    )
+
+    return description
+
+# Demonstration function
+
+
+# If you want to use it directly with genid()
+
 mood_options = ["angry", "happy","dumb","sunglasses"]
 hair_options = ["fluffy", "spicky", "pea","judge"]
 difficulty = 3
@@ -221,6 +289,8 @@ while running:
     selected_culprit = None
     culprit = person(choice(mood_options), choice(hair_options),"badguy")
     culprit_id  = culprit.genid()
+    description = generate_wild_description(culprit_id)
+    print(description)
     mood_weights = [difficulty if mood == culprit_id["face"] else 1 for mood in mood_options]
     hair_weights = [difficulty if hair == culprit_id["hair"] else 1 for hair in hair_options]
     mood_weights1 = [difficulty-1 if mood == culprit_id["face"] else 1 for mood in mood_options]
@@ -296,7 +366,8 @@ while running:
         pygame.display.flip()
         clock.tick(60)  
   
-    text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
+
+    text = f"I saw {description}"
     newtext = ""
     textX, textY = SCREEN_WIDTH/30, SCREEN_HEIGHT/75
     for i in text:
@@ -531,13 +602,13 @@ pygame.quit()
 
 '''
 CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW:
-- MAKE A BEAUTIFUL MENU
-- ADD MUSI AND SOUND EFFECTS
-- ADD ANIMATIONS (WALKING CHARACTERS)
-- MAKE BUTTONS MORE BEAUTIFUL (UI)
-- PAUSE MENU ?
-- STORY
-- CATCH LINES TESTIMONIES
-- PUT ALL OF LEO'S IMAGES
-- ADD SPEECH BUBBLE
+- MAKE A BEAUTIFUL MENU - Ioanis 
+- ADD MUSI AND SOUND EFFECTS- ADD SPEECH BUBBLE - Ioanis
+- ADD ANIMATIONS (WALKING CHARACTERS) -Samuel
+- MAKE BUTTONS MORE BEAUTIFUL (UI) -Ioanis
+- PAUSE MENU ? - AAAAAAAAAAAAAh
+- STORY - EVERYBODY
+- CATCH LINES TESTIMONIES -TEXT GEN - Samuel
+- PUT ALL OF LEO'S IMAGES - Leo /Ioanis
+
 '''
