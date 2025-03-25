@@ -402,15 +402,8 @@ while running:
         
         canvasX = screenX + int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*2))
         canvasY = screenY + int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*2))
-        screen.blit(canvas, (canvasX, canvasY))
-        parallax_x = int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05 * SCREEN_WIDTH * 2))
-        parallax_y = int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05 * SCREEN_HEIGHT * 2))
-
-        button_color_black = pygame.Rect(screenX + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
-        button_color_white_outline = pygame.Rect(screenX + 100 + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
-        button_color_white = pygame.Rect(screenX + 100 + Space + 5 + parallax_x, screenY + 10 + 5 + parallax_y, 90, 30)
-        button_size_up = pygame.Rect(screenX + 200 + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
-        button_size_down = pygame.Rect(screenX + 300 + Space + parallax_x, screenY + 10 + parallax_y, 100, 40)
+        screen.blit(canvas, (screenX, screenY))
+       
         txt = font.render(str(current_pos),True,(255,255,255))
         screen.blit(drawText, (textX, textY))
         #screen.blit(canvas, (screenX, screenY))
