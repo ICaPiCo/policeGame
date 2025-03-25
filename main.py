@@ -79,8 +79,8 @@ background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_H
 mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-speech_bubble = pygame.image.load("images/speech_bubble.png")
-speech_bubble = pygame.transform.scale(speech_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/3))
+text_bubble = pygame.image.load("images/text_bubble.png")
+text_bubble = pygame.transform.scale(text_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/2.2))
 
 empty = pygame.image.load("images/empty.png")
 # Load and scale table image
@@ -374,7 +374,7 @@ while running:
     textX, textY = SCREEN_WIDTH/30, SCREEN_HEIGHT/75
     for i in text:
         newtext += i
-        screen.blit(speech_bubble, (0, 0))
+        screen.blit(text_bubble, (0, 0))
         drawText = font.render(newtext, True, (0, 0, 0))
         screen.blit(drawText, (textX, textY))
         time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
@@ -467,7 +467,7 @@ while running:
         screen.blit(canvas, (screenX, screenY))
 
         txt = font.render(str(current_pos),True,(0,0,0))
-        screen.blit(speech_bubble, (0, 0))
+        screen.blit(text_bubble, (0, 0))
         screen.blit(drawText, (textX, textY))
         #screen.blit(canvas, (screenX, screenY))
         
@@ -613,6 +613,6 @@ CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW:
 - PAUSE MENU ? - AAAAAAAAAAAAAh
 - STORY - EVERYBODY
 - CATCH LINES TESTIMONIES -TEXT GEN - Samuel
-- PUT ALL OF LEO'S IMAGES - Leo /Ioanis
+- PUT ALL OF LEO'S IMAGES - Samuel
 
 '''
