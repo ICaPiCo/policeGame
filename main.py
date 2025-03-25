@@ -101,11 +101,8 @@ Space = 20  # Spacing between buttons
 
 def drawBackground():
     """Draw the background image to the screen."""
-    mx,my = pygame.mouse.get_pos()
-    
-    x = 0-(((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*0.7)
-    y = 0-(((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*0.7)
-    screen.blit(background, (x,y))
+   
+    screen.blit(background, (0,0))
 
 def drawImage(image, positionX, positionY,layer):
     """
@@ -116,25 +113,21 @@ def drawImage(image, positionX, positionY,layer):
         positionX (int): X-coordinate for image placement
         positionY (int): Y-coordinate for image placement
     """
-    mx,my = pygame.mouse.get_pos()
-    positionX-=(((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*layer)
-   
-    positionY-=(((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*layer) 
+    
     screen.blit(image, (positionX, positionY))
 
 def drawButtons():
     """Draw all the drawing tool buttons (colors and brush sizes)."""
-    mx,my = pygame.mouse.get_pos()
+    
     pygame.draw.rect(screen, BLACK, button_color_black)
     pygame.draw.rect(screen, BLACK, button_color_white_outline)
     pygame.draw.rect(screen, WHITE, button_color_white)
     pygame.draw.rect(screen, BLACK, button_size_up)
     pygame.draw.rect(screen, BLACK, button_size_down)
-    parallax_x = int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05 * SCREEN_WIDTH * 2))
-    parallax_y = int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05 * SCREEN_HEIGHT * 2))
+    
 
-    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3) + parallax_x, screenY+10 + parallax_y))
-    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3) + parallax_x, screenY+10 + parallax_y))
+    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3) , screenY+10 ))
+    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3) , screenY+10 ))
     
 
 def drawDone():
@@ -217,7 +210,12 @@ class person:
                 pygame.draw.rect(screen, (255, 255, 0), chr_rect, 5)
                 selected_culprit = self
                 return selected_culprit
-                
+
+def Text(id):
+
+    text = "Face: ",id['face'],", Hair: ",id['hair']
+    return text
+
 mood_options = ["angry", "happy","dumb","sunglasses"]
 hair_options = ["fluffy", "spicky", "pea","judge"]
 difficulty = 3
@@ -543,13 +541,13 @@ pygame.quit()
 
 '''
 CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW:
-- MAKE A BEAUTIFUL MENU
-- ADD MUSI AND SOUND EFFECTS
-- ADD ANIMATIONS (WALKING CHARACTERS)
-- MAKE BUTTONS MORE BEAUTIFUL (UI)
-- PAUSE MENU ?
-- STORY
-- CATCH LINES TESTIMONIES
-- PUT ALL OF LEO'S IMAGES
-- ADD SPEECH BUBBLE
+- MAKE A BEAUTIFUL MENU - Ioanis 
+- ADD MUSI AND SOUND EFFECTS- ADD SPEECH BUBBLE - Ioanis
+- ADD ANIMATIONS (WALKING CHARACTERS) -Samuel
+- MAKE BUTTONS MORE BEAUTIFUL (UI) -Ioanis
+- PAUSE MENU ? - AAAAAAAAAAAAAh
+- STORY - EVERYBODY
+- CATCH LINES TESTIMONIES -TEXT GEN - Samuel
+- PUT ALL OF LEO'S IMAGES - Leo /Ioanis
+
 '''
