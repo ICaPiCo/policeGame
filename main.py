@@ -257,7 +257,6 @@ def generate_wild_description(id_dict):
     ]
 
     # Obtain mood and hair, with fallback
-<<<<<<< Updated upstream
     mood = id_dict.get('face', choice(list(mood_desc.keys())))
     hair = id_dict.get('hair', choice(list(hair_desc.keys())))
 
@@ -272,22 +271,6 @@ def generate_wild_description(id_dict):
         f"{choice(clutter_phrases)}"
     ]
     shuffle(description)
-=======
-    mood = id_dict.get('face', random.choice(list(mood_desc.keys())))
-    hair = id_dict.get('hair', random.choice(list(hair_desc.keys())))
-
-    # Randomly select descriptors
-    selected_mood = random.choice(mood_desc.get(mood, ["undefined"]))
-    selected_hair = random.choice(hair_desc.get(hair, ["bizarre"]))
-
-    # Generate wild description
-    description = (
-        f"A {selected_mood} character {random.choice(verb_modifiers)} "
-        f"sporting {selected_hair} hair, "
-        f"{random.choice(clutter_phrases)}."
-    )
-
->>>>>>> Stashed changes
     return description
 
 # Demonstration function
@@ -385,14 +368,9 @@ while running:
         clock.tick(60)  
         
   
-<<<<<<< Updated upstream
     text = f"I saw {description}"
     line_length = 30  # Number of characters per line
-=======
-
-    text = f"I saw {description}"
     newtext = ""
->>>>>>> Stashed changes
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
 
     # Break text into lines of specified length
