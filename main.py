@@ -464,6 +464,8 @@ while running:
         drawImage(testimony, testimonyPosX, testimonyPosY)
         drawImage(table, 0, 0)
         
+        screen.blit(canvas, (screenX, screenY))
+
         txt = font.render(str(current_pos),True,(0,0,0))
         screen.blit(speech_bubble, (0, 0))
         screen.blit(drawText, (textX, textY))
