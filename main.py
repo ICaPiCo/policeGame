@@ -214,10 +214,68 @@ class person:
                 selected_culprit = self
                 return selected_culprit
 
-def Text(id):
+def generate_wild_description(id_dict):
+    """
+    Generate a chaotic yet somewhat coherent character description.
+    Includes intentional clutter and randomness.
+    """
+  
 
-    text = "Face: ",id['face'],", Hair: ",id['hair']
-    return text
+    # Mood and hair base descriptors
+    mood_desc = {
+        "angry": ["fiery", "seething", "rage-filled", "volcanic"],
+        "happy": ["jubilant", "beaming", "sunshine-infused", "grinning"],
+        "dumb": ["bewildered", "perplexed", "mind-foggy", "slightly derailed"],
+        "sunglasses": ["cool", "shadowy", "mysteriously smooth", "enigmatic"]
+    }
+
+    hair_desc = {
+        "fluffy": ["cloud-like", "cotton-candy", "puffball", "marshmallow"],
+        "spicky": ["razor-edged", "electric", "lightning-struck", "geometric"],
+        "pea": ["rounded", "spherical", "vegetable-inspired", "carrot-like"],
+        "judge": ["precise", "authoritative", "wigged", "structured"]
+    }
+
+    # Clutter phrases to add randomness
+    clutter_phrases = [
+        "while juggling invisible unicorns",
+        "under a microscope of paradox",
+        "during a quantum hiccup",
+        "amidst theoretical background noise",
+        "navigating bureaucratic daydreams",
+        "with a soundtrack of static",
+        "in a dimension of mild confusion",
+        "tracing probability shadows",
+        "at 9:31 and thirty three seconds"
+    ]
+
+    # Verb modifiers
+    verb_modifiers = [
+        "awkwardly", "mysteriously", "accidentally", "theoretically",
+        "hypothetically", "inexplicably", "coincidentally","quaquaversally"
+    ]
+
+    # Obtain mood and hair, with fallback
+    mood = id_dict.get('face', random.choice(list(mood_desc.keys())))
+    hair = id_dict.get('hair', random.choice(list(hair_desc.keys())))
+
+    # Randomly select descriptors
+    selected_mood = random.choice(mood_desc.get(mood, ["undefined"]))
+    selected_hair = random.choice(hair_desc.get(hair, ["bizarre"]))
+
+    # Generate wild description
+    description = (
+        f"A {selected_mood} character {random.choice(verb_modifiers)} "
+        f"sporting {selected_hair} hair, "
+        f"{random.choice(clutter_phrases)}."
+    )
+
+    return description
+
+# Demonstration function
+
+
+# If you want to use it directly with genid()
 
 mood_options = ["angry", "happy","dumb","sunglasses"]
 hair_options = ["fluffy", "spicky", "pea","judge"]
@@ -230,6 +288,8 @@ while running:
     selected_culprit = None
     culprit = person(choice(mood_options), choice(hair_options),"badguy")
     culprit_id  = culprit.genid()
+    description = generate_wild_description(culprit_id)
+    print(description)
     mood_weights = [difficulty if mood == culprit_id["face"] else 1 for mood in mood_options]
     hair_weights = [difficulty if hair == culprit_id["hair"] else 1 for hair in hair_options]
     mood_weights1 = [difficulty-1 if mood == culprit_id["face"] else 1 for mood in mood_options]
@@ -305,8 +365,13 @@ while running:
         pygame.display.flip()
         clock.tick(60)  
   
+<<<<<<< Updated upstream
     screen.blit(speech_bubble, (0, SCREEN_HEIGHT/20))
     text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
+=======
+
+    text = f"I saw {description}"
+>>>>>>> Stashed changes
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
     for i in text:
