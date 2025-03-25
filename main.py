@@ -224,12 +224,12 @@ class person:
     def load_assets(self):
         """Loads and scales assets once to improve performance."""
         self.images = {
-            "face": pygame.image.load(f"images/Civilians/face_{self.mood}.png").convert_alpha(),
-            "hair": pygame.image.load(f"images/Civilians/hair_{self.hair}.png").convert_alpha(),
-            "eyes": pygame.image.load(f"images/Civilians/eyes_{self.eyes}.png").convert_alpha(),
-            "nose": pygame.image.load(f"images/Civilians/nose_{self.nose}.png").convert_alpha(),
-            "mouth": pygame.image.load(f"images/Civilians/mouth_{self.mouth}.png").convert_alpha(),
-            "ears": pygame.image.load(f"images/Civilians/ears_{self.ears}.png").convert_alpha(),
+            "face": pygame.image.load(f"images/Civilians/face/face_{self.mood}.png").convert_alpha(),
+            "hair": pygame.image.load(f"images/Civilians/hair/hair_{self.hair}.png").convert_alpha(),
+            "eyes": pygame.image.load(f"images/Civilians/eyes/eyes_{self.eyes}.png").convert_alpha(),
+            "nose": pygame.image.load(f"images/Civilians/nose/nose_{self.nose}.png").convert_alpha(),
+            "mouth": pygame.image.load(f"images/Civilians/mouth/mouth_{self.mouth}.png").convert_alpha(),
+            "ears": pygame.image.load(f"images/Civilians/ears/ears_{self.ears}.png").convert_alpha(),
         }
 
         # Scale images once
@@ -297,21 +297,19 @@ def generate_wild_description(id_dict):
     Generate a chaotic yet somewhat coherent character description.
     Includes intentional clutter and randomness.
     """
-  
-
     # Mood and hair base descriptors
     mood_desc = {
         "angry": ["fiery", "seething", "rage-filled", "volcanic"],
-        "happy": ["jubilant", "beaming", "sunshine-infused", "grinning"],
-        "dumb": ["bewildered", "perplexed", "mind-foggy", "slightly derailed"],
-        "sunglasses": ["cool", "shadowy", "mysteriously smooth", "enigmatic"]
+        "sad": ["melancholy", "tear-streaked", "gloomy", "mournful"]
     }
 
     hair_desc = {
-        "fluffy": ["cloud-like", "cotton-candy", "puffball", "marshmallow"],
-        "spicky": ["razor-edged", "electric", "lightning-struck", "geometric"],
-        "pea": ["rounded", "spherical", "vegetable-inspired", "carrot-like"],
-        "judge": ["precise", "authoritative", "wigged", "structured"]
+        "bald": ["shiny", "reflective", "bare", "smooth"],
+        "buzzcut": ["precise", "military-style", "closely shaved", "sharp"],
+        "short_pointy_black": ["spiky", "edgy", "wild", "sharp"],
+        "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed"],
+        "short_pointy_orange": ["flame-like", "vibrant", "fiery", "electric"],
+        "short_pointy_blond": ["golden", "sunlit", "bright", "radiant"]
     }
 
     # Clutter phrases to add randomness
@@ -324,17 +322,17 @@ def generate_wild_description(id_dict):
         "with a soundtrack of static",
         "in a dimension of mild confusion",
         "tracing probability shadows",
-        "at 9:31 and thirty three seconds"
+        "at 9:31 and thirty-three seconds"
     ]
 
     # Verb modifiers
     verb_modifiers = [
         "awkwardly", "mysteriously", "accidentally", "theoretically",
-        "hypothetically", "inexplicably", "coincidentally","quaquaversally"
+        "hypothetically", "inexplicably", "coincidentally", "quaquaversally"
     ]
 
     # Obtain mood and hair, with fallback
-    mood = id_dict.get('face', choice(list(mood_desc.keys())))
+    mood = id_dict.get('eyes', choice(list(mood_desc.keys())))
     hair = id_dict.get('hair', choice(list(hair_desc.keys())))
 
     # Randomly select descriptors
@@ -342,12 +340,11 @@ def generate_wild_description(id_dict):
     selected_hair = choice(hair_desc.get(hair, ["bizarre"]))
 
     # Generate wild description
-    description = [
-        f"a {selected_mood} character {choice(verb_modifiers)} "
-        f"sporting {selected_hair} hair, "
-        f"{choice(clutter_phrases)}"
-    ]
-    shuffle(description)
+    description = (
+        f"A {selected_mood} character {choice(verb_modifiers)} "
+        f"sporting {selected_hair} hair, {choice(clutter_phrases)}."
+    )
+    
     return description
 
 # Demonstration function
@@ -355,11 +352,11 @@ def generate_wild_description(id_dict):
 
 # If you want to use it directly with genid()
 
-mood_options = ["normal","round"]
-hair_options = ["bald", "buzzcut", "short_pointy"]
+mood_options = ["normal_black","normal_brown","normal_white","round_black","round_white","round_brown"]
+hair_options = ["bald", "buzzcut", "short_pointy_black","short_pointy_brown","short_pointy_orange","short_pointy_blond"]
 mouth_options = ["up_big","up","down"]
 eyes_options = ["angry","sad"]
-ears_options = ["normal","round"]
+ears_options = ["normal_black","normal_brown","normal_white" ,"round_black","round_white", "round_brown"]
 nose_options = ["big","normal"]
 difficulty = 3
 font = pygame.font.Font(None, 36)
@@ -600,8 +597,8 @@ while running:
         screen.blit(mugshot, (0, 0)) 
         
         for i,p in enumerate(culprits):
-
             p.build(((i%4) * (SCREEN_WIDTH / 4)),(i//4)*(SCREEN_HEIGHT/2),difficulty)
+            p.render_character()
         
         for i,p in enumerate(culprits):
             p.clickGlow(difficulty)
@@ -616,6 +613,7 @@ while running:
         
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
+
         if not selected_culprit == None:
             break
         #doCriminal()  # Show the criminal image for comparison
@@ -661,7 +659,7 @@ while running:
     else: 
         combo = 0
         score = streak*(combo)
-        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit} and thus have a score of: {score}"
+        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name} and thus have a score of: {score}"
     
     
 
