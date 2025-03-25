@@ -80,7 +80,7 @@ mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 text_bubble = pygame.image.load("images/text_bubble.png")
-text_bubble = pygame.transform.scale(text_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/2.2))
+text_bubble = pygame.transform.scale(text_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/2.1))
 
 empty = pygame.image.load("images/empty.png")
 # Load and scale table image
