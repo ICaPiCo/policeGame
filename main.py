@@ -556,7 +556,7 @@ while running:
     while menu:
         color += 0.01  # Increment color animation parameter
         screen.fill((0, 0, 0))  # Clear screen
-
+        screen.blit(menu_screen, (0, 0)) # Display game menu_screen
         # Create color-cycling "Press space to start" text
         menu_text = font.render("Press space to start", True, (x1, y1, z1))
         screen.blit(menu_text, (SCREEN_WIDTH/2-200, (SCREEN_HEIGHT/2)+250))
@@ -580,8 +580,6 @@ while running:
         y1 = int((sin(color + 2) * 127.5) + 127.5)     # Green (0–255)
         z1 = int((sin(color + 4) * 127.5) + 127.5)     # Blue (0–255)
         
-        # Display game menu_screen
-        screen.blit(menu_screen, (0, 0))
         pygame.display.flip()  # Update display
 
     # Testimony scene animation - slide in from right
