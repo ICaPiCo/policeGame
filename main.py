@@ -269,19 +269,33 @@ class person:
                 selected_culprit = self
                 return selected_culprit
 
+
 def generate_wild_description(id_dict):
     """
     Generate a chaotic yet somewhat coherent character description.
     Includes intentional clutter and randomness.
     """
-  
-
-    # face and hair base descriptors
+    
+    # Face, eyes, mouth, and hair base descriptors
     face_desc = {
         "angry": ["fiery", "seething", "rage-filled", "volcanic"],
-        "sad": ["melancholy", "tear-streaked", "gloomy", "mournful"]
+        "sad": ["melancholy", "tear-streaked", "gloomy", "mournful"],
+        "normal_white": ["plain", "neutral", "calm", "unreadable"],
+        "round_white": ["soft", "cherubic", "plump", "gentle"]
     }
-
+    
+    eyes_desc = {
+        "angry": ["piercing", "intense", "furious", "burning"],
+        "sad": ["watery", "downcast", "melancholic", "wistful"],
+        "normal": ["steady", "unassuming", "calm", "observant"]
+    }
+    
+    mouth_desc = {
+        "up": ["smirking", "grinning", "subtly amused", "playful"],
+        "up_big": ["beaming", "joyful", "gleeful", "radiant"],
+        "down": ["frowning", "pouting", "sullen", "brooding"]
+    }
+    
     hair_desc = {
         "bald": ["shiny", "reflective", "bare", "smooth"],
         "buzzcut": ["precise", "military-style", "closely shaved", "sharp"],
@@ -290,8 +304,8 @@ def generate_wild_description(id_dict):
         "short_pointy_orange": ["flame-like", "vibrant", "fiery", "electric"],
         "short_pointy_blond": ["golden", "sunlit", "bright", "radiant"]
     }
-
-    # Clutter phrases to add randomness
+    
+    # Clutter phrases for randomness
     clutter_phrases = [
         "while juggling invisible unicorns",
         "under a microscope of paradox",
@@ -303,30 +317,48 @@ def generate_wild_description(id_dict):
         "tracing probability shadows",
         "at 9:31 and thirty-three seconds"
     ]
-
+    
     # Verb modifiers
     verb_modifiers = [
         "awkwardly", "mysteriously", "accidentally", "theoretically",
         "hypothetically", "inexplicably", "coincidentally", "quaquaversally"
     ]
-
-    # Obtain face and hair, with fallback
-    face = id_dict.get('face', choice(list(face_desc.keys())))
-    hair = id_dict.get('hair', choice(list(hair_desc.keys())))
-
-    # Randomly select descriptors
-    selected_face = choice(face_desc.get(face, ["undefined"]))
-    selected_hair = choice(hair_desc.get(hair, ["bizarre"]))
-
-    # Generate wild description
-    description = [
-        f"a {selected_face} character {choice(verb_modifiers)} "
-        f"sporting {selected_hair} hair, "
-        f"{choice(clutter_phrases)}"
-    ]
-    shuffle(description)
+    
+    # Get character traits with fallback
+    eyes = id_dict.get('eyes', 'normal')
+    face_type = id_dict.get('face', 'normal_white')
+    hair_type = id_dict.get('hair', 'bald')
+    mouth = id_dict.get('mouth', 'neutral')
+    accessories = id_dict.get('accessories', 'none')
+    
+    # Select descriptors
+    selected_face = choice(face_desc.get(face_type, ["undefined"]))
+    selected_eyes = choice(eyes_desc.get(eyes, ["undefined"]))
+    selected_mouth = choice(mouth_desc.get(mouth, ["undefined"]))
+    selected_hair = choice(hair_desc.get(hair_type, ["bizarre"]))
+    
+    # Generate description
+    description = (
+        f"A {selected_face} character {choice(verb_modifiers)} "
+        f"with {selected_eyes} eyes and a {selected_mouth} mouth, "
+        f"sporting {selected_hair} hair, {choice(clutter_phrases)}."
+    )
+    
+    if accessories != "none":
+        description += f" They also wear a {accessories} for extra flair."
+    
     return description
 
+# Example usage
+character = {
+    "face": "normal_white",
+    "hair": "short_pointy_blond",
+    "eyes": "angry",
+    "mouth": "up",
+    "accessories": "none"
+}
+
+print(generate_wild_description(character))
 # Demonstration function
 
 
@@ -549,20 +581,31 @@ while running:
 
     # Testimony scene animation - slide in from right
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
-    animation_speed = 40 # Higher number = faster animation
+    animation_speed = 40  # Higher number = faster animation
     target_x = SCREEN_WIDTH / 3  # Target position
-    font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT/20))
+    font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT / 20))
+
+    # Store the background if it doesn't change often
+    background_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    background_surface.blit(background,(0,0))
+    # You should draw the background here, assuming drawBackground is filling the surface
+    drawBackground()  # Ensure background is rendered into background_surface
 
     while testimonyPosX > target_x:
+        # Update the position
         testimonyPosX = max(target_x, testimonyPosX - animation_speed)
-        testimonyPosY =(SCREEN_HEIGHT/2)*(0.06*sin(testimonyPosX))
-        drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY)
-        drawImage(table, 0, 0)
+        testimonyPosY = (SCREEN_HEIGHT / 2) * (0.06 * sin(testimonyPosX))
+
+        # Clear the screen by blitting the background only once per frame
+        screen.blit(background_surface, (0, 0))
+
+        # Draw the moving testimony and static table images
+        screen.blit(testimony, (testimonyPosX, testimonyPosY))
+        screen.blit(table, (0, 0))
+
+        # Update the display
         pygame.display.flip()
-        clock.tick(60)  
-        
-  
+        clock.tick(60)
     text = f"I saw {description}"
     line_length = 30  # Number of characters per line
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
@@ -599,6 +642,7 @@ while running:
     
     # Draw initial canvas and UI
     drawBackground()
+    drawImage(table, 0, 0)
     drawDone()
     drawButtons()
     pygame.display.flip()
@@ -609,89 +653,71 @@ while running:
     previous_pos = pygame.mouse.get_pos()
     deltaX, deltaY = 0, 0
     D = False
+    #drawBackground()
+    #drawImage(table, 0, 0)
     while drawing:
         current_pos = pygame.mouse.get_pos()
         deltaX, deltaY = pygame.mouse.get_rel()
         distance = hypot(deltaX, deltaY)
-        thickness = max(3, distance * 0.29) 
-        
-        
-        #((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*layer
+        thickness = max(3, distance * 0.29)
 
-
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 drawing = False
                 running = False
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    drawing = False  # Exit the drawing loop
+                    drawing = False  
                 if event.key == pygame.K_p:
                     running = False
                     menu = False
                     pygame.quit()
-                    sys.exit()  
+                    sys.exit()
                 if event.key == pygame.K_SPACE:
                     canvas.fill(WHITE)
-            elif event.type == pygame.MOUSEBUTTONDOWN:
 
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 D = True
                 x, y = event.pos
                 previous_pos = current_pos
-        
+
                 if button_done.collidepoint(x, y):
                     drawing = False
-                    
                 elif button_color_black.collidepoint(x, y):
                     brush_color = BLACK
                 elif button_color_white.collidepoint(x, y):
                     brush_color = WHITE
                 elif button_size_up.collidepoint(x, y):
-                    last_thickness = min(30, last_thickness + 1)  # Increase brush size with upper limit
+                    last_thickness = min(30, last_thickness + 1)
                 elif button_size_down.collidepoint(x, y):
-                    last_thickness = max(2, brush_size - 1)  # Decrease brush size with lower limit
-            elif event.type ==pygame.MOUSEBUTTONUP:
-                D = False
-                
+                    last_thickness = max(2, last_thickness - 1)  
 
-                
-            elif event.type == pygame.MOUSEMOTION and pygame.mouse.get_pressed()[0]:
-                x, y = event.pos
-                
-                if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT and D:
-                    if distance > 0.1:
-                        # Convert screen coordinates to canvas coordinates
-                        canvas_x1, canvas_y1 = previous_pos[0] - screenX, previous_pos[1] - screenY
-                        canvas_x2, canvas_y2 = x - screenX, y - screenY
-            
-            # Draw on the canvas with canvas coordinates
-                        pygame.draw.line(canvas, brush_color, (canvas_x1, canvas_y1), (canvas_x2, canvas_y2), int(last_thickness))
-                        previous_pos = (x, y)
-                        last_thickness = last_thickness * 0.7 + thickness * 0.3
-                      
-        
-        
-        # Redraw the scene each frame
-        drawBackground()
-        drawImage(testimony, testimonyPosX, testimonyPosY)
-        drawImage(table, 0, 0)
-        
-        canvasX = screenX #+ int((-((mx / SCREEN_WIDTH) - 0.5) * 0.05*SCREEN_WIDTH*2))
-        canvasY = screenY #+ int((-((my / SCREEN_HEIGHT) - 0.5) * 0.05*SCREEN_HEIGHT*2))
-        screen.blit(canvas, (screenX, screenY))
+            elif event.type == pygame.MOUSEBUTTONUP:
+                D = False
+
+        # Drawing logic
+        if pygame.mouse.get_pressed()[0]:  
+            x, y = current_pos
+            if screenX <= x <= screenX + CANVAS_WIDTH and screenY <= y <= screenY + CANVAS_HEIGHT and D:
+                if distance > 0.1:
+                    canvas_x1, canvas_y1 = previous_pos[0] - screenX, previous_pos[1] - screenY
+                    canvas_x2, canvas_y2 = x - screenX, y - screenY
+
+                    pygame.draw.line(canvas, brush_color, (canvas_x1, canvas_y1), (canvas_x2, canvas_y2), int(last_thickness))
+                    previous_pos = (x, y)
+                    last_thickness = last_thickness * 0.7 + thickness * 0.3
+
+        # Optimized display update
        
-        #txt = font.render(str(current_pos),True,(255,255,255))
-        #screen.blit(drawText, (textX, textY))
-        #screen.blit(canvas, (screenX, screenY))
-        
-        #screen.blit(txt, (0, 0))
+        screen.blit(canvas, (screenX, screenY))
         drawDone()
         drawButtons()
-        
-        # Update the display
-        pygame.display.flip()
-        clock.tick(60)  # Limit to 60 FPS
+        pygame.display.update((screenX, screenY, CANVAS_WIDTH, CANVAS_HEIGHT))
+        #pygame.display.update()
+        clock.tick(60)
+
 
     # Save the drawing when exiting the drawing loop
     timestamp = time.strftime("%Y%m%d-%H%M%S")
