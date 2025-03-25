@@ -653,7 +653,7 @@ while running:
 
     # Display boss feedback text letter by letter
     
-    if selected_culpri == "badguy":
+    if selected_culprit == "badguy":
         streak += 1
         combo += 1
         score = streak*(combo)
@@ -661,7 +661,7 @@ while running:
     else: 
         combo = 0
         score = streak*(combo)
-        text = f"Are you dumb or what, you chose the wrong guy: {selected_culpri} and thus have a score of: {score}"
+        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit} and thus have a score of: {score}"
     
     
 
@@ -716,5 +716,4 @@ CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW:
 - STORY - EVERYBODY
 - CATCH LINES TESTIMONIES -TEXT GEN - Samuel
 - PUT ALL OF LEO'S IMAGES - Samuel
-
 '''
