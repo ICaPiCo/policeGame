@@ -234,9 +234,11 @@ class person:
 
         # Scale images once
         
-        size = (SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2)        
+        
+        size = (SCREEN_WIDTH, SCREEN_HEIGHT // 1.2)        
         for key in self.images:
             self.images[key] = pygame.transform.scale(self.images[key], size)
+        
 
         # Pre-render the character's surface
         self.render_character()
