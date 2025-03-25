@@ -80,8 +80,8 @@ background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_H
 mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-speech_bubble = pygame.image.load("images/speech_bubble.png")
-speech_bubble = pygame.transform.scale(speech_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/3))
+text_bubble = pygame.image.load("images/text_bubble.png")
+text_bubble = pygame.transform.scale(text_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/2.1))
 
 empty = pygame.image.load("images/empty.png")
 # Load and scale table image
@@ -713,6 +713,6 @@ CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW:
 - PAUSE MENU ? - AAAAAAAAAAAAAh
 - STORY - EVERYBODY
 - CATCH LINES TESTIMONIES -TEXT GEN - Samuel
-- PUT ALL OF LEO'S IMAGES - Leo /Ioanis
+- PUT ALL OF LEO'S IMAGES - Samuel
 
 '''
