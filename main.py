@@ -80,6 +80,9 @@ background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_H
 mugshot = pygame.image.load("images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+speech_bubble = pygame.image.load("images/speech_bubble.png")
+speech_bubble = pygame.transform.scale(speech_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/20))
+
 empty = pygame.image.load("images/empty.png")
 # Load and scale table image
 table = pygame.image.load("images/table.png")
@@ -302,7 +305,7 @@ while running:
         pygame.display.flip()
         clock.tick(60)  
   
-
+    screen.blit(speech_bubble, (0, SCREEN_HEIGHT/20))
     text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
