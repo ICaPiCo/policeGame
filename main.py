@@ -256,18 +256,18 @@ def generate_wild_description(id_dict):
     ]
 
     # Obtain mood and hair, with fallback
-    mood = id_dict.get('face', random.choice(list(mood_desc.keys())))
-    hair = id_dict.get('hair', random.choice(list(hair_desc.keys())))
+    mood = id_dict.get('face', choice(list(mood_desc.keys())))
+    hair = id_dict.get('hair', choice(list(hair_desc.keys())))
 
     # Randomly select descriptors
-    selected_mood = random.choice(mood_desc.get(mood, ["undefined"]))
-    selected_hair = random.choice(hair_desc.get(hair, ["bizarre"]))
+    selected_mood = choice(mood_desc.get(mood, ["undefined"]))
+    selected_hair = choice(hair_desc.get(hair, ["bizarre"]))
 
     # Generate wild description
     description = (
-        f"A {selected_mood} character {random.choice(verb_modifiers)} "
+        f"A {selected_mood} character {choice(verb_modifiers)} "
         f"sporting {selected_hair} hair, "
-        f"{random.choice(clutter_phrases)}."
+        f"{choice(clutter_phrases)}."
     )
 
     return description
@@ -365,13 +365,8 @@ while running:
         pygame.display.flip()
         clock.tick(60)  
   
-<<<<<<< Updated upstream
-    screen.blit(speech_bubble, (0, SCREEN_HEIGHT/20))
-    text = "\n".join([f"{key}: {value}" for key, value in culprit_id.items()])
-=======
 
     text = f"I saw {description}"
->>>>>>> Stashed changes
     newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
     for i in text:
