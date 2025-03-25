@@ -118,11 +118,13 @@ def drawImage(image, positionX, positionY):
         positionY (int): Y-coordinate for image placement
     """
     
-    """ 
+    
     screen.blit(image, (positionX, positionY))
 
 def drawButtons():
-    """Draw all the drawing tool buttons (colors and brush sizes)."""
+    """
+    Draw all the drawing tool buttons (colors and brush sizes).
+    """
     mx,my = pygame.mouse.get_pos()
     pygame.draw.rect(screen, BLACK, button_color_black)
     pygame.draw.rect(screen, BLACK, button_color_white_outline)
