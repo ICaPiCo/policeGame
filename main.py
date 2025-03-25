@@ -279,16 +279,16 @@ def generate_wild_description(id_dict):
     # face and hair base descriptors
     face_desc = {
         "angry": ["fiery", "seething", "rage-filled", "volcanic"],
-        "happy": ["jubilant", "beaming", "sunshine-infused", "grinning"],
-        "dumb": ["bewildered", "perplexed", "mind-foggy", "slightly derailed"],
-        "sunglasses": ["cool", "shadowy", "mysteriously smooth", "enigmatic"]
+        "sad": ["melancholy", "tear-streaked", "gloomy", "mournful"]
     }
 
     hair_desc = {
-        "fluffy": ["cloud-like", "cotton-candy", "puffball", "marshmallow"],
-        "spicky": ["razor-edged", "electric", "lightning-struck", "geometric"],
-        "pea": ["rounded", "spherical", "vegetable-inspired", "carrot-like"],
-        "judge": ["precise", "authoritative", "wigged", "structured"]
+        "bald": ["shiny", "reflective", "bare", "smooth"],
+        "buzzcut": ["precise", "military-style", "closely shaved", "sharp"],
+        "short_pointy_black": ["spiky", "edgy", "wild", "sharp"],
+        "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed"],
+        "short_pointy_orange": ["flame-like", "vibrant", "fiery", "electric"],
+        "short_pointy_blond": ["golden", "sunlit", "bright", "radiant"]
     }
 
     # Clutter phrases to add randomness
@@ -301,13 +301,13 @@ def generate_wild_description(id_dict):
         "with a soundtrack of static",
         "in a dimension of mild confusion",
         "tracing probability shadows",
-        "at 9:31 and thirty three seconds"
+        "at 9:31 and thirty-three seconds"
     ]
 
     # Verb modifiers
     verb_modifiers = [
         "awkwardly", "mysteriously", "accidentally", "theoretically",
-        "hypothetically", "inexplicably", "coincidentally","quaquaversally"
+        "hypothetically", "inexplicably", "coincidentally", "quaquaversally"
     ]
 
     # Obtain face and hair, with fallback
@@ -713,8 +713,8 @@ while running:
         screen.blit(mugshot, (0, 0)) 
         
         for i,p in enumerate(culprits):
-
             p.build(((i%4) * (SCREEN_WIDTH / 4)),(i//4)*(SCREEN_HEIGHT/2),difficulty)
+            p.render_character()
         
         for i,p in enumerate(culprits):
             p.clickGlow(difficulty)
@@ -729,6 +729,7 @@ while running:
         
         screen.blit(lastDrawing, (screenX, screenY))
         drawDone()
+
         if not selected_culprit == None:
             break
         #doCriminal()  # Show the criminal image for comparison
@@ -766,7 +767,7 @@ while running:
 
     # Display boss feedback text letter by letter
     
-    if selected_culpri == "badguy":
+    if selected_culprit == "badguy":
         streak += 1
         combo += 1
         score = streak*(combo)
@@ -774,7 +775,7 @@ while running:
     else: 
         combo = 0
         score = streak*(combo)
-        text = f"Are you dumb or what, you chose the wrong guy: {selected_culpri} and thus have a score of: {score}"
+        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name} and thus have a score of: {score}"
     
     
 
@@ -829,5 +830,4 @@ CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW:
 - STORY - EVERYBODY
 - CATCH LINES TESTIMONIES -TEXT GEN - Samuel
 - PUT ALL OF LEO'S IMAGES - Samuel
-
 '''
