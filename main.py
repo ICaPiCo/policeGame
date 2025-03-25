@@ -165,8 +165,16 @@ clock = pygame.time.Clock()  # Game clock for frame rate control
 class person:
     alle = []
     
-    def __init__(self,mood,hair,mouth,eyes,ears,nose,name):
-        self.mood = mood
+    def __init__(self,face,hair,mouth,eyes,ears,nose,name,arms,eyebrows,pants,accessories,scar,tattoo,tshirt):
+        self.scar = scar
+        self.tattoo = tattoo
+        self.tshirt = tshirt
+        self.pants = pants
+        self.accessories = accessories
+        self.face = face
+        self.arms = arms
+        self.eyebrows = eyebrows
+        self.face = face
         self.hair = hair
         self.mouth = mouth 
         self.eyes = eyes
@@ -179,44 +187,6 @@ class person:
         screen.blit(loading_text, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2))
         pygame.display.update()  # Refresh the screen
         person.alle.append(self)
-        ''' 
-        INEEFFICIENT:
-    def build(self,posX,posY,difficulty):
-        #base = pygame.image.load("images/Civilians/basic guy.png")
-        image = pygame.image.load(f"images/Civilians/face_{self.mood}.png")
-        hair = pygame.image.load(f"images/Civilians/hair_{self.hair}.png")
-        eyes = pygame.image.load(f"images/Civilians/eyes_{self.eyes}.png")
-        nose = pygame.image.load(f"images/Civilians/nose_{self.nose}.png")
-        mouth = pygame.image.load(f"images/Civilians/mouth_{self.mouth}.png")
-        ears = pygame.image.load(f"images/Civilians/ears_{self.ears}.png")
-        if difficulty>4:
-            difficulty = 4
-        #base = pygame.transform.scale(base, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
-        image = pygame.transform.scale(image, (SCREEN_WIDTH/4-1,3* SCREEN_HEIGHT/6))
-        hair = pygame.transform.scale(hair, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
-        eyes = pygame.transform.scale(eyes, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
-        nose = pygame.transform.scale(nose, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
-        mouth = pygame.transform.scale(mouth, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
-        ears = pygame.transform.scale(ears, (SCREEN_WIDTH/4-1, 3*SCREEN_HEIGHT/6))
-        surface = pygame.Surface((SCREEN_WIDTH/4, SCREEN_HEIGHT/2))
-        surface.blit(empty,(0,0))
-        #surface.blit(base, (0, 0))
-        surface.blit(image, (0, 0))
-        surface.blit(hair, (0, 0))
-        surface.blit(eyes, (0, 0))
-        surface.blit(nose, (0, 0))
-        surface.blit(mouth, (0, 0))
-        surface.blit(ears, (0, 0))
-        if self == culprit:
-            ct = font.render("Culprit",True,(128,0,128))
-            surface.blit(ct, (200, 400))
-        elif self == culprit1:
-            ct = font.render("Culprit 1", True, (128, 0, 128))
-            surface.blit(ct, (200, 400))
-        self.posX = posX
-        self.posY = posY
-        screen.blit(surface, (posX, posY))
-        '''
 
         # Load and scale assets once
         self.load_assets()
@@ -224,21 +194,28 @@ class person:
     def load_assets(self):
         """Loads and scales assets once to improve performance."""
         self.images = {
-            "face": pygame.image.load(f"images/Civilians/face_{self.mood}.png").convert_alpha(),
-            "hair": pygame.image.load(f"images/Civilians/hair_{self.hair}.png").convert_alpha(),
-            "eyes": pygame.image.load(f"images/Civilians/eyes_{self.eyes}.png").convert_alpha(),
-            "nose": pygame.image.load(f"images/Civilians/nose_{self.nose}.png").convert_alpha(),
-            "mouth": pygame.image.load(f"images/Civilians/mouth_{self.mouth}.png").convert_alpha(),
-            "ears": pygame.image.load(f"images/Civilians/ears_{self.ears}.png").convert_alpha(),
+            "ears": pygame.image.load(f"images/Civilians/ears/ears_{self.ears}.png").convert_alpha(),
+            "face": pygame.image.load(f"images/Civilians/face/face_{self.face}.png").convert_alpha(),
+            "hair": pygame.image.load(f"images/Civilians/hair/hair_{self.hair}.png").convert_alpha(),
+            "nose": pygame.image.load(f"images/Civilians/nose/nose_{self.nose}.png").convert_alpha(),
+            "mouth": pygame.image.load(f"images/Civilians/mouth/mouth_{self.mouth}.png").convert_alpha(),
+            "eyes": pygame.image.load(f"images/Civilians/eyes/eyes_{self.eyes}.png").convert_alpha(),
+            "eyebrows": pygame.image.load(f"images/Civilians/eyebrows/eyebrows_{self.eyebrows}.png").convert_alpha(),
+            "pants": pygame.image.load(f"images/Civilians/pants/pants_{self.pants}.png").convert_alpha(),
+            "arms": pygame.image.load(f"images/Civilians/arms/arms_{self.arms}.png").convert_alpha(),
+            "tshirt": pygame.image.load(f"images/Civilians/tshirt/tshirt_{self.tshirt}.png").convert_alpha(),
+            "scar": pygame.image.load(f"images/Civilians/scar/scar_{self.scar}.png").convert_alpha(),
+            "tattoo": pygame.image.load(f"images/Civilians/tattoo/tattoo_{self.tattoo}.png").convert_alpha(),
+            "accessories": pygame.image.load(f"images/Civilians/accessories/accessories_{self.accessories}.png").convert_alpha(),
         }
 
         # Scale images once
         
-        
+        """
         size = (SCREEN_WIDTH, SCREEN_HEIGHT // 1.2)        
         for key in self.images:
             self.images[key] = pygame.transform.scale(self.images[key], size)
-        
+        """
 
         # Pre-render the character's surface
         self.render_character()
@@ -269,7 +246,7 @@ class person:
 
 
     def genid(self):
-        id = {"face":self.mood,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth}
+        id = {"face":self.face,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth}
         return id
     def calculate_similarity(self,id2):
         id1 = self.genid()  
@@ -299,8 +276,8 @@ def generate_wild_description(id_dict):
     """
   
 
-    # Mood and hair base descriptors
-    mood_desc = {
+    # face and hair base descriptors
+    face_desc = {
         "angry": ["fiery", "seething", "rage-filled", "volcanic"],
         "happy": ["jubilant", "beaming", "sunshine-infused", "grinning"],
         "dumb": ["bewildered", "perplexed", "mind-foggy", "slightly derailed"],
@@ -333,17 +310,17 @@ def generate_wild_description(id_dict):
         "hypothetically", "inexplicably", "coincidentally","quaquaversally"
     ]
 
-    # Obtain mood and hair, with fallback
-    mood = id_dict.get('face', choice(list(mood_desc.keys())))
+    # Obtain face and hair, with fallback
+    face = id_dict.get('face', choice(list(face_desc.keys())))
     hair = id_dict.get('hair', choice(list(hair_desc.keys())))
 
     # Randomly select descriptors
-    selected_mood = choice(mood_desc.get(mood, ["undefined"]))
+    selected_face = choice(face_desc.get(face, ["undefined"]))
     selected_hair = choice(hair_desc.get(hair, ["bizarre"]))
 
     # Generate wild description
     description = [
-        f"a {selected_mood} character {choice(verb_modifiers)} "
+        f"a {selected_face} character {choice(verb_modifiers)} "
         f"sporting {selected_hair} hair, "
         f"{choice(clutter_phrases)}"
     ]
@@ -355,11 +332,18 @@ def generate_wild_description(id_dict):
 
 # If you want to use it directly with genid()
 
-mood_options = ["normal","round"]
-hair_options = ["bald", "buzzcut", "short_pointy"]
+tshirt_options = ["white"]
+tattoo_options = ["neck_left","none"]
+scar_options = ["left","none"]
+accessories_options = ["earing","none"]
+pants_options = ["blue","cyan","green","grey","red","yellow"]
+face_options = ["normal_black","normal_brown","normal_white","round_black","round_brown","round_white"]
+eyebrows_options = ["angry_black","angry_blond","angry_brown","sad_black","sad_blond","sad_brown"]
+arms_options = ["black","brown","white"]
+hair_options = ["bald", "buzzcut", "short_pointy_black","short_pointy_blond","short_pointy_brown","short_pointy_orange"]
 mouth_options = ["up_big","up","down"]
 eyes_options = ["angry","sad"]
-ears_options = ["normal","round"]
+ears_options = ["normal_black","normal_brown","normal_white","round_black","round_brown","round_white"]
 nose_options = ["big","normal"]
 difficulty = 3
 font = pygame.font.Font(None, 36)
@@ -369,25 +353,154 @@ while running:
     
     person.alle = []
     selected_culprit = None
-    culprit = person(choice(mood_options), choice(hair_options),choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"badguy")
+    culprit = person(
+        choice(face_options), 
+        choice(hair_options),
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "badguy",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+    
     culprit_id  = culprit.genid()
     description = generate_wild_description(culprit_id)
     print(description)
-    mood_weights = [difficulty if mood == culprit_id["face"] else 1 for mood in mood_options]
+    face_weights = [difficulty if face == culprit_id["face"] else 1 for face in face_options]
     hair_weights = [difficulty if hair == culprit_id["hair"] else 1 for hair in hair_options]
-    mood_weights1 = [difficulty-1 if mood == culprit_id["face"] else 1 for mood in mood_options]
+    face_weights1 = [difficulty-1 if face == culprit_id["face"] else 1 for face in face_options]
     hair_weights2 = [difficulty-1 if hair == culprit_id["hair"] else 1 for hair in hair_options]
     #print(f"culprit: {culprit_id}")
     culprits = []
     
-    culprit1 = person(choices(mood_options,(mood_weights))[0], choices(hair_options,hair_weights)[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"littlebad")
-    culprit2 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"notsobad")
-    culprit3 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"VERYBADCHOICE")
-    culprit4 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"VERYVERYBADCHOICE")
-    culprit5 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"Culprit5")
-    culprit6 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"Culprit6")
-    culprit7 = person(choices(mood_options,(mood_weights1))[0],  choices(hair_options,(hair_weights2))[0],choice(mouth_options),(choice(eyes_options)),choice(ears_options),choice(nose_options),"Culprit7")
+    culprit1 = person(
+        choices(face_options,(face_weights))[0],
+        choices(hair_options,hair_weights)[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "littlebad",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+    
+    culprit2 = person(
+        choices(face_options,(face_weights1))[0],
+        choices(hair_options,(hair_weights2))[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "notsobad",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+    
+    culprit3 = person(
+        choices(face_options,(face_weights1))[0],
+        choices(hair_options,(hair_weights2))[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "VERYBADCHOICE",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+
+    culprit4 = person(
+        choices(face_options,(face_weights1))[0],
+        choices(hair_options,(hair_weights2))[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "VERYVERYBADCHOICE",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+
+    culprit5 = person(
+        choices(face_options,(face_weights1))[0],
+        choices(hair_options,(hair_weights2))[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "Culprit5",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+
+    culprit6 = person(
+        choices(face_options,(face_weights1))[0],
+        choices(hair_options,(hair_weights2))[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "Culprit6",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+
+    culprit7 = person(
+        choices(face_options,(face_weights1))[0],
+        choices(hair_options,(hair_weights2))[0],
+        choice(mouth_options),
+        choice(eyes_options),
+        choice(ears_options),
+        choice(nose_options),
+        "Culprit7",
+        choice(arms_options),
+        choice(eyebrows_options),
+        choice(pants_options),
+        choice(accessories_options),
+        choice(scar_options),
+        choice(tattoo_options),
+        choice(tshirt_options)
+        )
+
     available = [culprit,culprit1,culprit2,culprit3,culprit4,culprit5,culprit6,culprit7]
+
     for i in range(difficulty):
         if i<len(available):
             culprits.append(available[i])
