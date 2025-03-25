@@ -370,7 +370,6 @@ while running:
   
     text = f"I saw {description}"
     line_length = 30  # Number of characters per line
-    newtext = ""
     textX, textY = SCREEN_WIDTH/4, SCREEN_HEIGHT/3
 
     # Break text into lines of specified length
@@ -512,12 +511,12 @@ while running:
     pygame.image.save(canvas, latest_drawing)
     print(f"Drawing saved to {latest_drawing}")
     lastDrawing = pygame.image.load(latest_drawing)
-
+    selected_culprit = None
     # Criminal comparison screen loop
     while isCriminal:
         screen.fill((0, 0, 0))
         screen.blit(mugshot, (0, 0)) 
-        selected_culprit = None
+        
         for i,p in enumerate(culprits):
 
             p.build(((i%4) * (SCREEN_WIDTH / 4)),(i//4)*(SCREEN_HEIGHT/2),difficulty)
