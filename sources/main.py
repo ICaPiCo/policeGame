@@ -292,7 +292,7 @@ class person:
             difficulty = 4
         chr_rect = pygame.Rect(self.posX, self.posY, SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/6)
         mouse_pos = pygame.mouse.get_pos()
-        if chr_rect.collidepoint(mouse_pos) and not button_done.collidepoint(mouse_pos):
+        if chr_rect.collidepoint(mouse_pos) and not button_d.collidepoint(mouse_pos):
             pygame.draw.rect(screen, (255, 0, 0), chr_rect, 5)
             if  pygame.mouse.get_pressed()[0]:
                 pygame.draw.rect(screen, (255, 255, 0), chr_rect, 5)
@@ -612,7 +612,7 @@ while running:
         pygame.display.flip()  # Update display
 
     # Testimony scene animation - slide in from right
-    testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
+    testimonyPosX, testimonyPosY = -testimony.get_width(), 0  # Start from far left
     animation_speed = 20  # Higher number = faster animation
     target_x = SCREEN_WIDTH / 3  # Target position
     font = pygame.font.Font(load_random_font("sources/fonts"), int(SCREEN_HEIGHT / 20))
@@ -620,12 +620,11 @@ while running:
     # Store the background if it doesn't change often
     background_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
     background_surface.blit(background,(0,0))
-    # You should draw the background here, assuming drawBackground is filling the surface
     drawBackground()  # Ensure background is rendered into background_surface
 
-    while testimonyPosX > target_x:
+    while testimonyPosX < target_x:
         # Update the position
-        testimonyPosX = max(target_x, testimonyPosX - animation_speed)
+        testimonyPosX = min(target_x, testimonyPosX + animation_speed)
         testimonyPosY = (SCREEN_HEIGHT / 2) * (0.03 * sin(testimonyPosX))
 
         # Clear the screen by blitting the background only once per frame
@@ -866,7 +865,7 @@ while running:
         time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
         pygame.display.flip()   
     # Draw done button for play again screen
-    drawDone()
+    
     screen.blit(gallery_menu,(SCREEN_WIDTH/2,SCREEN_HEIGHT/1.2))
     pygame.display.flip()
     
