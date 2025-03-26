@@ -8,9 +8,10 @@ import sys
 from math import hypot
 
 os.system("cls")  # Clear console screen
-
 # Initialize pygame
 pygame.init()
+font = pygame.font.Font(None, 36)
+
 drawing = False
 streak = 0
 combo = 0
@@ -24,13 +25,41 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1920,1200
 CANVAS_WIDTH, CANVAS_HEIGHT = 655,380
 borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
 screenX, screenY = 1200, 565  # Canvas position
-button_color_black = pygame.Rect((screenX+Space), (screenY+10), 100, 40)  # Black color button
-button_color_white_outline = pygame.Rect(screenX+100+Space, (screenY+10), 100, 40)  # White color button outline
-button_color_white = pygame.Rect(screenX+100+Space+5, screenY+10+5, 90, 30)  # White color button inner part
-button_size_up = pygame.Rect(screenX+200+Space, screenY+10, 100, 40)  # Increase brush size button
-button_size_down = pygame.Rect(screenX+300+Space, screenY+10, 100, 40)  # Decrease brush size button
-button_done = pygame.Rect(screenX+400+Space, screenY+350, 100, 40)
 
+button_color_black = pygame.image.load("sources/ui/default/buttons/color_black.png")
+blackSurface = pygame.Surface((100,40))
+button_color_black = pygame.transform.scale(button_color_black, (100,40))
+blackSurface.blit(button_color_black, (0, 0))  # Blit at (0,0)
+
+# White button surface
+button_color_white = pygame.image.load("sources/ui/default/buttons/color_white.png")
+whiteSurface = pygame.Surface((100,40))
+button_color_white = pygame.transform.scale(button_color_white, (100,40))
+whiteSurface.blit(button_color_white, (0, 0))  # Blit at (0,0)
+
+# Size up button surface
+button_size_up = pygame.image.load("sources/ui/default/buttons/size_plus.png")
+upSurface = pygame.Surface((100,40))
+button_size_up = pygame.transform.scale(button_size_up, (100,40))
+upSurface.blit(button_size_up, (0, 0))  # Blit at (0,0)
+
+# Size down button surface
+button_size_down = pygame.image.load("sources/ui/default/buttons/size_minus.png")
+downSurface = pygame.Surface((100,40))
+button_size_down = pygame.transform.scale(button_size_down, (100,40))
+downSurface.blit(button_size_down, (0, 0))  # Blit at (0,0)
+
+# Done button surface
+button_done = pygame.image.load("sources/ui/default/buttons/done.png")
+doneSurface = pygame.Surface((100,40))
+button_done = pygame.transform.scale(button_done,(100,40))
+doneSurface.blit(button_done, (0, 0))  # Blit at (0,0)
+
+
+screen.fill((0, 0, 0))  # Clear screen
+loading_text = font.render("Loading...", True, (255, 255, 255))
+screen.blit(loading_text, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2))
+pygame.display.update()  # Refresh the screen
 def load_random_font(folder_path):
     """
     Load a random font from the specified folder.
@@ -136,20 +165,14 @@ def drawImage(image, positionX, positionY):
 def drawButtons():
     """Draw all the drawing tool buttons (colors and brush sizes)."""
     
-    pygame.draw.rect(screen, BLACK, button_color_black)
-    pygame.draw.rect(screen, BLACK, button_color_white_outline)
-    pygame.draw.rect(screen, WHITE, button_color_white)
-    pygame.draw.rect(screen, DARK_GREY, button_size_up)
-    pygame.draw.rect(screen, LIGHT_GREY, button_size_down)
+    screen.blit(blackSurface,(screenX,screenY))
+    screen.blit(whiteSurface,(screenX+100,screenY))
+    screen.blit(upSurface,(screenX+200,screenY))
+    screen.blit(downSurface,(screenX+300,screenY))
+    screen.blit(doneSurface,(screenX+400,screenY))
     
 
-    screen.blit(font.render("+", True, WHITE), (screenX+200+(Space*3) , screenY+10 ))
-    screen.blit(font.render("-", True, WHITE), (screenX+300+(Space*3) , screenY+10 ))
-    
-def drawDone():
-    """Draw the green 'Done' button."""
-    pygame.draw.rect(screen, GREEN, button_done)
- 
+  
 def doCriminal():
     """Draw the criminal image in the comparison screen."""
     screen.blit(criminal, (SCREEN_WIDTH/4, SCREEN_HEIGHT/2.5))
@@ -379,7 +402,7 @@ eyes_options = ["angry","sad"]
 ears_options = ["normal_white","round_white"]
 nose_options = ["big","normal"]
 difficulty = 3
-font = pygame.font.Font(None, 36)
+
 # Main game loop
 
 while running:
@@ -652,7 +675,7 @@ while running:
     drawBackground()
     screen.blit(testimony, (testimonyPosX, testimonyPosY))
     drawImage(table, 0, 0)
-    drawDone()
+   
     drawButtons()
     pygame.display.flip()
 
@@ -691,17 +714,21 @@ while running:
                 D = True
                 x, y = event.pos
                 previous_pos = current_pos
-
-                if button_done.collidepoint(x, y):
+                button_d = doneSurface.get_rect(topleft=(screenX+400, screenY))
+                button_u = upSurface.get_rect(topleft=(screenX+200, screenY))
+                button_s = downSurface.get_rect(topleft=(screenX+300, screenY))
+                button_b = blackSurface.get_rect(topleft=(screenX, screenY))
+                button_w = whiteSurface.get_rect(topleft=(screenX+100, screenY))
+                if button_d.collidepoint(x, y):
                     drawing = False
-                elif button_color_black.collidepoint(x, y):
+                elif button_b.collidepoint(x, y):
                     brush_color = BLACK
-                elif button_color_white.collidepoint(x, y):
+                elif button_w.collidepoint(x, y):
                     brush_color = WHITE
-                elif button_size_up.collidepoint(x, y):
-                    last_thickness = min(30, last_thickness + 1)
-                elif button_size_down.collidepoint(x, y):
-                    last_thickness = max(2, last_thickness - 1)  
+                elif button_u.collidepoint(x, y):
+                    last_thickness = min(50, last_thickness + 3)
+                elif button_s.collidepoint(x, y):
+                    last_thickness = max(2, last_thickness - 3)  
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 D = False
@@ -721,7 +748,8 @@ while running:
         # Optimized display update
        
         screen.blit(canvas, (screenX, screenY))
-        drawDone()
+       
+
         drawButtons()
         pygame.display.update((screenX, screenY, CANVAS_WIDTH, CANVAS_HEIGHT))
         #pygame.display.update()
@@ -763,13 +791,13 @@ while running:
 
         
         screen.blit(lastDrawing, (screenX, screenY))
-        drawDone()
+        
 
         if not selected_culprit == None:
             break
         #doCriminal()  # Show the criminal image for comparison
         
-
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 isCriminal = False
@@ -784,7 +812,7 @@ while running:
                     sys.exit()  
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if button_done.collidepoint(x, y) and not selected_culprit == None:
+                if button_d.collidepoint(x, y) and not selected_culprit == None:
                     isCriminal = False
         pygame.display.flip()
 
