@@ -78,6 +78,7 @@ testimony = load_random_image("images/testimonials")  # Random testimony image
 boss = load_random_image("images/boss")  # Random boss image
 criminal = load_random_image("images/criminals")  # Random criminal image
 
+end = pygame.image.load("sources/ui/default/Exit.png")
 # Load and scale background image
 background = pygame.image.load("images/background.png")
 background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_HEIGHT )))
