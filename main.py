@@ -173,7 +173,7 @@ class person:
     def __init__(self,face,hair,mouth,eyes,ears,nose,name,arms,eyebrows,pants,accessories,scar,tattoo,tshirt):
         self.scar = scar
         self.tattoo = tattoo
-        self.tshirt = tshirt
+        self.tshirt = tshirt # get all stuff
         self.pants = pants
         self.accessories = accessories
         self.face = face
@@ -216,12 +216,7 @@ class person:
 
         # Scale images once
         
-        """
-        size = (SCREEN_WIDTH, SCREEN_HEIGHT // 1.2)        
-        for key in self.images:
-            self.images[key] = pygame.transform.scale(self.images[key], size)
-        """
-
+   
         # Pre-render the character's surface
         self.render_character()
 
@@ -235,7 +230,7 @@ class person:
             self.surface.blit(img, (-100, 0))
 
     def build(self, posX, posY, difficulty):
-        """Efficiently renders the character to the screen."""
+        """EFFICITENTY renders the character to the screen."""
         self.posX = posX
         self.posY = posY
         if difficulty > 4:
@@ -243,14 +238,16 @@ class person:
 
         screen.blit(self.surface, (posX, posY))
 
-        # Draw culprit text if needed
+        # Draw culprit text if needed debug / 
+        '''
         if self in [culprit, culprit1]:
             label = "Culprit" if self == culprit else "Culprit 1"
             ct = font.render(label, True, (128, 0, 128))
             screen.blit(ct, (posX + 200, posY + 400))
-
+'''
 
     def genid(self):
+        #Generer une id pour objet pour text etc
         id = {"face":self.face,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth,"scar":self.scar}
         return id
     def calculate_similarity(self,id2):
@@ -258,9 +255,6 @@ class person:
         id2 = id2.genid()
         matches = sum(1 for thing in id1 if id1[thing] == id2[thing])  # Count matching keys
         return (matches / 2) * 100 
-    def genText(self,id):
-        text = "Face: ",id['face'],", Hair: ",id['hair']
-        return text
     def clickGlow(self,difficulty):
         global selected_culprit
         if difficulty>4:
@@ -277,37 +271,37 @@ class person:
 
 def generate_wild_description(id_dict):
     """
-    Generate a chaotic yet somewhat coherent character description.
-    Includes intentional clutter and randomness.
+    Gen a chaotic  somewhat coherent character description.
+    includes  clutter and randomness.
     """
     
     # Face, eyes, mouth, and hair base descriptors
     face_desc = {
-        "angry": ["fiery", "seething", "rage-filled", "volcanic"],
-        "sad": ["melancholy", "tear-streaked", "gloomy", "mournful"],
+        "angry": ["fiery", "seething", "rage-filled", "volcanic","angry"],
+        "sad": ["melancholy", "sullen", "gloomy", "mournful","subdued"],
         "normal_white": ["plain", "neutral", "calm", "unreadable"],
         "round_white": ["soft", "cherubic", "plump", "gentle"]
     }
     
     eyes_desc = {
-        "angry": ["piercing", "intense", "furious", "burning"],
-        "sad": ["watery", "downcast", "melancholic", "wistful"],
+        "angry": ["piercing","downtured","angry", "intense", "furious", "burning"],
+        "sad": ["watery", "downcast", "melancholic", "wistful","sad"],
         "normal": ["steady", "unassuming", "calm", "observant"]
     }
     
     mouth_desc = {
-        "up": ["smirking", "grinning", "subtly amused", "playful"],
-        "up_big": ["beaming", "joyful", "gleeful", "radiant"],
-        "down": ["frowning", "pouting", "sullen", "brooding"]
+        "up": ["smirking", "grinning", "subtly amused", "playful","pensive"],
+        "up_big": ["beaming", "joyful", "gleeful", "radiant","overly-gleeful"],
+        "down": ["frowning", "pouting", "sullen", "brooding","downturned"]
     }
     
     hair_desc = {
-        "bald": ["shiny", "reflective", "bare", "smooth"],
-        "buzzcut": ["precise", "military-style", "closely shaved", "sharp"],
-        "short_pointy_black": ["spiky", "edgy", "wild", "sharp"],
+        "bald": ["shiny", "reflective", "bare", "smooth","egg-like","eggish","ostrich-egg"],
+        "buzzcut": ["precise and closely cut", "military-style", "closely shaved", "sharp"],
+        "short_pointy_black": ["spiky dark", "wildly dark", "sharp dark"],
         "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed"],
-        "short_pointy_orange": ["flame-like", "vibrant", "fiery", "electric orange"],
-        "short_pointy_blond": ["golden", "sunlit", "bright", "radiant"]
+        "short_pointy_orange": ["flame-like", "vibrant and pointy", "fiery", "electric orange"],
+        "short_pointy_blond": ["golden and pointy", "sunlit", "bright and spiky", "radiantly spiky"]
     }
     
     # Clutter phrases for randomness
@@ -319,7 +313,7 @@ def generate_wild_description(id_dict):
         ". I was suprised at his",
         "with a soundtrack of static",
         "in a dimension of mild confusion",
-        "tracing probability shadows",
+        "while I was eating",
         "at 9:31 and thirty-three seconds"
     ]
     
@@ -393,7 +387,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "badguy",
+        "Right Culprit",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -420,7 +414,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "littlebad",
+        "Wrong Culprit 1",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -437,7 +431,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "notsobad",
+        "Wrong Culprit 2",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -454,7 +448,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "VERYBADCHOICE",
+        "Wrong Culprit 3",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -471,7 +465,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "VERYVERYBADCHOICE",
+        "Wrong Culprit 4",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -488,7 +482,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "Culprit5",
+        "Wrong Culprit 5",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -505,7 +499,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "Culprit6",
+        "Wrong Culprit 6",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -522,7 +516,7 @@ while running:
         choice(eyes_options),
         choice(ears_options),
         choice(nose_options),
-        "Culprit7",
+        "Wrong Culprit 7",
         choice(arms_options),
         choice(eyebrows_options),
         choice(pants_options),
@@ -635,7 +629,8 @@ while running:
         
         current_line_index += 1
     # Create canvas for drawing
-    time.sleep(0.5)
+    screen.blit(drawText, (textX, current_y))
+    time.sleep(0.1)
     canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
     canvas.fill(WHITE)
     
@@ -793,33 +788,46 @@ while running:
 
     # Display boss feedback text letter by letter
     
-    if selected_culprit.name == "badguy":
+    if selected_culprit == culprit:
         streak += 1
         combo += 1
         score = streak*(combo)
-        text = f"Nice Job, you chose the right culprit and you have a score of: {score}"
+        text = f"Nice Job, you chose the {culprit.name}"
+        scr =  f"Your score is {score}"
+
     else: 
         combo = 0
         score = streak*(combo)
-        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name} and thus have a score of: {score}"
-    
-    
-
+        text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name}."
+        scr =  f"Your score is {score}"
+    clt = "The Culprit was:"
+    cl = font.render(clt,True,(255,255,255))
+    screen.blit(cl, (SCREEN_WIDTH-1000,SCREEN_HEIGHT-800))
+    culprit.build(SCREEN_WIDTH-800,SCREEN_HEIGHT-600,difficulty)
     newtext = ""
-    textX, textY = SCREEN_WIDTH/6, SCREEN_HEIGHT/4
-    for i in text:
+    newtext2 = ""
+    textX, textY = SCREEN_WIDTH/7, SCREEN_HEIGHT/6
+    textX2,textY2 = textX, textY+50
+    for p,i in enumerate(text):
         newtext += i
-        drawText = font.render(newtext, True, (0, 0, 0))
+        drawText = font.render(newtext, True, (255,255,255))
         screen.blit(drawText, (textX, textY))
         time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
-        pygame.display.flip()    
-
+        pygame.display.flip()   
+    for n in scr:
+        newtext2 += n
+        drawText2 = font.render(newtext2, True, (255,255,255))
+        screen.blit(drawText2, (textX2, textY2))
+        screen.blit(drawText,(textX,textY))
+        time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
+        pygame.display.flip()   
     # Draw done button for play again screen
     drawDone()
     pygame.display.flip()
     
     # Play again prompt loop
     while playAgain:
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 playAgain = False
@@ -837,7 +845,7 @@ while running:
                 x, y = event.pos
                 if button_done.collidepoint(x, y):
                     playAgain = False
-
+        
     drawing = True  # Drawing mode state
     isCriminal = True  # Criminal comparison state
     bossSpeech = True  # Boss feedback state
@@ -847,7 +855,6 @@ while running:
 pygame.quit()
 
 '''
-CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW: 
 - ADD MUSI AND SOUND EFFECTS- ADD SPEECH BUBBLE - Ioanis
 - MAKE BUTTONS MORE BEAUTIFUL (UI) -Ioanis
 - STORY - EVERYBODY
