@@ -308,64 +308,63 @@ def generate_wild_description(id_dict):
     
     # Face, eyes, mouth, and hair base descriptors
     face_desc = {
-        "angry": ["fiery", "seething", "rage-filled", "volcanic","angry"],
-        "sad": ["melancholy", "sullen", "gloomy", "mournful","subdued"],
-        "normal_white": ["plain", "neutral", "calm", "unreadable"],
-        "round_white": ["soft", "cherubic", "plump", "gentle"]
+        "angry": [ "rage-filled", "volcanic","angry"],
+        "sad": ["melancholy", "sad" , "mournful"],
+        "normal_white": ["plain", "neutral", "calm"],
+        "round_white": ["big", "fat", "plump", "round"]
     }
     
     eyes_desc = {
-        "angry": ["piercing","downtured","angry", "intense", "furious", "burning"],
-        "sad": ["watery", "downcast", "melancholic", "wistful","sad"],
-        "normal": ["steady", "unassuming", "calm", "observant"]
+        "angry": ["downtured","angry", "intense", "furious"],
+        "sad": ["crying", "looking down", "melancholic","sad"],
+        "normal": ["calm", "observant"]
     }
     eyebrows_desc = {
     # Angry expressions with color hints
-    "angry_black": ["jet-black furrowed", "dark sharp", "midnight creased", "coal-dark knitted", "ink-black menacing", "charcoal razor-sharp"],
-    "angry_blond": ["pale golden tensed", "sandy sharp", "wheat-colored angled", "light bristling", "honey lightning-like", "wheat cutting"],
-    "angry_brown": ["auburn thick", "chestnut dark", "mahogany heavy", "walnut lowered", "bronze intense", "earth-brown thunderous"],
-    "angry_orange": ["copper fiery", "rust intense", "sienna sharp", "flame-like dramatic", "amber striking", "ginger bold"],
+    "angry_black": ["angry and dark", "dark and annoyed", "ink-black and menacing"],
+    "angry_blond": ["golden and tensed", "like sand and mefiant", "honey looking and fronced"],
+    "angry_brown": ["chestnut dark and mefiant", "walnut fronced", "bronze annoyed", "earth-brown thunderous"],
+    "angry_orange": ["orange and intense", "orange and piercing", "flame-like menacing", "amber and annoyed", "ginger and fronced"],
     
     # Sad expressions with color hints
-    "sad_black": ["jet-black drooping", "midnight heavy", "ink-dark weighed", "coal softly arched", "arched dark", "obsidian dark arched"],
-    "sad_blond": ["questioning blond","honey-colored raised", "light fragile", "pale wispy"],
-    "sad_brown": ["chestnut curved", "mahogany gentle", "bronze melancholic", "walnut downturned"],
+    "sad_black": ["black worried", "ink-dark and sad", "obsidian dark and worried"],
+    "sad_blond": ["blond and sad","honey-colored worried", "pale and crying"],
+    "sad_brown": ["chestnut-like and sad", "bronze color and melancholic"],
     "sad_orange": ["copper subdued", "rust soft", "gentle ginger"],
-    "normal_black": [ "dark straight", "composed dark","steady dark"],
-    "normal_blond": ["golden light", "honey-colored smooth", "pale neutral", "light neutral"],
-    "normal_brown": ["flat brown","muddy flat","unexpressive brown"],
-    "normal_orange": ["unexpressive fiery","vibrant orange unexpressive","flat orange"]
+    "normal_black": [ "dark straight", "normal and dark","steady dark"],
+    "normal_blond": ["golden", "yellow colored"],
+    "normal_brown": ["flat brown","muddy and normal","unexpressive brownish"],
+    "normal_orange": ["unexpressive orange","normal orange","honey like"]
     }
     mouth_desc = {
-        "up": ["smirking", "grinning", "subtly amused", "playful","pensive"],
-        "up_big": ["beaming", "joyful", "gleeful", "radiant","overly-gleeful"],
-        "down": ["frowning", "pouting", "sullen", "brooding","downturned"]
+        "up": ["smirking", "mocking", "amused", "playful"],
+        "up_big": ["enormous", "joyful", "dumb-looking","crazy-big"],
+        "down": ["frowning", "sad", "worried","downturned"]
     }
     
     hair_desc = {
-        "bald": ["shiny", "reflective", "bare", "smooth","egg-like","eggish","ostrich-egg"],
-        "buzzcut": ["precise and closely cut", "military-style", "closely shaved", "sharp"],
-        "short_pointy_black": ["spiky dark", "wildly dark", "sharp dark"],
-        "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed brown"],
-        "short_pointy_orange": ["flame-like", "vibrant and pointy", "fiery", "electric orange"],
-        "short_pointy_blond": ["golden and pointy", "sunlit", "bright and spiky", "radiantly spiky"]
+        "bald": ["shiny", "reflective", "bare", "bald","egg-like","eggish"],
+        "buzzcut": ["closely cut", "military-style", "closely shaved", "very very short"],
+        "short_pointy_black": ["spiky dark", "messy dark", "messy black"],
+        "short_pointy_brown": ["wood-toned pointy", "brown messy"],
+        "short_pointy_orange": ["flame-like", "orange and pointy", "electric orange"],
+        "short_pointy_blond": ["golden and pointy", "bright and messy", "radiantly spiky"]
     }
     
     # Clutter phrases for randomness
     clutter_phrases = [
-        "while juggling invisible unicorns",
-        "under the impression that he was a frog",
-        "amidst theoretical background noise",
-        "with a soundtrack of static",
-        "in a dimension of mild confusion",
+        "while he was criming",
+        "thinking he was a racecar",
+        "amongst background noise",
+        "with a hiphop sound",
+        "in a flash",
         "while I was eating",
         "at 9:31 and thirty-three seconds"
     ]
     
     # Verb modifiers
     verb_modifiers = [
-         "mysteriously", "theoretically",
-        "hypothetically", "inexplicably", "coincidentally", "quaquaversally",
+         "mysteriously", "inexplicably", "coincidentally",
     ]
     withe = ["with"]
     wiwth = choice(withe)
@@ -626,9 +625,10 @@ while running:
         pygame.display.flip()  # Update display
 
     # Testimony scene animation - slide in from right
+    testimony = load_random_image("sources/images/testimonials")
     testimonyPosX, testimonyPosY = -testimony.get_width(), 0  # Start from far left
     animation_speed = 20  # Higher number = faster animation
-    target_x = SCREEN_WIDTH / 3  # Target position
+    target_x = SCREEN_WIDTH / 3.3  # Target position
     font = pygame.font.Font(load_random_font("sources/fonts"), int(SCREEN_HEIGHT / 20))
 
     # Store the background if it doesn't change often
