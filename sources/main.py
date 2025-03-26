@@ -279,7 +279,7 @@ class person:
 
     def genid(self):
         #Generer une id pour objet pour text etc
-        id = {"face":self.face,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth,"scar":self.scar}
+        id = {"face":self.face,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth,"scar":self.scar,"eyebrows":self.eyebrows}
         return id
     def calculate_similarity(self,id2):
         id1 = self.genid()  
@@ -299,7 +299,7 @@ class person:
                 selected_culprit = self
                 return selected_culprit
 
-
+score = 0
 def generate_wild_description(id_dict):
     """
     Gen a chaotic  somewhat coherent character description.
@@ -319,7 +319,23 @@ def generate_wild_description(id_dict):
         "sad": ["watery", "downcast", "melancholic", "wistful","sad"],
         "normal": ["steady", "unassuming", "calm", "observant"]
     }
+    eyebrows_desc = {
+    # Angry expressions with color hints
+    "angry_black": ["jet-black furrowed", "dark sharp", "midnight creased", "coal-dark knitted", "ink-black menacing", "charcoal razor-sharp"],
+    "angry_blond": ["pale golden tensed", "sandy sharp", "wheat-colored angled", "light bristling", "honey lightning-like", "wheat cutting"],
+    "angry_brown": ["auburn thick", "chestnut dark", "mahogany heavy", "walnut lowered", "bronze intense", "earth-brown thunderous"],
+    "angry_orange": ["copper fiery", "rust intense", "sienna sharp", "flame-like dramatic", "amber striking", "ginger bold"],
     
+    # Sad expressions with color hints
+    "sad_black": ["jet-black drooping", "midnight heavy", "ink-dark weighed", "coal softly arched", "arched dark", "obsidian dark arched"],
+    "sad_blond": ["questioning blond","honey-colored raised", "light fragile", "pale wispy"],
+    "sad_brown": ["chestnut curved", "mahogany gentle", "bronze melancholic", "walnut downturned"],
+    "sad_orange": ["copper subdued", "rust soft", "gentle ginger"],
+    "normal_black": [ "dark straight", "composed dark","steady dark"],
+    "normal_blond": ["golden light", "honey-colored smooth", "pale neutral", "light neutral"],
+    "normal_brown": ["flat brown","muddy flat","unexpressive brown"],
+    "normal_orange": ["unexpressive fiery","vibrant orange unexpressive","flat orange"]
+    }
     mouth_desc = {
         "up": ["smirking", "grinning", "subtly amused", "playful","pensive"],
         "up_big": ["beaming", "joyful", "gleeful", "radiant","overly-gleeful"],
@@ -330,7 +346,7 @@ def generate_wild_description(id_dict):
         "bald": ["shiny", "reflective", "bare", "smooth","egg-like","eggish","ostrich-egg"],
         "buzzcut": ["precise and closely cut", "military-style", "closely shaved", "sharp"],
         "short_pointy_black": ["spiky dark", "wildly dark", "sharp dark"],
-        "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed"],
+        "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed brown"],
         "short_pointy_orange": ["flame-like", "vibrant and pointy", "fiery", "electric orange"],
         "short_pointy_blond": ["golden and pointy", "sunlit", "bright and spiky", "radiantly spiky"]
     }
@@ -339,9 +355,7 @@ def generate_wild_description(id_dict):
     clutter_phrases = [
         "while juggling invisible unicorns",
         "under the impression that he was a frog",
-        "during a quantum hiccup",
         "amidst theoretical background noise",
-        ". I was suprised at his",
         "with a soundtrack of static",
         "in a dimension of mild confusion",
         "while I was eating",
@@ -350,10 +364,10 @@ def generate_wild_description(id_dict):
     
     # Verb modifiers
     verb_modifiers = [
-         "mysteriously", "funnily", "theoretically",
+         "mysteriously", "theoretically",
         "hypothetically", "inexplicably", "coincidentally", "quaquaversally",
     ]
-    withe = ["sporting","with","and"]
+    withe = ["with"]
     wiwth = choice(withe)
     # Get character traits with fallback
     eyes = id_dict.get('eyes', 'normal')
@@ -362,17 +376,17 @@ def generate_wild_description(id_dict):
     mouth = id_dict.get("mouth", 'neutral')
     scar = id_dict.get("scar","no scar")
     accessories = id_dict.get('accessories', 'none')
-    
+    eyebrows = id_dict.get('eyebrows', 'normal_black')
     # Select descriptors
     selected_face = choice(face_desc.get(face_type, ["undefined"]))
     selected_eyes = choice(eyes_desc.get(eyes, ["undefined"]))
     selected_mouth = choice(mouth_desc.get(mouth, ["undefined"]))
     selected_hair = choice(hair_desc.get(hair_type, ["bizarre"]))
-    
+    selected_eyebrows = choice(eyebrows_desc.get(eyebrows, ["undefined"]))
     # Generate description
     description = (
         f"A {selected_face} character {choice(verb_modifiers)} "
-        f"with {selected_eyes} eyes and a {selected_mouth} mouth, "
+        f"with {selected_eyes} eyes, {selected_eyebrows} eyebrows and a {selected_mouth} mouth, "
         f"{wiwth} {selected_hair} hair, {choice(clutter_phrases)}."
         f" He had {scar}"
     
@@ -769,6 +783,7 @@ while running:
     pygame.image.save(canvas, latest_drawing)
     print(f"Drawing saved to {latest_drawing}")
     lastDrawing = pygame.image.load(latest_drawing)
+    lastDrawing = pygame.transform.scale(lastDrawing, (300, 300))
     selected_culprit = None
     # Criminal comparison screen loop
     build = True
@@ -791,7 +806,7 @@ while running:
         
 
         
-        screen.blit(lastDrawing, (screenX, screenY))
+        screen.blit(lastDrawing, (screenX+400, screenY))
         
 
         if not selected_culprit == None:
@@ -822,13 +837,15 @@ while running:
     
     # Boss feedback scene animation - slide in from right
     bossPosX, bossPosY = SCREEN_WIDTH, 300
+
     for i in range(int(SCREEN_WIDTH*2/3/10)):
         bossPosX -= 10  # Move boss image left
+        bossPosY = SCREEN_HEIGHT/4 + sin(bossPosX*0.1)*10  # Bounce with amplitude of 50 pixels
         screen.fill((20, 20, 20))
+
         drawImage(boss, bossPosX, bossPosY)
         clock.tick(60)  # Limit to 60 FPS
         pygame.display.flip()
-
     # Display boss feedback text letter by letter
     
     if selected_culprit == culprit:
@@ -840,7 +857,7 @@ while running:
 
     else: 
         combo = 0
-        score = streak*(combo)
+        score = score + streak*(combo)
         text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name}."
         scr =  f"Your score is {score}"
     clt = "The Culprit was:"
@@ -867,11 +884,12 @@ while running:
     # Draw done button for play again screen
     
     screen.blit(gallery_menu,(SCREEN_WIDTH/2,SCREEN_HEIGHT/1.2))
+    screen.blit(doneSurface,  (SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
     pygame.display.flip()
     
     # Play again prompt loop
     while playAgain:
-        
+        button_d = doneSurface.get_rect(topleft=(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 playAgain = False
@@ -889,6 +907,7 @@ while running:
                 x, y = event.pos
                 if button_d.collidepoint(x, y):
                     playAgain = False
+
     screen.blit(button_done,(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
     drawing = True  # Drawing mode state
     isCriminal = True  # Criminal comparison state
