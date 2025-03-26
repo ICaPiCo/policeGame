@@ -81,6 +81,9 @@ boss = load_random_image("sources/images/boss")  # Random boss image
 criminal = load_random_image("sources/images/criminals")  # Random criminal image
 
 end = pygame.image.load("sources/ui/default/Exit.png")
+end = pygame.transform.scale(end, (200, 120))
+endSurface = pygame.Surface((200,120))
+endSurface.blit(end, (0, 0))
 # Load and scale background image
 background = pygame.image.load("sources/images/background.png")
 background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_HEIGHT )))
@@ -564,7 +567,15 @@ while running:
                     menu = False
                     pygame.quit()
                     sys.exit()  
-            if event.type == pygame.QUIT:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                surf_rect = endSurface.get_rect(topleft = (100,100))
+                pso = pygame.mouse.get_pos()
+                if surf_rect.collidepoint(pso):
+                    menu = False
+                    running = False
+                    pygame.quit()
+                    sys.exit()
+            elif event.type == pygame.QUIT:
                 running = False
                 menu = False
         
@@ -572,7 +583,7 @@ while running:
         x1 = int((sin(color) * 127.5) + 127.5)         # Red (0–255)
         y1 = int((sin(color + 2) * 127.5) + 127.5)     # Green (0–255)
         z1 = int((sin(color + 4) * 127.5) + 127.5)     # Blue (0–255)
-        
+        screen.blit(endSurface,(100,100))
         pygame.display.flip()  # Update display
 
     # Testimony scene animation - slide in from right
