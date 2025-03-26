@@ -209,7 +209,7 @@ class person:
             "pants": pygame.image.load(f"images/Civilians/pants/pants_{self.pants}.png").convert_alpha(),
             "arms": pygame.image.load(f"images/Civilians/arms/arms_{self.arms}.png").convert_alpha(),
             "tshirt": pygame.image.load(f"images/Civilians/tshirt/tshirt_{self.tshirt}.png").convert_alpha(),
-            "scar": pygame.image.load(f"images/Civilians/scar/scar_{self.scar}.png").convert_alpha(),
+            "scar": pygame.image.load(f"images/Civilians/scar/{self.scar}.png").convert_alpha(),
             "tattoo": pygame.image.load(f"images/Civilians/tattoo/tattoo_{self.tattoo}.png").convert_alpha(),
             "accessories": pygame.image.load(f"images/Civilians/accessories/accessories_{self.accessories}.png").convert_alpha(),
         }
@@ -232,7 +232,7 @@ class person:
 
         # Draw all parts
         for img in self.images.values():
-            self.surface.blit(img, (0, 0))
+            self.surface.blit(img, (-100, 0))
 
     def build(self, posX, posY, difficulty):
         """Efficiently renders the character to the screen."""
@@ -251,7 +251,7 @@ class person:
 
 
     def genid(self):
-        id = {"face":self.face,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth}
+        id = {"face":self.face,"hair":self.hair,"eyes":self.eyes,"ears":self.ears,"mouth":self.mouth,"scar":self.scar}
         return id
     def calculate_similarity(self,id2):
         id1 = self.genid()  
@@ -306,17 +306,17 @@ def generate_wild_description(id_dict):
         "buzzcut": ["precise", "military-style", "closely shaved", "sharp"],
         "short_pointy_black": ["spiky", "edgy", "wild", "sharp"],
         "short_pointy_brown": ["wood-toned", "earthy", "feral", "untamed"],
-        "short_pointy_orange": ["flame-like", "vibrant", "fiery", "electric"],
+        "short_pointy_orange": ["flame-like", "vibrant", "fiery", "electric orange"],
         "short_pointy_blond": ["golden", "sunlit", "bright", "radiant"]
     }
     
     # Clutter phrases for randomness
     clutter_phrases = [
         "while juggling invisible unicorns",
-        "under a microscope of paradox",
+        "under the impression that he was a frog",
         "during a quantum hiccup",
         "amidst theoretical background noise",
-        "navigating bureaucratic daydreams",
+        ". I was suprised at his",
         "with a soundtrack of static",
         "in a dimension of mild confusion",
         "tracing probability shadows",
@@ -325,15 +325,17 @@ def generate_wild_description(id_dict):
     
     # Verb modifiers
     verb_modifiers = [
-        "awkwardly", "mysteriously", "accidentally", "theoretically",
-        "hypothetically", "inexplicably", "coincidentally", "quaquaversally"
+         "mysteriously", "funnily", "theoretically",
+        "hypothetically", "inexplicably", "coincidentally", "quaquaversally",
     ]
-    
+    withe = ["sporting","with","and"]
+    wiwth = choice(withe)
     # Get character traits with fallback
     eyes = id_dict.get('eyes', 'normal')
     face_type = id_dict.get('face', 'normal_white')
     hair_type = id_dict.get('hair', 'bald')
-    mouth = id_dict.get('mouth', 'neutral')
+    mouth = id_dict.get("mouth", 'neutral')
+    scar = id_dict.get("scar","no scar")
     accessories = id_dict.get('accessories', 'none')
     
     # Select descriptors
@@ -346,24 +348,18 @@ def generate_wild_description(id_dict):
     description = (
         f"A {selected_face} character {choice(verb_modifiers)} "
         f"with {selected_eyes} eyes and a {selected_mouth} mouth, "
-        f"sporting {selected_hair} hair, {choice(clutter_phrases)}."
-    )
+        f"{wiwth} {selected_hair} hair, {choice(clutter_phrases)}."
+        f" He had {scar}"
     
+    )
     if accessories != "none":
-        description += f" They also wear a {accessories} for extra flair."
+        description.append ( f" They also wear a {accessories} for extra flair.")
+    
     
     return description
 
 # Example usage
-character = {
-    "face": "normal_white",
-    "hair": "short_pointy_blond",
-    "eyes": "angry",
-    "mouth": "up",
-    "accessories": "none"
-}
 
-print(generate_wild_description(character))
 # Demonstration function
 
 
@@ -371,7 +367,7 @@ print(generate_wild_description(character))
 
 tshirt_options = ["white"]
 tattoo_options = ["neck_left","none"]
-scar_options = ["left","none"]
+scar_options = ["a scarred neck","no scar"]
 accessories_options = ["earing","none"]
 pants_options = ["blue","cyan","green","grey","red","yellow"]
 face_options = ["normal_white","round_white"]
@@ -584,7 +580,7 @@ while running:
 
     # Testimony scene animation - slide in from right
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
-    animation_speed = 40  # Higher number = faster animation
+    animation_speed = 20  # Higher number = faster animation
     target_x = SCREEN_WIDTH / 3  # Target position
     font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT / 20))
 
@@ -597,7 +593,7 @@ while running:
     while testimonyPosX > target_x:
         # Update the position
         testimonyPosX = max(target_x, testimonyPosX - animation_speed)
-        testimonyPosY = (SCREEN_HEIGHT / 2) * (0.06 * sin(testimonyPosX))
+        testimonyPosY = (SCREEN_HEIGHT / 2) * (0.03 * sin(testimonyPosX))
 
         # Clear the screen by blitting the background only once per frame
         screen.blit(background_surface, (0, 0))
@@ -619,7 +615,7 @@ while running:
     # Variable to track current line being typed
     current_line_index = 0
     current_line_text = ""
-
+    
     for line in lines:
         # Reset current line text and position for each line
         current_line_text = ""
@@ -645,6 +641,7 @@ while running:
     
     # Draw initial canvas and UI
     drawBackground()
+    screen.blit(testimony, (testimonyPosX, testimonyPosY))
     drawImage(table, 0, 0)
     drawDone()
     drawButtons()
@@ -796,7 +793,7 @@ while running:
 
     # Display boss feedback text letter by letter
     
-    if selected_culprit == "badguy":
+    if selected_culprit.name == "badguy":
         streak += 1
         combo += 1
         score = streak*(combo)
