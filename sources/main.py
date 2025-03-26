@@ -73,6 +73,8 @@ def load_random_image(folder_path):
 menu_screen = pygame.image.load("sources/images/menu_screen.png")
 menu_screen = pygame.transform.scale(menu_screen, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+gallery_menu = pygame.image.load("sources/ui/default/Levels.png")
+
 icon = pygame.image.load("sources/images/icon.png")
 pygame.display.set_icon(icon)
 
@@ -826,6 +828,7 @@ while running:
         pygame.display.flip()   
     # Draw done button for play again screen
     drawDone()
+    screen.blit(gallery_menu,(SCREEN_WIDTH/2,SCREEN_HEIGHT/1.2))
     pygame.display.flip()
     
     # Play again prompt loop
