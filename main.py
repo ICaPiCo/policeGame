@@ -15,9 +15,10 @@ drawing = False
 streak = 0
 combo = 0
 Space = 20
+
 # Screen settings
 overSize = 4  # Scaling factor for canvas relative to screen size
-pygame.display.set_caption("Drawn To Justice")
+pygame.display.set_caption("Drawn To Justice!")
 screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = 1920,1200
 CANVAS_WIDTH, CANVAS_HEIGHT = 655,380
@@ -29,6 +30,7 @@ button_color_white = pygame.Rect(screenX+100+Space+5, screenY+10+5, 90, 30)  # W
 button_size_up = pygame.Rect(screenX+200+Space, screenY+10, 100, 40)  # Increase brush size button
 button_size_down = pygame.Rect(screenX+300+Space, screenY+10, 100, 40)  # Decrease brush size button
 button_done = pygame.Rect(screenX+400+Space, screenY+350, 100, 40)
+
 def load_random_font(folder_path):
     """
     Load a random font from the specified folder.
@@ -796,7 +798,7 @@ while running:
 
     # Display boss feedback text letter by letter
     
-    if selected_culprit == "badguy":
+    if selected_culprit.name == "badguy":
         streak += 1
         combo += 1
         score = streak*(combo)
@@ -812,7 +814,7 @@ while running:
     textX, textY = SCREEN_WIDTH/6, SCREEN_HEIGHT/4
     for i in text:
         newtext += i
-        drawText = font.render(newtext, True, (0, 0, 0))
+        drawText = font.render(newtext, True, (255, 255, 255))
         screen.blit(drawText, (textX, textY))
         time.sleep(randint(1, 10)/200)  # Random delay for typewriter effect
         pygame.display.flip()    
@@ -851,7 +853,7 @@ pygame.quit()
 
 '''
 CHEKLIST TO DO ULTRA IMPORTANT BEFORE TOMORROW: 
-- ADD MUSI AND SOUND EFFECTS- ADD SPEECH BUBBLE - Ioanis
-- MAKE BUTTONS MORE BEAUTIFUL (UI) -Ioanis
+- ADD MUSI AND SOUND EFFECTS- ADD SPEECH BUBBLE - Ioanis / 3
+- MAKE BUTTONS MORE BEAUTIFUL (UI) -Ioanis / 2
 - STORY - EVERYBODY
 '''
