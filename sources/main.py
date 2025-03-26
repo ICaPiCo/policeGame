@@ -315,14 +315,14 @@ def generate_wild_description(id_dict):
     }
     
     eyes_desc = {
-        "angry": ["downtured","angry", "intense", "furious"],
+        "angry": ["mefiant","angry", "intense", "furious"],
         "sad": ["crying", "looking down", "melancholic","sad"],
         "normal": ["calm", "observant"]
     }
     eyebrows_desc = {
     # Angry expressions with color hints
     "angry_black": ["angry and dark", "dark and annoyed", "ink-black and menacing"],
-    "angry_blond": ["golden and tensed", "like sand and mefiant", "honey looking and fronced"],
+    "angry_blond": ["golden and tensed", "sand-like and mefiant", "honey looking and fronced"],
     "angry_brown": ["chestnut dark and mefiant", "walnut fronced", "bronze annoyed", "earth-brown thunderous"],
     "angry_orange": ["orange and intense", "orange and piercing", "flame-like menacing", "amber and annoyed", "ginger and fronced"],
     
@@ -861,7 +861,7 @@ while running:
         score = score + streak*(combo)
         text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name}."
         scr =  f"Your score is {score}"
-    clt = "The Culprit was:"
+    clt = "The criminal was:"
     cl = font.render(clt,True,(255,255,255))
     screen.blit(cl, (SCREEN_WIDTH-1000,SCREEN_HEIGHT-800))
     culprit.build(SCREEN_WIDTH-800,SCREEN_HEIGHT-600,difficulty)
