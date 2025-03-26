@@ -70,29 +70,29 @@ def load_random_image(folder_path):
 
 
 # Load game images
-menu_screen = pygame.image.load("images/menu_screen.png")
+menu_screen = pygame.image.load("sources/images/menu_screen.png")
 menu_screen = pygame.transform.scale(menu_screen, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-icon = pygame.image.load("images/icon.png")
+icon = pygame.image.load("sources/images/icon.png")
 pygame.display.set_icon(icon)
 
-testimony = load_random_image("images/testimonials")  # Random testimony image
-boss = load_random_image("images/boss")  # Random boss image
-criminal = load_random_image("images/criminals")  # Random criminal image
+testimony = load_random_image("sources/images/testimonials")  # Random testimony image
+boss = load_random_image("sources/images/boss")  # Random boss image
+criminal = load_random_image("sources/images/criminals")  # Random criminal image
 
 # Load and scale background image
-background = pygame.image.load("images/background.png")
+background = pygame.image.load("sources/images/background.png")
 background = pygame.transform.scale(background, (int(SCREEN_WIDTH), int(SCREEN_HEIGHT )))
 # Load and scale mugshot image
-mugshot = pygame.image.load("images/mugshot.jpg")
+mugshot = pygame.image.load("sources/images/mugshot.jpg")
 mugshot = pygame.transform.scale(mugshot, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-text_bubble = pygame.image.load("images/text_bubble.png")
+text_bubble = pygame.image.load("sources/images/text_bubble.png")
 text_bubble = pygame.transform.scale(text_bubble, (SCREEN_WIDTH, SCREEN_HEIGHT/2.1))
 
-empty = pygame.image.load("images/empty.png")
+empty = pygame.image.load("sources/images/empty.png")
 # Load and scale table image
-table = pygame.image.load("images/table.png")
+table = pygame.image.load("sources/images/table.png")
 table = pygame.transform.scale(table, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Define colors
@@ -201,19 +201,19 @@ class person:
     def load_assets(self):
         """Loads and scales assets once to improve performance."""
         self.images = {
-            "ears": pygame.image.load(f"images/Civilians/ears/ears_{self.ears}.png").convert_alpha(),
-            "face": pygame.image.load(f"images/Civilians/face/face_{self.face}.png").convert_alpha(),
-            "hair": pygame.image.load(f"images/Civilians/hair/hair_{self.hair}.png").convert_alpha(),
-            "nose": pygame.image.load(f"images/Civilians/nose/nose_{self.nose}.png").convert_alpha(),
-            "mouth": pygame.image.load(f"images/Civilians/mouth/mouth_{self.mouth}.png").convert_alpha(),
-            "eyes": pygame.image.load(f"images/Civilians/eyes/eyes_{self.eyes}.png").convert_alpha(),
-            "eyebrows": pygame.image.load(f"images/Civilians/eyebrows/eyebrows_{self.eyebrows}.png").convert_alpha(),
-            "pants": pygame.image.load(f"images/Civilians/pants/pants_{self.pants}.png").convert_alpha(),
-            "arms": pygame.image.load(f"images/Civilians/arms/arms_{self.arms}.png").convert_alpha(),
-            "tshirt": pygame.image.load(f"images/Civilians/tshirt/tshirt_{self.tshirt}.png").convert_alpha(),
-            "scar": pygame.image.load(f"images/Civilians/scar/{self.scar}.png").convert_alpha(),
-            "tattoo": pygame.image.load(f"images/Civilians/tattoo/tattoo_{self.tattoo}.png").convert_alpha(),
-            "accessories": pygame.image.load(f"images/Civilians/accessories/accessories_{self.accessories}.png").convert_alpha(),
+            "ears": pygame.image.load(f"sources/images/Civilians/ears/ears_{self.ears}.png").convert_alpha(),
+            "face": pygame.image.load(f"sources/images/Civilians/face/face_{self.face}.png").convert_alpha(),
+            "hair": pygame.image.load(f"sources/images/Civilians/hair/hair_{self.hair}.png").convert_alpha(),
+            "nose": pygame.image.load(f"sources/images/Civilians/nose/nose_{self.nose}.png").convert_alpha(),
+            "mouth": pygame.image.load(f"sources/images/Civilians/mouth/mouth_{self.mouth}.png").convert_alpha(),
+            "eyes": pygame.image.load(f"sources/images/Civilians/eyes/eyes_{self.eyes}.png").convert_alpha(),
+            "eyebrows": pygame.image.load(f"sources/images/Civilians/eyebrows/eyebrows_{self.eyebrows}.png").convert_alpha(),
+            "pants": pygame.image.load(f"sources/images/Civilians/pants/pants_{self.pants}.png").convert_alpha(),
+            "arms": pygame.image.load(f"sources/images/Civilians/arms/arms_{self.arms}.png").convert_alpha(),
+            "tshirt": pygame.image.load(f"sources/images/Civilians/tshirt/tshirt_{self.tshirt}.png").convert_alpha(),
+            "scar": pygame.image.load(f"sources/images/Civilians/scar/{self.scar}.png").convert_alpha(),
+            "tattoo": pygame.image.load(f"sources/images/Civilians/tattoo/tattoo_{self.tattoo}.png").convert_alpha(),
+            "accessories": pygame.image.load(f"sources/images/Civilians/accessories/accessories_{self.accessories}.png").convert_alpha(),
         }
 
         # Scale images once
@@ -549,7 +549,7 @@ while running:
     #print(f"{culprit1.calculate_similarity(culprit)}, {culprit2.calculate_similarity(culprit)}")
     # Start menu loop
     
-    font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT/20))
+    font = pygame.font.Font(load_random_font("sources/fonts"), int(SCREEN_HEIGHT/20))
 
     while menu:
         color += 0.01  # Increment color animation parameter
@@ -584,7 +584,7 @@ while running:
     testimonyPosX, testimonyPosY = SCREEN_WIDTH, 0
     animation_speed = 20  # Higher number = faster animation
     target_x = SCREEN_WIDTH / 3  # Target position
-    font = pygame.font.Font(load_random_font("fonts"), int(SCREEN_HEIGHT / 20))
+    font = pygame.font.Font(load_random_font("sources/fonts"), int(SCREEN_HEIGHT / 20))
 
     # Store the background if it doesn't change often
     background_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -723,11 +723,11 @@ while running:
 
     # Save the drawing when exiting the drawing loop
     timestamp = time.strftime("%Y%m%d-%H%M%S")
-    latest_drawing = os.path.join("saved_drawings", f"drawing_{timestamp}.png")
+    latest_drawing = os.path.join("sources\saved_drawings", f"drawing_{timestamp}.png")
     drawings.append(latest_drawing)
     
     # Create directory if it doesn't exist
-    os.makedirs("saved_drawings", exist_ok=True)
+    os.makedirs("sources\saved_drawings", exist_ok=True)
 
     # Save the canvas as a PNG file
     pygame.image.save(canvas, latest_drawing)
