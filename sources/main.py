@@ -344,7 +344,7 @@ def generate_wild_description(id_dict):
     
     hair_desc = {
         "bald": ["shiny", "reflective", "bare", "bald","egg-like","eggish"],
-        "buzzcut": ["closely cut", "military-style", "closely shaved", "very very short"],
+        "buzzcut": ["closely cut", "military-style", "closely shaved", "very very short", "buzzcut"],
         "short_pointy_black": ["spiky dark", "messy dark", "messy black"],
         "short_pointy_brown": ["wood-toned pointy", "brown messy"],
         "short_pointy_orange": ["flame-like", "orange and pointy", "electric orange"],
@@ -384,14 +384,14 @@ def generate_wild_description(id_dict):
     selected_eyebrows = choice(eyebrows_desc.get(eyebrows, ["undefined"]))
     # Generate description
     description = (
-        f"A {selected_face} character {choice(verb_modifiers)} "
-        f"with {selected_eyes} eyes, {selected_eyebrows} eyebrows and a {selected_mouth} mouth, "
+        f"A {selected_face} guy {choice(verb_modifiers)} "
+        f"with {selected_eyes} eyes, {selected_eyebrows} eyebrows, and a {selected_mouth} mouth, "
         f"{wiwth} {selected_hair} hair, {choice(clutter_phrases)}."
         f" He had {scar}"
     
     )
     if accessories != "none":
-        description.append ( f" They also wear a {accessories} for extra flair.")
+        description.append ( f" They also wear {accessories} for extra flair.")
     
     
     return description
@@ -674,7 +674,8 @@ while running:
             drawText = font.render(current_line_text, True, (255, 255, 255), (0, 0, 0))
             screen.blit(drawText, (textX, current_y))
             
-           
+            if char==",":
+                time.sleep(0.5)
             time.sleep(randint(1, 10)/200)
             pygame.display.flip()
         
@@ -682,7 +683,7 @@ while running:
         current_line_index += 1
     # Create canvas for drawing
     screen.blit(drawText, (textX, current_y))
-    time.sleep(0.1)
+    time.sleep(0.8)
     canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
     canvas.fill(WHITE)
     
@@ -838,9 +839,9 @@ while running:
     # Boss feedback scene animation - slide in from right
     bossPosX, bossPosY = SCREEN_WIDTH, 300
 
-    for i in range(int(SCREEN_WIDTH*2/3/10)):
+    for i in range(int(SCREEN_WIDTH*2/20)):
         bossPosX -= 10  # Move boss image left
-        bossPosY = SCREEN_HEIGHT/4 + sin(bossPosX*0.1)*10  # Bounce with amplitude of 50 pixels
+        bossPosY = SCREEN_HEIGHT/3 + sin(bossPosX*0.1)*10  # Bounce with amplitude of 50 pixels
         screen.fill((20, 20, 20))
 
         drawImage(boss, bossPosX, bossPosY)
