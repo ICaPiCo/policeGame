@@ -888,9 +888,9 @@ while running:
                     sys.exit()  
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if button_done.collidepoint(x, y):
+                if button_d.collidepoint(x, y):
                     playAgain = False
-        
+    screen.blit(button_done,(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
     drawing = True  # Drawing mode state
     isCriminal = True  # Criminal comparison state
     bossSpeech = True  # Boss feedback state
