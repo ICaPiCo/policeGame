@@ -96,6 +96,17 @@ def load_random_image(folder_path):
     except pygame.error as e:
         print(f"Error loading image {random_image}: {e}")
         return None
+def load_animation(folder_path):
+    files = os.listdir(folder_path)
+    AnimationSurfaces = []
+    for i in files:
+        image = pygame.image.load(os.path.join(folder_path, i))
+        image = pygame.transform.scale(image, (600, 900))
+        imageSurface = pygame.Surface((600,900), pygame.SRCALPHA)
+        imageSurface.blit(image,(0,0))
+        AnimationSurfaces.append(imageSurface)
+        print(f"Loaded {i}")
+    return AnimationSurfaces
 
 
 # Load game images
@@ -197,6 +208,8 @@ drawings = []  # List to store paths to saved drawings
 x1, y1, z1 = 100, 100, 100  # RGB values for color cycling text
 color = 0  # Color cycling animation parameter
 clock = pygame.time.Clock()  # Game clock for frame rate control
+animation = load_animation("sources/images/animation")
+print(f"Loaded {len(animation)}/31 animation frames")
 
 class person:
     alle = []
@@ -586,15 +599,21 @@ while running:
     # Start menu loop
     
     font = pygame.font.Font(load_random_font("sources/fonts"), int(SCREEN_HEIGHT/20))
-
+    a=0
+    frame_counter=0
+    animation_frame_delay = 5
     while menu:
         color += 0.01  # Increment color animation parameter
+        frame_counter += 1
+        if frame_counter >= animation_frame_delay:
+            a = (a + 1) % len(animation)
         screen.fill((0, 0, 0))  # Clear screen
         screen.blit(menu_screen, (0, 0)) # Display game menu_screen
         # Create color-cycling "Press space to start" text
         menu_text = font.render("Press space to start", True, (x1, y1, z1))
         screen.blit(menu_text, (SCREEN_WIDTH/2-200, (SCREEN_HEIGHT/2)+250))
         
+
         # Event handling
         for event in pygame.event.get():   
             if event.type == pygame.KEYDOWN:
@@ -622,6 +641,7 @@ while running:
         y1 = int((sin(color + 2) * 127.5) + 127.5)     # Green (0–255)
         z1 = int((sin(color + 4) * 127.5) + 127.5)     # Blue (0–255)
         screen.blit(endSurface,(100,100))
+        screen.blit(animation[a],(1150,450))
         pygame.display.flip()  # Update display
 
     # Testimony scene animation - slide in from right
