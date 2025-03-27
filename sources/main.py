@@ -275,7 +275,7 @@ class person:
             label = "Culprit" if self == culprit else "Culprit 1"
             ct = font.render(label, True, (128, 0, 128))
             screen.blit(ct, (posX + 200, posY + 400))
-'''
+        '''
 
     def genid(self):
         #Generer une id pour objet pour text etc
