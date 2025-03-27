@@ -10,6 +10,8 @@ from math import hypot
 os.system("cls")  # Clear console screen
 # Initialize pygame
 pygame.init()
+pygame.mixer.music.load("sources/music/suspense.mp3")
+pygame.mixer.music.play(loops=-1)
 font = pygame.font.Font(None, 36)
 
 drawing = False
@@ -25,6 +27,11 @@ SCREEN_WIDTH, SCREEN_HEIGHT = 1920,1200
 CANVAS_WIDTH, CANVAS_HEIGHT = 655,380
 borderPatrol = ((10*SCREEN_HEIGHT)/100)  # Border padding
 screenX, screenY = 1200, 565  # Canvas position
+
+gallery_button = pygame.image.load("sources/ui/default/Levels.png")
+gallerySurface = pygame.Surface((100,40))
+gallery_button = pygame.transform.scale(gallery_button, (100,40))
+gallerySurface.blit(gallery_button, (0, 0))  # Blit at (0,0)
 
 button_color_black = pygame.image.load("sources/ui/default/buttons/color_black.png")
 blackSurface = pygame.Surface((100,40))
@@ -102,7 +109,6 @@ def load_random_image(folder_path):
 menu_screen = pygame.image.load("sources/images/menu_screen.png")
 menu_screen = pygame.transform.scale(menu_screen, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-gallery_menu = pygame.image.load("sources/ui/default/Levels.png")
 
 icon = pygame.image.load("sources/images/icon.png")
 pygame.display.set_icon(icon)
@@ -396,9 +402,88 @@ def generate_wild_description(id_dict):
     
     return description
 
-# Example usage
+def create_gallery():
+    # Initialize Pygame
+    pygame.init()
+    screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN)
+    pygame.display.set_caption("Drawing Gallery")
+    clock = pygame.time.Clock()
 
-# Demonstration function
+    # Load frame image
+    frame = pygame.image.load("sources/images/frame.png")
+    frame = pygame.transform.scale(frame, (800, 600))  # Adjust size as needed
+
+    # Load saved drawings
+    saved_drawings_path = "sources/saved_drawings"
+    drawings = [os.path.join(saved_drawings_path, f) for f in os.listdir(saved_drawings_path) 
+                if f.endswith('.png')]
+    
+    if not drawings:
+        print("No drawings found in the gallery!")
+        return
+
+    # Current drawing index
+    current_index = 0
+
+    # Scrolling variables
+    scroll_x = 0
+    scroll_speed = 20
+
+    # Gallery loop
+    running = True
+    while running:
+        screen.fill((255, 255, 255))  # White background
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                elif event.key == pygame.K_RIGHT:
+                    # Move to next drawing
+                    current_index = (current_index + 1) % len(drawings)
+                    scroll_x = -screen.get_width()  # Start off-screen
+                elif event.key == pygame.K_LEFT:
+                    # Move to previous drawing
+                    current_index = (current_index - 1) % len(drawings)
+                    scroll_x = screen.get_width()  # Start off-screen
+
+        # Load current drawing
+        try:
+            current_drawing = pygame.image.load(drawings[current_index])
+            current_drawing = pygame.transform.scale(current_drawing, (600, 400))  # Adjust size to fit frame
+        except:
+            print(f"Error loading drawing: {drawings[current_index]}")
+            continue
+
+        # Smooth scrolling
+        if scroll_x < 0:
+            scroll_x += scroll_speed
+        elif scroll_x > 0:
+            scroll_x -= scroll_speed
+
+        # Calculate drawing position
+        draw_x = (screen.get_width() - current_drawing.get_width()) // 2 + scroll_x
+        draw_y = (screen.get_height() - current_drawing.get_height()) // 2
+
+        # Draw frame
+        frame_x = draw_x - 100  # Adjust to center the drawing in the frame
+        frame_y = draw_y - 100
+        screen.blit(frame, (frame_x, frame_y))
+
+        # Draw current drawing
+        screen.blit(current_drawing, (draw_x, draw_y))
+
+        # Draw gallery navigation text
+        font = pygame.font.Font(None, 36)
+        nav_text = font.render(f"Drawing {current_index + 1} of {len(drawings)}", True, (0, 0, 0))
+        screen.blit(nav_text, (screen.get_width() // 2 - nav_text.get_width() // 2, 50))
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.quit()
 
 
 # If you want to use it directly with genid()
@@ -884,13 +969,14 @@ while running:
         pygame.display.flip()   
     # Draw done button for play again screen
     
-    screen.blit(gallery_menu,(SCREEN_WIDTH/2,SCREEN_HEIGHT/1.2))
+    screen.blit(gallery_button,(SCREEN_WIDTH/2,SCREEN_HEIGHT/1.2))
     screen.blit(doneSurface,  (SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
     pygame.display.flip()
     
     # Play again prompt loop
     while playAgain:
         button_d = doneSurface.get_rect(topleft=(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
+        button_g = gallerySurface.get_rect(topleft=(SCREEN_WIDTH/2, SCREEN_HEIGHT/1.2))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 playAgain = False
@@ -908,18 +994,20 @@ while running:
                 x, y = event.pos
                 if button_d.collidepoint(x, y):
                     playAgain = False
+                elif button_g.collidepoint(x, y):
+                    create_gallery()
 
-    screen.blit(button_done,(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
+    #screen.blit(button_done,(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
+    relX=0
+    
+    create_gallery()
+
+
     drawing = True  # Drawing mode state
     isCriminal = True  # Criminal comparison state
     bossSpeech = True  # Boss feedback state
     playAgain = True  # Play again prompt state
     difficulty +=1
+
 # Quit pygame when game is done
 pygame.quit()
-
-'''
-- ADD MUSI AND SOUND EFFECTS- ADD SPEECH BUBBLE - Ioanis
-- MAKE BUTTONS MORE BEAUTIFUL (UI) -Ioanis
-- STORY - EVERYBODY
-'''
