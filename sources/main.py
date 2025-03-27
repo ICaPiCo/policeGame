@@ -432,7 +432,7 @@ def create_gallery():
     
     if not drawings:
         print("No drawings found in the gallery!")
-        return
+        return True  # Return True to continue game loop
 
     # Current drawing index
     current_index = 0
@@ -440,18 +440,25 @@ def create_gallery():
     # Scrolling variables
     scroll_x = 0
     scroll_speed = 20
+    
+    # Correctly set done button rectangle to match blitted position
+    done_button_rect = doneSurface.get_rect(topleft=(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
 
     # Gallery loop
-    running = True
-    while running:
+    gallery_running = True
+    while gallery_running:
         screen.fill((255, 255, 255))  # White background
-
+        screen.blit(doneSurface, (SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return False  # Exit game completely
+                
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
+                if event.key == pygame.K_ESCAPE or event.key == pygame.K_RETURN:
+                    gallery_running = False  # Exit gallery, return to main game
+                    return True
+                    
                 elif event.key == pygame.K_RIGHT:
                     # Move to next drawing
                     current_index = (current_index + 1) % len(drawings)
@@ -460,6 +467,12 @@ def create_gallery():
                     # Move to previous drawing
                     current_index = (current_index - 1) % len(drawings)
                     scroll_x = screen.get_width()  # Start off-screen
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if done_button_rect.collidepoint(pos):
+                    gallery_running = False
+                    return True
 
         # Load current drawing
         try:
@@ -494,10 +507,8 @@ def create_gallery():
 
         pygame.display.flip()
         clock.tick(60)
-
-    pygame.quit()
-
-
+    
+    return True
 # If you want to use it directly with genid()
 
 tshirt_options = ["white"]
@@ -708,6 +719,8 @@ while running:
                     menu = False
                     pygame.quit()
                     sys.exit()  
+                
+                   
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 surf_rect = endSurface.get_rect(topleft = (100,100))
                 pso = pygame.mouse.get_pos()
@@ -841,6 +854,7 @@ while running:
                 button_w = whiteSurface.get_rect(topleft=(screenX+100, screenY))
                 if button_d.collidepoint(x, y):
                     drawing = False
+                    isCriminal = True
                 elif button_b.collidepoint(x, y):
                     brush_color = BLACK
                 elif button_w.collidepoint(x, y):
@@ -891,7 +905,8 @@ while running:
     lastDrawing = pygame.transform.scale(lastDrawing, (300, 300))
     selected_culprit = None
     # Criminal comparison screen loop
-    build = True
+    
+
     while isCriminal:
         screen.fill((0, 0, 0))
         screen.blit(mugshot, (0, 0)) 
@@ -915,6 +930,7 @@ while running:
         
 
         if not selected_culprit == None:
+            playAgain =True
             break
         #doCriminal()  # Show the criminal image for comparison
         
@@ -941,17 +957,19 @@ while running:
     pygame.display.flip()
     
     # Boss feedback scene animation - slide in from right
-    bossPosX, bossPosY = SCREEN_WIDTH, 200
+    
+
+    bossPosX, bossPosY = SCREEN_WIDTH, SCREEN_HEIGHT/3  # Fixed vertical starting position
 
     for i in range(int(SCREEN_WIDTH*2/20)):
         bossPosX -= 10  # Move boss image left
-        bossPosY = SCREEN_HEIGHT/3 + sin(bossPosX*0.1)*10  # Bounce with amplitude of 50 pixels
+        bossPosY = SCREEN_HEIGHT/3 + sin(bossPosX*0.1)*10  # Subtle vertical oscillation
         screen.fill((20, 20, 20))
 
         drawImage(boss, bossPosX, bossPosY)
         clock.tick(60)  # Limit to 60 FPS
         pygame.display.flip()
-    # Display boss feedback text letter by letter
+        # Display boss feedback text letter by letter
     
     if selected_culprit == culprit:
         streak += 1
@@ -1019,14 +1037,16 @@ while running:
     #screen.blit(button_done,(SCREEN_WIDTH-100, SCREEN_HEIGHT-100))
     relX=0
     
-    create_gallery()
+    
+    screen.fill((0,0,0))
 
-
-    drawing = True  # Drawing mode state
-    isCriminal = True  # Criminal comparison state
-    bossSpeech = True  # Boss feedback state
-    playAgain = True  # Play again prompt state
-    difficulty +=1
-
+    drawing = True  # Reset drawing mode state
+    isCriminal = True  # Reset criminal comparison state
+    bossSpeech = True  # Reset boss feedback state
+    playAgain = True  # Reset play again state
+    menu = False  # Ensure menu is not reset to True
+    selected_culprit = None  # Explicitly reset selected culprit
+    culprits = []  # Clear the culprits list
+    difficulty += 1
 # Quit pygame when game is done
 pygame.quit()
