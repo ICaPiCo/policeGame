@@ -1,0 +1,1 @@
+Notre Projet cherche a reunir les themes de l'art et informatique dans un jeu. A cette fin, nous avons developpé plusieurs fonctionalités dans un jeu codé uniquement en Python, comme le dessin ou bien la generation aléatoire biaisée d'objets "culprit".  
