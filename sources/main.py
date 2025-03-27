@@ -1,3 +1,4 @@
+#Drawn to Justice, par: Leo, Ioanis, Samuel, Simon et Yahya (Lycee jules Guesde, 1e -- prof de NSI: M.Even)
 import pygame
 from math import *
 from random import *
@@ -368,11 +369,12 @@ def generate_wild_description(id_dict):
     clutter_phrases = [
         "while he was criming",
         "thinking he was a racecar",
-        "amongst background noise",
+        "amongst theoretical background noise",
         "with a hiphop sound",
         "in a flash",
         "while I was eating",
         "at 9:31 and thirty-three seconds"
+        
     ]
     
     # Verb modifiers
@@ -387,7 +389,7 @@ def generate_wild_description(id_dict):
     hair_type = id_dict.get('hair', 'bald')
     mouth = id_dict.get("mouth", 'neutral')
     scar = id_dict.get("scar","no scar")
-    accessories = id_dict.get('accessories', 'none')
+    
     eyebrows = id_dict.get('eyebrows', 'normal_black')
     # Select descriptors
     selected_face = choice(face_desc.get(face_type, ["undefined"]))
@@ -403,9 +405,6 @@ def generate_wild_description(id_dict):
         f" He had {scar}"
     
     )
-    if accessories != "none":
-        description.append ( f" They also wear {accessories} for extra flair.")
-    
     
     return description
 
@@ -434,7 +433,7 @@ difficulty = 3
 # Main game loop
 
 while running:
-    
+    #Eviter lag en loadant tout avant le Menu, sur des surfaces puisque blitter des images sur une surface impacte perf. 
     person.alle = []
     selected_culprit = None
     culprit = person(
@@ -857,7 +856,7 @@ while running:
     pygame.display.flip()
     
     # Boss feedback scene animation - slide in from right
-    bossPosX, bossPosY = SCREEN_WIDTH, 300
+    bossPosX, bossPosY = SCREEN_WIDTH, 200
 
     for i in range(int(SCREEN_WIDTH*2/20)):
         bossPosX -= 10  # Move boss image left
@@ -877,7 +876,7 @@ while running:
         scr =  f"Your score is {score}"
 
     else: 
-        combo = 0
+        streak = 0
         score = score + streak*(combo)
         text = f"Are you dumb or what, you chose the wrong guy: {selected_culprit.name}."
         scr =  f"Your score is {score}"
